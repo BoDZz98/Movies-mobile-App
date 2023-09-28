@@ -5,7 +5,7 @@ import { Colors } from "../constants/styles";
 import FlatButton from "./UI/FlatButton";
 import { useNavigation } from "@react-navigation/native";
 
-const AuthForm = ({ signingUp }) => {
+const AuthForm = ({ signingUp, onPress }) => {
   // Validation --------------------------
   const [inputs, setInputs] = useState({
     name: { value: "", isValid: true },
@@ -56,6 +56,11 @@ const AuthForm = ({ signingUp }) => {
       });
     } else {
       console.log("true");
+      onPress(
+        inputs.email.value,
+        inputs.password.value,
+        signingUp && inputs.name.value
+      );
     }
   }
   // Navigation ---------------------------------------

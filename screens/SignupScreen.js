@@ -1,12 +1,21 @@
 import React from "react";
-import {  StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 
-const SignupScreen = () => {
+const SignupScreen = ({ navigation }) => {
+  function signupHandler(email, password, name) {
+    // console.log(email, password, name);
+    dispatch(authActions.login());
+    navigation.navigate("all");
+  }
   return (
     <AuthContentCard>
-      <AuthForm signingUp={true} style={styles.formCont} />
+      <AuthForm
+        signingUp={true}
+        onPress={signupHandler}
+        style={styles.formCont}
+      />
     </AuthContentCard>
   );
 };

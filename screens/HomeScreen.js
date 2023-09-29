@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import MovieListItem from "../components/MovieListItem";
 import FlatButton from "../components/UI/FlatButton";
+import { fetchPopularMovies } from "../util/api-services";
+import { useDispatch } from "react-redux";
+import { moviesAction } from "../store/set-movies-slice";
 
 const DATA = [
   {
@@ -39,6 +42,19 @@ const renderMoviesHandler = (width, height, numX, numY, itemData) => (
 );
 
 const HomeScreen = () => {
+  //
+  const dispatch = useDispatch();
+  const [popularMovies, setPopularMovies] = useState([]);
+  useEffect(() => {
+    async function getData() {
+      const fetchedPopularMovies = await fetchPopularMovies();
+      dispatch(moviesAction.setPopularMovies(fetchedPopularMovies));
+      setPopularMovies(fetchedPopularMovies);
+    }
+    getData();
+    console.log('in home screen , movies length=',popularMovies.length);
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.titleCont}>

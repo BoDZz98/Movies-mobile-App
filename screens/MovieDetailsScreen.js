@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { LinearGradient } from "expo-linear-gradient";
@@ -6,6 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import ThreeButtons from "../components/movieDetails/ThreeButtons";
 import ActorsList from "../components/movieDetails/ActorsList";
 import MovieImgs from "../components/movieDetails/MovieImgs";
+import { fetchMovieDetails } from "../util/api-services";
+import CategoryCont from "../components/UI/CategoryCont";
 const DATA = [
   {
     id: "m1",
@@ -30,7 +32,25 @@ const DATA = [
   },
 ];
 
-const MovieDetailsScreen = () => {
+const MovieDetailsScreen = ({ route }) => {
+  //
+  const [movieData, setMovieData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const movieId = route.params.movieId;
+  // console.log(movieId);
+  useEffect(() => {
+    async function getData() {
+      const fetchedMovieData = await fetchMovieDetails(movieId);
+      setMovieData(fetchedMovieData);
+      setIsLoading(false);
+    }
+    getData();
+    // console.log(movieData);
+  }, [movieId, setMovieData]);
+
+  if (isLoading) {
+    return <Text>Loading</Text>;
+  }
   return (
     <>
       <Image
@@ -43,37 +63,28 @@ const MovieDetailsScreen = () => {
         colors={[Colors.primary800, Colors.gray500]}
       >
         <ScrollView>
-          <Text style={styles.title}>Large Titleeeeeeeeeeeeeee</Text>
+          <Text style={styles.title}>{movieData.title}</Text>
           <View style={styles.detailsCont}>
             <Text style={styles.detailsText}>
-              8.9
+              {movieData.vote_average}
               <Ionicons name="star" color={Colors.accent500} size={15} />
             </Text>
-            <Text style={styles.detailsText}>2h 36 min</Text>
-            <Text style={styles.detailsText}>2023</Text>
+            <Text style={styles.detailsText}>{movieData.runtime}</Text>
+            <Text style={styles.detailsText}>{movieData.release_date}</Text>
           </View>
           <View style={styles.detailsCont}>
-            <View style={styles.categoryCont}>
-              <Text style={styles.text}>category</Text>
-            </View>
-            <View style={styles.categoryCont}>
-              <Text style={styles.text}>category</Text>
-            </View>
+            {movieData.genres.map((genre) => (
+              <CategoryCont categoryName={genre.name} />
+            ))}
           </View>
 
           <ThreeButtons />
 
           <ActorsList />
 
-          <Text style={styles.summary}>
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-            commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-            penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-            Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
-            Nulla consequat massa quis en
-          </Text>
+          <Text style={styles.summary}>{movieData.overview}</Text>
 
-          <MovieImgs movieData={DATA} />
+          <MovieImgs movieData={movieData.images} />
         </ScrollView>
       </LinearGradient>
     </>
@@ -108,7 +119,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginHorizontal: 8,
   },
-  
 
   summary: { color: "#cccc", marginVertical: 20 },
 });

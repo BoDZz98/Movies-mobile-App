@@ -13,13 +13,13 @@ const MovieListItem = ({ movie, width, height, numX, numY }) => {
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate("movieDetails");
+        navigation.navigate("movieDetails", { movieId: movie.id });
       }}
     >
       <View style={[styles.rootCont, rootContSize]}>
-        <Image style={styles.image} source={movie.photo} />
+        <Image style={styles.image} source={{ uri: movie.cover }} />
         <View style={[styles.categoryCont, categoryContPosition]}>
-          <Text style={styles.text}>{movie.category}</Text>
+          <Text style={styles.text}>movie.category</Text>
         </View>
         <View style={[styles.ratingCont, ratingContPosition]}>
           <Text style={styles.text}>{movie.rating}</Text>

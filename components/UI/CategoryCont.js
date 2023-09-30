@@ -19,4 +19,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     borderRadius: 10,
   },
+  text:{color:'white'}
 });

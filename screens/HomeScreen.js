@@ -3,33 +3,9 @@ import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import MovieListItem from "../components/MovieListItem";
 import FlatButton from "../components/UI/FlatButton";
-import { fetchPopularMovies } from "../util/api-services";
-import { useDispatch } from "react-redux";
+import { fetchNewMovies, fetchPopularMovies } from "../util/api-services";
+import { useDispatch, useSelector } from "react-redux";
 import { moviesAction } from "../store/set-movies-slice";
-
-const DATA = [
-  {
-    id: "m1",
-    name: "Openhiemmer",
-    category: "fantasy",
-    rating: 9,
-    photo: require("../assets/imgs/open.jpg"),
-  },
-  {
-    id: "m2",
-    name: "world war z",
-    category: "zombies",
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m3",
-    name: "Avatar",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-];
 
 const renderMoviesHandler = (width, height, numX, numY, itemData) => (
   <MovieListItem
@@ -42,17 +18,19 @@ const renderMoviesHandler = (width, height, numX, numY, itemData) => (
 );
 
 const HomeScreen = () => {
-  //
+  //fetching the data from Api
   const dispatch = useDispatch();
-  const [popularMovies, setPopularMovies] = useState([]);
+  const popularMovies = useSelector((state) => state.movies.popularMovies);
+  const newMovies = useSelector((state) => state.movies.newMovies);
+  // console.log(popularMovies);
   useEffect(() => {
     async function getData() {
       const fetchedPopularMovies = await fetchPopularMovies();
+      const fetchedNewMovies = await fetchNewMovies();
       dispatch(moviesAction.setPopularMovies(fetchedPopularMovies));
-      setPopularMovies(fetchedPopularMovies);
+      dispatch(moviesAction.setNewMovies(fetchedNewMovies));
     }
     getData();
-    console.log('in home screen , movies length=',popularMovies.length);
   }, []);
 
   return (
@@ -63,7 +41,7 @@ const HomeScreen = () => {
       </View>
       <View style={styles.poularMoviesCont}>
         <FlatList
-          data={DATA}
+          data={popularMovies}
           horizontal
           snapToInterval={150}
           decelerationRate={"fast"}
@@ -78,7 +56,7 @@ const HomeScreen = () => {
           <FlatButton text="View All" />
         </View>
         <FlatList
-          data={DATA}
+          data={newMovies}
           numColumns={2}
           snapToInterval={250}
           decelerationRate={"fast"}

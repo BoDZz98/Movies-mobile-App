@@ -7,31 +7,11 @@ import { Ionicons } from "@expo/vector-icons";
 import FlatButton from "../components/UI/FlatButton";
 import StartScreenImgs from "../components/StartScreenImgs";
 
-const DATA = [
-  {
-    id: "m1",
-    name: "Openhiemmer",
-    category: ["fantasy", "zombies"],
-    rating: 9,
-    photo: require("../assets/imgs/open.jpg"),
-  },
-  {
-    id: "m2",
-    name: "world war z",
-    category: ["fantasy", "zombies"],
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m3",
-    name: "Avatar",
-    category: ["fantasy", "zombies"],
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-];
-
-const StartScreen = () => {
+const StartScreen = ({ navigation }) => {
+  function navHandler(page) {
+    // console.log(page);
+    navigation.navigate(page);
+  }
   return (
     <LinearGradient
       style={styles.root}
@@ -52,8 +32,12 @@ const StartScreen = () => {
             resizeMode="cover"
             source={require("../assets/imgs/logo2.png")}
           />
-          <Text style={styles.appName}>Moveto</Text>
-          <MyButton style={styles.myButton} textStyle={{ color: "black" }}>
+          <Text style={styles.appName}>Moveeto</Text>
+          <MyButton
+            style={styles.myButton}
+            textStyle={{ color: "black" }}
+            onPress={navHandler.bind(null, "signup")}
+          >
             <View style={styles.buttonView}>
               <Text>Get Started</Text>
               <Ionicons name="md-arrow-forward" size={20} />
@@ -62,7 +46,11 @@ const StartScreen = () => {
         </View>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ color: "white" }}>Already Have an account? </Text>
-          <FlatButton text="Login" textStyle={{ fontWeight: "bold" }} />
+          <FlatButton
+            text="Login"
+            textStyle={{ fontWeight: "bold" }}
+            onPress={navHandler.bind(null, "login")}
+          />
         </View>
       </View>
     </LinearGradient>

@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 const IMGS = [
   require("../assets/imgs/avatar.jpeg"),
@@ -9,31 +10,33 @@ const IMGS = [
 const dum = ["1zzzzzzz", "sssssss2", "31111", "4ssss"];
 
 const StartScreenImgs = () => {
+  const movies = useSelector((state) => state.movies.popularMovies);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.leftContainer}>
-        {/* <Image
-          style={styles.leftImage}
-          resizeMode="stretch"
-          source={require("../assets/imgs/avatar.jpeg")}
-        />
-        <Image
-          style={styles.leftImage}
-          source={require("../assets/imgs/war.jpg")}
-        /> */}
         <FlatList
-          data={dum}
-          keyExtractor={(image) => image}
-          renderItem={({ item, index }) => (
-            <Text style={{ color: "white" }}>{item}</Text>
-          )}
+          data={movies}
+          keyExtractor={(movieItem) => movieItem.id}
+          renderItem={({ item, index }) => {
+            if (index < 4 && index % 2 === 0) {
+              return (
+                <Image style={styles.leftImage} source={{ uri: item.cover }} />
+              );
+            }
+          }}
         />
       </View>
       <View style={styles.rightContainer}>
-        <Image
-          style={styles.rightImage}
-          resizeMode="stretch"
-          source={require("../assets/imgs/avatar.jpeg")}
+        <FlatList
+          data={movies}
+          keyExtractor={(movieItem) => movieItem.id}
+          renderItem={({ item, index }) => {
+            if (index < 4 && index % 2 !== 0) {
+              return (
+                <Image style={styles.rightImage} source={{ uri: item.cover }} />
+              );
+            }
+          }}
         />
       </View>
     </View>
@@ -49,26 +52,23 @@ const styles = StyleSheet.create({
     height: "67%",
   },
   leftContainer: {
-    justifyContent: "flex-start",
     width: "50%",
-    gap: 30,
+    marginTop: -30,
   },
   rightContainer: {
-    justifyContent: "center",
-    alignItems: "center",
     width: "50%",
-    gap: 30,
     marginBottom: -30,
   },
   leftImage: {
-    width: "100%",
-    height: "50%",
+    margin: 16,
+    backgroundColor: "white",
+    height: 200,
     borderRadius: 16,
     transform: [{ rotate: "15deg" }],
   },
   rightImage: {
-    width: "100%",
-    height: "50%",
+    margin: 16,
+    height: 200,
     borderRadius: 16,
     transform: [{ rotate: "-15deg" }],
   },

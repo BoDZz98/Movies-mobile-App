@@ -138,3 +138,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+/* const DATA = [
+  {
+    id: "m1",
+    name: "Openhiemmer",
+    category: "fantasy",
+    rating: 9,
+    photo: require("../assets/imgs/open.jpg"),
+  },
+  {
+    id: "m2",
+    name: "world war z",
+    category: "zombies",
+    rating: 7,
+    photo: require("../assets/imgs/war.jpg"),
+  },
+  {
+    id: "m3",
+    name: "Avatar",
+    category: "fiction",
+    rating: 8.5,
+    photo: require("../assets/imgs/avatar.jpeg"),
+  },
+]; */

@@ -49,7 +49,8 @@ export async function fetchMovieDetails(movieId) {
     genres: response.data.genres,
     images: response.data.images.backdrops,
   };
-  console.log(newMovieObject.images);
+  // console.log(newMovieObject.images);
 
   return newMovieObject;
 }
+

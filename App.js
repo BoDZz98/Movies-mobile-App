@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -16,10 +16,44 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./store";
 import { authActions } from "./store/auth-slice";
 import StartScreen from "./screens/StartScreen";
+import * as Animatable from "react-native-animatable";
+import { useEffect, useRef } from "react";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+//---------------------------------------------------------
+function TabButton({ props, activeIcon, inActiveIcon }) {
+  const { onPress, accessibilityState } = props;
+  const focused = accessibilityState.selected;
+  const viewRef = useRef(null);
+  useEffect(() => {
+    if (focused) {
+      viewRef.current.animate({
+        0: { scale: 1, rotate: "0deg" },
+        1: { scale: 1.5, rotate: "360deg" },
+      });
+    } else {
+      viewRef.current.animate({
+        0: { scale: 1.5, rotate: "360deg" },
+        1: { scale: 1, rotate: "0deg" },
+      });
+    }
+  }, [focused]);
 
+  // console.log(props);
+  return (
+    <TouchableOpacity style={styles.any} onPress={onPress} activeOpacity={1}>
+      <Animatable.View style={styles.any} ref={viewRef} duration={1000}>
+        <Ionicons
+          name={focused ? activeIcon : inActiveIcon}
+          color={focused ? Colors.blue : "white"}
+          size={30}
+        />
+      </Animatable.View>
+    </TouchableOpacity>
+  );
+}
+//-------------------------------------------------------------------------------
 function BottomTabPages() {
   // Logout-----------------------------
   const dispatch = useDispatch();
@@ -34,17 +68,29 @@ function BottomTabPages() {
     <Tab.Navigator
       screenOptions={({ navigation }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: Colors.gray500 },
-        tabBarActiveTintColor: Colors.blue,
+        tabBarStyle: styles.tabBarStyle,
+        tabBarShowLabel: false,
       })}
     >
       <Tab.Screen
         name="home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
+          // tabBarLabel: "Home",
+
+          /* tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              color={color}
+              size={size}
+            />
+          ), */
+          tabBarButton: (props) => (
+            <TabButton
+              props={props}
+              activeIcon="home"
+              inActiveIcon="home-outline"
+            />
           ),
         }}
       />
@@ -54,11 +100,14 @@ function BottomTabPages() {
         options={{
           headerShown: isAuth ? true : false,
           title: "Profile",
-          tabBarLabel: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
 
+          tabBarButton: (props) => (
+            <TabButton
+              props={props}
+              activeIcon="person-circle"
+              inActiveIcon="person-circle-outline"
+            />
+          ),
           headerRight: ({ tintColor }) => {
             return (
               <Ionicons
@@ -136,6 +185,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  any: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tabBarStyle: {
+    backgroundColor: Colors.gray500,
+    height: 60,
+    position: "absolute",
+    bottom: 16,
+    right: 16,
+    left: 16,
+    borderRadius: 16,
   },
 });
 

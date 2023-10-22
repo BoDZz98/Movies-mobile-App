@@ -33,13 +33,14 @@ export async function fetchNewMovies() {
 
 export async function fetchMovieDetails(movieId) {
   const response = await axios.get(
-    `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,images`,
+    `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,images,credits`,
     {
       headers: configHeaders,
     }
   );
-
+  // console.log(response.data);
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
+  const actors = response.data.credits.cast.slice(0, 5);
   const newMovieObject = {
     title: response.data.title,
     vote_average: response.data.vote_average.toFixed(1),
@@ -48,9 +49,9 @@ export async function fetchMovieDetails(movieId) {
     overview: response.data.overview,
     genres: response.data.genres,
     images: response.data.images.backdrops,
+    cast: actors,
   };
-  // console.log(newMovieObject.images);
+  console.log(newMovieObject.cast.length);
 
   return newMovieObject;
 }
-

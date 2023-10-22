@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    height: "67%",
+    height: "60%",
   },
   leftContainer: {
     width: "50%",

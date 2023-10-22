@@ -9,6 +9,7 @@ import MovieImgs from "../components/movieDetails/MovieImgs";
 import { fetchMovieDetails } from "../util/api-services";
 import CategoryCont from "../components/UI/CategoryCont";
 import BackgroundVideo from "../components/movieDetails/BackgroundVideo";
+import { MyTabs } from "./ProfileScreen";
 
 const MovieDetailsScreen = ({ route }) => {
   //
@@ -53,13 +54,13 @@ const MovieDetailsScreen = ({ route }) => {
           </View>
           <View style={styles.detailsCont}>
             {movieData.genres.map((genre) => (
-              <CategoryCont categoryName={genre.name} />
+              <CategoryCont key={genre.id} categoryName={genre.name} />
             ))}
           </View>
 
           <ThreeButtons />
 
-          <ActorsList />
+          <ActorsList actors={movieData.cast} />
 
           <Text style={styles.summary}>{movieData.overview}</Text>
 

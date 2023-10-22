@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../../store/auth-slice";
+import { useSelector } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../../constants/styles";
 import HomeScreen from "../../screens/HomeScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import StartScreen from "../../screens/StartScreen";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
+import ProfilePageHeader from "./ProfilePageHeader";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -51,11 +51,7 @@ function TabButton({ props, activeIcon, inActiveIcon }) {
 //-------------------------------------------------------------------
 const BottomTabPages = () => {
   // Logout---------
-  const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.auth.isAuth);
-  function logoutHandler() {
-    dispatch(authActions.logout());
-  }
 
   return (
     // Notice the diffrence in screenOptions syntex , we wrote an array function the return an object containing our normal options ,
@@ -95,7 +91,9 @@ const BottomTabPages = () => {
         options={{
           headerShown: isAuth ? true : false,
           title: "Profile",
-
+          header: () => {
+            return <ProfilePageHeader />;
+          },
           tabBarButton: (props) => (
             <TabButton
               props={props}
@@ -103,7 +101,7 @@ const BottomTabPages = () => {
               inActiveIcon="person-circle-outline"
             />
           ),
-          headerRight: ({ tintColor }) => {
+          /*  headerRight: ({ tintColor }) => {
             return (
               <Ionicons
                 name={isAuth ? "log-out" : ""}
@@ -112,7 +110,7 @@ const BottomTabPages = () => {
                 onPress={logoutHandler}
               />
             );
-          },
+          }, */
         }}
       />
     </Tab.Navigator>

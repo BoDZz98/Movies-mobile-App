@@ -1,13 +1,23 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import BlurredImage from "./BlurredImage";
 
-const MovieListItem = ({ movie, width, height, numX, numY }) => {
+const MovieListItem = ({ movie, width, height }) => {
   const rootContSize = { width: width, height: height };
-  const categoryContPosition = { top: height - numY, left: width - numX };
-  const ratingContPosition = { top: height - numY, right: width - numX };
+  // top: height - numY, left: width - numX
+  const titleContPosition = { top: 250, left: 10 };
+  const ratingContPosition = { top: 250, right: 10 };
+  const isPopular = width === 200;
 
   const navigation = useNavigation();
   return (
@@ -17,12 +27,16 @@ const MovieListItem = ({ movie, width, height, numX, numY }) => {
       }}
     >
       <View style={[styles.rootCont, rootContSize]}>
-        <Image style={styles.image} source={{ uri: movie.cover }} />
-        <View style={[styles.categoryCont, categoryContPosition]}>
-          <Text style={styles.text}>movie.category</Text>
+        {isPopular ? (
+          <BlurredImage imageUri={movie.cover} size={rootContSize} />
+        ) : (
+          <Image style={styles.image} source={{ uri: movie.cover }} />
+        )}
+        <View style={[isPopular && styles.titleCont, titleContPosition]}>
+          <Text style={styles.text}>{movie.title}</Text>
         </View>
-        <View style={[styles.ratingCont, ratingContPosition]}>
-          <Text style={styles.text}>{movie.rating}</Text>
+        <View style={[isPopular && styles.ratingCont, ratingContPosition]}>
+          <Text style={[styles.text, { fontSize: 16 }]}>{movie.rating}</Text>
           <Ionicons name="star" color={Colors.accent500} size={20} />
         </View>
       </View>
@@ -44,12 +58,11 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
-  categoryCont: {
+  titleCont: {
+    width: "75%",
     position: "absolute",
-    /* top: 250,
-    left: 10, */
     flexDirection: "row",
-    backgroundColor: Colors.blue,
+    // backgroundColor: Colors.blue,
     padding: 4,
     borderRadius: 10,
   },
@@ -66,5 +79,6 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 20,
   },
 });

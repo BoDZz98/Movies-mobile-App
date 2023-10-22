@@ -7,14 +7,8 @@ import { fetchNewMovies, fetchPopularMovies } from "../util/api-services";
 import { useDispatch, useSelector } from "react-redux";
 import { moviesAction } from "../store/set-movies-slice";
 
-const renderMoviesHandler = (width, height, numX, numY, itemData) => (
-  <MovieListItem
-    movie={itemData.item}
-    width={width}
-    height={height}
-    numX={numX}
-    numY={numY}
-  />
+const renderMoviesHandler = (width, height, itemData) => (
+  <MovieListItem movie={itemData.item} width={width} height={height} />
 );
 
 const HomeScreen = () => {
@@ -26,11 +20,12 @@ const HomeScreen = () => {
   useEffect(() => {
     async function getData() {
       const fetchedPopularMovies = await fetchPopularMovies();
+      
       const fetchedNewMovies = await fetchNewMovies();
       dispatch(moviesAction.setPopularMovies(fetchedPopularMovies));
       dispatch(moviesAction.setNewMovies(fetchedNewMovies));
     }
-    getData();
+    popularMovies.length === 0 && getData();
   }, []);
 
   return (
@@ -46,7 +41,7 @@ const HomeScreen = () => {
           snapToInterval={150}
           decelerationRate={"fast"}
           showsHorizontalScrollIndicator={false}
-          renderItem={renderMoviesHandler.bind(null, 200, 300, 190, 50)}
+          renderItem={renderMoviesHandler.bind(null, 200, 300)}
           keyExtractor={(movieItem) => movieItem.id}
         />
       </View>
@@ -58,10 +53,11 @@ const HomeScreen = () => {
         <FlatList
           data={newMovies}
           numColumns={2}
-          snapToInterval={250}
+          snapToInterval={275}
           decelerationRate={"fast"}
-          renderItem={renderMoviesHandler.bind(null, 150, 250, 0, 0)} //145,40
-          keyExtractor={(movieItem) => movieItem.id}
+          renderItem={renderMoviesHandler.bind(null, 150, 250)} //145,40
+          // I wrote any bec a have 2 flatlists which may render the same content giving a warning regarding duplictae keeys
+          keyExtractor={(movieItem) => `${movieItem.id} any`}
         />
       </View>
     </View>
@@ -80,6 +76,7 @@ const styles = StyleSheet.create({
   titleCont: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
     color: "white",

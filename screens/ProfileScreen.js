@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FavMoviesScreen from "./FavMoviesScreen";
 import { NavigationContainer } from "@react-navigation/native";
+import OverviewScreen from "./OverviewScreen";
 
 const Tab = createMaterialTopTabNavigator();
 export const MyTabs = () => {
@@ -19,7 +20,7 @@ export const MyTabs = () => {
         tabBarPressColor: "grey",
       }}
     >
-      <Tab.Screen name="Overview" component={FavMoviesScreen} />
+      <Tab.Screen name="Overview" component={OverviewScreen} />
       <Tab.Screen name="fav" component={FavMoviesScreen} />
       <Tab.Screen name="wishlist" component={FavMoviesScreen} />
     </Tab.Navigator>

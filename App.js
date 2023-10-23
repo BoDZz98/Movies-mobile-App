@@ -1,23 +1,15 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet } from "react-native";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
-import HomeScreen from "./screens/HomeScreen";
 import { Colors } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
-import ProfileScreen from "./screens/ProfileScreen";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
 import FavMoviesScreen from "./screens/FavMoviesScreen";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "./store";
-import { authActions } from "./store/auth-slice";
-import StartScreen from "./screens/StartScreen";
-import * as Animatable from "react-native-animatable";
-import { useEffect, useRef } from "react";
 import BottomTabPages from "./components/navigation/BottomTabPages";
 
 const Stack = createNativeStackNavigator();

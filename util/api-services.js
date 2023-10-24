@@ -43,6 +43,7 @@ export async function fetchMovieDetails(movieId) {
   const actors = response.data.credits.cast.slice(0, 5);
   const newMovieObject = {
     title: response.data.title,
+    poster: response.data.poster_path,
     vote_average: response.data.vote_average.toFixed(1),
     release_date: response.data.release_date,
     runtime: `${hours}h ${minutes} min`,

@@ -11,6 +11,7 @@ import FavMoviesScreen from "./screens/FavMoviesScreen";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
+import CommentsScreen from "./screens/CommentsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,11 +57,12 @@ export default function App() {
               }}
             />
             <Stack.Screen
-              name="fav"
-              component={FavMoviesScreen}
+              name="comments"
+              component={CommentsScreen}
               options={{
-                title: "Favorite Movies",
-                headerStyle: { backgroundColor: Colors.gray500 },
+                headerTitle: "",
+
+                headerTransparent: true,
               }}
             />
           </Stack.Navigator>

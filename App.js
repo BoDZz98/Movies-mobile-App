@@ -12,10 +12,16 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
 import CommentsScreen from "./screens/CommentsScreen";
+import { useState } from "react";
+import AddCommentModal from "./components/movieDetails/AddCommentModal";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  function closeModalHandler() {
+    setIsModalVisible(false);
+  }
   return (
     <>
       <StatusBar style="light" />
@@ -56,17 +62,33 @@ export default function App() {
                 },
               }}
             />
+            
+
             <Stack.Screen
               name="comments"
               component={CommentsScreen}
               options={{
                 headerTitle: "",
-
                 headerTransparent: true,
+                headerRight: ({ tintColor }) => {
+                  {/* Modal logic is below */}
+                  return (
+                    <Ionicons
+                      name="add-circle"
+                      color={tintColor}
+                      size={50}
+                      onPress={() => setIsModalVisible(true)}
+                    />
+                  );
+                },
               }}
             />
           </Stack.Navigator>
         </NavigationContainer>
+        <AddCommentModal
+          isVisible={isModalVisible}
+          onClose={closeModalHandler}
+        />
       </Provider>
     </>
   );

@@ -2,11 +2,14 @@ import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Colors } from "../constants/styles";
 
-const Input = ({ label, textInputConfig }) => {
+const Input = ({ label, textInputConfig, customInputStyle }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput {...textInputConfig} style={styles.input} />
+      <TextInput
+        {...textInputConfig}
+        style={[styles.input, customInputStyle]}
+      />
     </View>
   );
 };
@@ -15,7 +18,7 @@ export default Input;
 
 const styles = StyleSheet.create({
   container: {
-    width:'100%',
+    width: "100%",
     paddingVertical: 12,
   },
   label: {
@@ -28,6 +31,6 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 6,
     fontSize: 18,
-    color: 'white'
+    color: "white",
   },
 });

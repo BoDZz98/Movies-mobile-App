@@ -4,7 +4,6 @@ import {
   FlatList,
   Image,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -13,6 +12,8 @@ import Stars from "react-native-stars";
 import { Colors } from "../constants/styles";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 
 const baseImageURL = "http://image.tmdb.org/t/p/original";
 const DATA = [
@@ -63,6 +64,13 @@ const DATA = [
 const CommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [commentData, setCommentData] = useState();
+
+  function closeModalHandler() {
+    setIsModalVisible(false);
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Image
@@ -74,6 +82,11 @@ const CommentsScreen = ({ route }) => {
         style={styles.root}
         colors={[Colors.primary800, Colors.gray500]}
       >
+        <CommentDetailsModal
+          isVisible={isModalVisible}
+          onClose={closeModalHandler}
+          commentDetails={isModalVisible ? commentData : ""}
+        />
         <FlatList
           data={DATA}
           key={(item) => item.id}
@@ -81,7 +94,12 @@ const CommentsScreen = ({ route }) => {
           style={styles.flatListCont}
           renderItem={({ item }) => {
             return (
-              <Pressable>
+              <Pressable
+                onPress={() => {
+                  setIsModalVisible(true);
+                  setCommentData(item);
+                }}
+              >
                 <View style={styles.commentCont}>
                   <Image source={item.photo} style={styles.profileImg} />
                   <Text style={styles.userName}>{item.name}</Text>

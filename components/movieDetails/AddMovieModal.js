@@ -13,81 +13,55 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
+import ModalCard from "../UI/ModalCard";
 
 const AddMovieModal = ({ isVisible, onClose }) => {
   return (
-    <Modal visible={isVisible} transparent={true} animationType="slide">
-      <TouchableOpacity
-        style={styles.modalContainer}
-        onPress={onClose}
-        activeOpacity={1}
+    <ModalCard isVisible={isVisible} onClose={onClose}>
+      <Text style={styles.title}>ADD MOVIE</Text>
+      <View style={styles.buttonsCont}>
+        <MyButton style={styles.buttonCont}>
+          <Ionicons name="heart" color="white" size={20} />
+        </MyButton>
+        <MyButton style={styles.buttonCont}>
+          <Ionicons name="book-outline" color="white" size={20} />
+        </MyButton>
+      </View>
+      <Text style={styles.subTitle}>Your Lists :</Text>
+      <ScrollView
+        style={styles.scrollViewCont}
+        indicatorStyle="black"
+        showsVerticalScrollIndicator={false}
       >
-        <TouchableWithoutFeedback>
-          <View style={styles.modalContent}>
-            <Text style={styles.title}>ADD MOVIE</Text>
-            <View style={styles.buttonsCont}>
-              <MyButton style={styles.buttonCont}>
-                <Ionicons name="heart" color="white" size={20} />
-              </MyButton>
-              <MyButton style={styles.buttonCont}>
-                <Ionicons name="book-outline" color="white" size={20} />
-              </MyButton>
-            </View>
-            <Text style={styles.subTitle}>Your Lists :</Text>
-            <ScrollView
-              style={styles.scrollViewCont}
-              indicatorStyle="black"
-              showsVerticalScrollIndicator={false}
-            >
-              <Pressable style={styles.listCont}>
-                <View style={styles.textCont}>
-                  <Text style={styles.listName}>List Name</Text>
-                  <Text style={styles.number}>Movies : 3</Text>
-                </View>
-                <Ionicons name="add-circle-outline" color="black" size={30} />
-              </Pressable>
-              <Pressable style={styles.listCont}>
-                <View style={styles.textCont}>
-                  <Text style={styles.listName}>List Name</Text>
-                  <Text style={styles.number}>Movies : 3</Text>
-                </View>
-                <Ionicons name="add-circle-outline" color="black" size={30} />
-              </Pressable>
-              <Pressable style={styles.listCont}>
-                <View style={styles.textCont}>
-                  <Text style={styles.listName}>List Name</Text>
-                  <Text style={styles.number}>Movies : 3</Text>
-                </View>
-                <Ionicons name="add-circle-outline" color="black" size={30} />
-              </Pressable>
-            </ScrollView>
+        <Pressable style={styles.listCont}>
+          <View style={styles.textCont}>
+            <Text style={styles.listName}>List Name</Text>
+            <Text style={styles.number}>Movies : 3</Text>
           </View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
-    </Modal>
+          <Ionicons name="add-circle-outline" color="black" size={30} />
+        </Pressable>
+        <Pressable style={styles.listCont}>
+          <View style={styles.textCont}>
+            <Text style={styles.listName}>List Name</Text>
+            <Text style={styles.number}>Movies : 3</Text>
+          </View>
+          <Ionicons name="add-circle-outline" color="black" size={30} />
+        </Pressable>
+        <Pressable style={styles.listCont}>
+          <View style={styles.textCont}>
+            <Text style={styles.listName}>List Name</Text>
+            <Text style={styles.number}>Movies : 3</Text>
+          </View>
+          <Ionicons name="add-circle-outline" color="black" size={30} />
+        </Pressable>
+      </ScrollView>
+    </ModalCard>
   );
 };
 
 export default AddMovieModal;
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: Dimensions.get("window").width * 0.8, // Adjust the width as needed
-    height: Dimensions.get("window").height * 0.4, // Adjust the height as needed
-    flexDirection: "column",
-    // justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ccc",
-    borderRadius: 50,
-    paddingVertical: 16,
-    paddingHorizontal: 26,
-  },
   title: {
     textAlign: "center",
     fontSize: 20,

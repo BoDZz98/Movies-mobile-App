@@ -2,10 +2,10 @@ import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Colors } from "../constants/styles";
 
-const Input = ({ label, textInputConfig, customInputStyle }) => {
+const Input = ({ label, labelStyle, textInputConfig, customInputStyle }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
         {...textInputConfig}
         style={[styles.input, customInputStyle]}

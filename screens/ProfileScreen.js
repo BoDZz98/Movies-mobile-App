@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { useSelector } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -13,7 +13,7 @@ export const MyTabs = () => {
     <Tab.Navigator
       style={{ marginTop: "50%" }}
       screenOptions={{
-        tabBarLabelStyle: { fontSize: 12, color: "white" },
+        tabBarLabelStyle: { fontSize: 11, color: "white" },
         tabBarItemStyle: {},
         tabBarStyle: { backgroundColor: null, marginHorizontal: 26 },
         tabBarActiveTintColor: "red",
@@ -21,6 +21,8 @@ export const MyTabs = () => {
       }}
     >
       <Tab.Screen name="Overview" component={OverviewScreen} />
+      <Tab.Screen name="Lists" component={FavMoviesScreen} />
+      {/* <Tab.Screen name="Comments" component={FavMoviesScreen} /> */}
       <Tab.Screen name="fav" component={FavMoviesScreen} />
       <Tab.Screen name="wishlist" component={FavMoviesScreen} />
     </Tab.Navigator>
@@ -43,8 +45,12 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.primary800,
     justifyContent: "flex-end",
+     backgroundColor: Colors.primary800,
+
   },
-  contentCont: { flex: 0.9 },
+  contentCont: {
+    flex: 0.9,
+
+  },
 });

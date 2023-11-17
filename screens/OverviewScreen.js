@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -16,22 +10,21 @@ const data = [
   { name: "Comments", icon: "chatbox-ellipses-outline" },
 ];
 
-const OverviewScreen = () => {
+const OverviewScreen = ({ navigation }) => {
   return (
     <View style={styles.root}>
-      <View style={styles.outerCont}>
-        <Pressable
-          style={styles.container}
-          // onPress={() => console.log("work")}
-          android_ripple={{ color: Colors.primary800 }}
-        >
-          <Ionicons name="heart" color="white" size={40} />
-          <View style={styles.textCont}>
-            <Text style={styles.title}>OverviewScreen</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-        </Pressable>
-      </View>
+      <Pressable
+        style={styles.container}
+        onPress={() => navigation.navigate("wishlist")}
+        android_ripple={{ color: Colors.primary800 }}
+      >
+        <Ionicons name="heart" color="white" size={40} />
+        <View style={styles.textCont}>
+          <Text style={styles.title}>OverviewScreen</Text>
+          <Text style={styles.number}>Movies : 3</Text>
+        </View>
+        <Ionicons name="arrow-forward-outline" color="white" size={30} />
+      </Pressable>
     </View>
   );
 };
@@ -46,13 +39,14 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     alignItems: "center",
   },
-  outerCont: {
-    overflow: "hidden",
-    width: "70%",
-    borderRadius: 12,
-  },
+
   container: {
+    width: "75%",
+    borderRadius: 12,
     flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingVertical: 6,
     backgroundColor: "#ccc",
   },
   textCont: { flexDirection: "column" },

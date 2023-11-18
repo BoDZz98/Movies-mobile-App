@@ -55,7 +55,7 @@ const AuthForm = ({ signingUp, onPress }) => {
         };
       });
     } else {
-      console.log("true");
+      // console.log("true");
       onPress(
         inputs.email.value,
         inputs.password.value,

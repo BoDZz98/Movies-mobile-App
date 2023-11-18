@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 import DropDownPicker from "react-native-dropdown-picker";
+import EditCommentModal from "../components/profilePage/EditCommentModal";
 
 const DATA = [
   {
@@ -67,27 +68,15 @@ const AllCommentsScreen = () => {
     setIsModalVisible(false);
   }
   //-------------------------------------------------
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
+
   return (
     <View style={styles.root}>
-      <CommentDetailsModal
+      <EditCommentModal
         isVisible={isModalVisible}
         onClose={closeModalHandler}
         commentDetails={isModalVisible ? commentData : ""}
       />
-      <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-      />
+
       <FlatList
         data={DATA}
         key={(item) => item.id}

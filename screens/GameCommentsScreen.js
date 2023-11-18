@@ -61,7 +61,7 @@ const DATA = [
   },
 ];
 
-const CommentsScreen = ({ route }) => {
+const GameCommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -127,7 +127,7 @@ const CommentsScreen = ({ route }) => {
   );
 };
 
-export default CommentsScreen;
+export default GameCommentsScreen;
 
 const styles = StyleSheet.create({
   root: {

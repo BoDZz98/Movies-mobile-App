@@ -4,27 +4,54 @@ import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 
 const data = [
-  { name: "My Lists", icon: "list" },
-  { name: "Favorites", icon: "heart-circle" },
-  { name: "Wishlist", icon: "book-outline" },
-  { name: "Comments", icon: "chatbox-ellipses-outline" },
+  {
+    name: "My Lists",
+    subName: "lists",
+    icon: "list",
+    pageName: "myLists",
+  },
+  {
+    name: "Comments",
+    subName: "Comments",
+    icon: "chatbox-ellipses-outline",
+    pageName: "Comments",
+  },
+  {
+    name: "Favorites",
+    subName: "Movies",
+    icon: "heart-circle",
+    pageName: "fav",
+  },
+  {
+    name: "Wishlist",
+    subName: "Movies",
+    icon: "book-outline",
+    pageName: "wishlist",
+  },
 ];
 
 const OverviewScreen = ({ navigation }) => {
   return (
     <View style={styles.root}>
-      <Pressable
-        style={styles.container}
-        onPress={() => navigation.navigate("wishlist")}
-        android_ripple={{ color: Colors.primary800 }}
-      >
-        <Ionicons name="heart" color="white" size={40} />
-        <View style={styles.textCont}>
-          <Text style={styles.title}>OverviewScreen</Text>
-          <Text style={styles.number}>Movies : 3</Text>
-        </View>
-        <Ionicons name="arrow-forward-outline" color="white" size={30} />
-      </Pressable>
+      {data.map((item) => {
+        return (
+          <Pressable
+            style={styles.container}
+            onPress={() =>
+              navigation.navigate(item.pageName, { type: item.name })
+            }
+            android_ripple={{ color: Colors.primary800 }}
+            key={item.name}
+          >
+            <Ionicons name={item.icon} color="white" size={40} />
+            <View style={styles.textCont}>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.number}>{item.subName} : 3</Text>
+            </View>
+            <Ionicons name="arrow-forward-outline" color="white" size={30} />
+          </Pressable>
+        );
+      })}
     </View>
   );
 };
@@ -47,9 +74,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     paddingVertical: 6,
+    marginVertical: 8,
     backgroundColor: "#ccc",
   },
-  textCont: { flexDirection: "column" },
+  textCont: {
+    width: "50%",
+    flexDirection: "column",
+  },
   title: {
     // color: "white",
     fontSize: 20,

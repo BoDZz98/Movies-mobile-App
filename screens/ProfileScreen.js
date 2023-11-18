@@ -1,11 +1,11 @@
 import React from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { useSelector } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import FavMoviesScreen from "./FavMoviesScreen";
-import { NavigationContainer } from "@react-navigation/native";
 import OverviewScreen from "./OverviewScreen";
+import Fav_WishlistScreen from "./Fav_WishlistScreen";
+import AllCommentsScreen from "./AllCommentsScreen";
 
 const Tab = createMaterialTopTabNavigator();
 export const MyTabs = () => {
@@ -21,10 +21,14 @@ export const MyTabs = () => {
       }}
     >
       <Tab.Screen name="Overview" component={OverviewScreen} />
-      <Tab.Screen name="Lists" component={FavMoviesScreen} />
+      <Tab.Screen
+        name="Comments"
+        component={AllCommentsScreen}
+        options={{ tabBarLabelStyle: { fontSize: 10, color: "white" } }}
+      />
       {/* <Tab.Screen name="Comments" component={FavMoviesScreen} /> */}
-      <Tab.Screen name="fav" component={FavMoviesScreen} />
-      <Tab.Screen name="wishlist" component={FavMoviesScreen} />
+      <Tab.Screen name="fav" component={Fav_WishlistScreen} />
+      <Tab.Screen name="wishlist" component={Fav_WishlistScreen} />
     </Tab.Navigator>
   );
 };
@@ -46,11 +50,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: "flex-end",
-     backgroundColor: Colors.primary800,
-
+    backgroundColor: Colors.primary800,
   },
   contentCont: {
     flex: 0.9,
-
   },
 });

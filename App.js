@@ -7,13 +7,14 @@ import SignupScreen from "./screens/SignupScreen";
 import { Colors } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
-import FavMoviesScreen from "./screens/FavMoviesScreen";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
-import CommentsScreen from "./screens/CommentsScreen";
 import { useState } from "react";
 import AddCommentModal from "./components/movieDetails/AddCommentModal";
+import GameCommentsScreen from "./screens/GameCommentsScreen";
+import AllCommentsScreen from "./screens/AllCommentsScreen";
+import MyListsScreen from "./screens/MyListsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,16 +63,17 @@ export default function App() {
                 },
               }}
             />
-            
 
             <Stack.Screen
-              name="comments"
-              component={CommentsScreen}
+              name="gameComments"
+              component={GameCommentsScreen}
               options={{
                 headerTitle: "",
                 headerTransparent: true,
                 headerRight: ({ tintColor }) => {
-                  {/* Modal logic is below */}
+                  {
+                    /* Modal logic is below */
+                  }
                   return (
                     <Ionicons
                       name="add-circle"
@@ -81,6 +83,14 @@ export default function App() {
                     />
                   );
                 },
+              }}
+            />
+            <Stack.Screen
+              name="myLists"
+              component={MyListsScreen}
+              options={{
+                headerTitle: "",
+                headerTransparent: true,
               }}
             />
           </Stack.Navigator>

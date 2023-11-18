@@ -30,7 +30,7 @@ const ThreeButtons = ({ poster }) => {
       <MyButton
         style={styles.buttonCont}
         onPress={() => {
-          navigation.navigate("comments", { moviePoster: poster });
+          navigation.navigate("gameComments", { moviePoster: poster });
         }}
       >
         <Ionicons name="share-social" color="white" size={20} />

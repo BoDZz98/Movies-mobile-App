@@ -3,7 +3,7 @@ import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth-slice";
-import { FIREBASE_AUTH } from "../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginScreen = ({ navigation }) => {
@@ -13,6 +13,7 @@ const LoginScreen = ({ navigation }) => {
   async function loginHandler(email, password) {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+
       dispatch(authActions.login());
       navigation.navigate("all");
     } catch (error) {

@@ -4,8 +4,9 @@ import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 import { authActions } from "../store/auth-slice";
 import { useDispatch } from "react-redux";
-import { FIREBASE_AUTH } from "../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -18,11 +19,21 @@ const SignupScreen = ({ navigation }) => {
         email,
         password
       );
+      console.log("auth", auth.currentUser.uid);
+      const docRef = await setDoc(
+        doc(FIREBASE_DB, "users", auth.currentUser.uid),
+        {
+          email: email,
+          userName: name,
+          favMovies: [],
+          wishlistMovies: [],
+        }
+      );
+      dispatch(authActions.login());
+      navigation.navigate("all");
     } catch (error) {
       console.log(error);
     }
-    dispatch(authActions.login());
-    navigation.navigate("all");
   }
   return (
     <AuthContentCard>

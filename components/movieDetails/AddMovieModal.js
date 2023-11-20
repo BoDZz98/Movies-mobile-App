@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Modal,
@@ -14,17 +14,54 @@ import { Ionicons } from "@expo/vector-icons";
 import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import ModalCard from "../UI/ModalCard";
+import { addMovie, checkMovie } from "../../util/firebase-services";
 
-const AddMovieModal = ({ isVisible, onClose }) => {
+const AddMovieModal = ({ isVisible, onClose, movieId }) => {
+  const [isFav, setIsFav] = useState();
+  const [isWishlist, setIsWishlist] = useState();
+  useEffect(() => {
+    helper(movieId);
+  }, [helper]);
+
+  async function helper(movieId) {
+    const isFavorite = await checkMovie(movieId, "fav");
+    const iswishlisted = await checkMovie(movieId, "wishlist");
+    setIsFav(isFavorite);
+    setIsWishlist(iswishlisted);
+    console.log('in here');
+  }
+  function addMovieTo(list) {
+    if (list === "fav") {
+      addMovie(movieId, isFav, "favMovies");
+      setIsFav((currentValue) => !currentValue);
+    } else {
+      addMovie(movieId, isWishlist, "wishlistMovies");
+      setIsWishlist((currentValue) => !currentValue);
+    }
+  }
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>ADD MOVIE</Text>
       <View style={styles.buttonsCont}>
-        <MyButton style={styles.buttonCont}>
-          <Ionicons name="heart" color="white" size={20} />
+        <MyButton
+          style={[styles.buttonCont, isFav && styles.pressedButton]}
+          onPress={addMovieTo.bind(null, "fav")}
+        >
+          <Ionicons
+            name={isFav ? "heart" : "heart-outline"}
+            color="white"
+            size={20}
+          />
         </MyButton>
-        <MyButton style={styles.buttonCont}>
-          <Ionicons name="book-outline" color="white" size={20} />
+        <MyButton
+          style={[styles.buttonCont, isWishlist && styles.pressedButton]}
+          onPress={addMovieTo.bind(null, "wishlist")}
+        >
+          <Ionicons
+            name={isWishlist ? "book" : "book-outline"}
+            color="white"
+            size={20}
+          />
         </MyButton>
       </View>
       <Text style={styles.subTitle}>Your Lists :</Text>
@@ -80,6 +117,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 1,
   },
+  pressedButton: { backgroundColor: "#111111" },
   subTitle: { textAlign: "left", width: "100%" },
   scrollViewCont: { marginTop: 3, width: "100%" },
   listCont: {

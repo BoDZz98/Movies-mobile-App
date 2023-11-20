@@ -13,7 +13,6 @@ const LoginScreen = ({ navigation }) => {
   async function loginHandler(email, password) {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-
       dispatch(authActions.login());
       navigation.navigate("all");
     } catch (error) {

@@ -58,7 +58,7 @@ const MovieDetailsScreen = ({ route }) => {
             ))}
           </View>
 
-          <ThreeButtons poster={movieData.poster} />
+          <ThreeButtons poster={movieData.poster} id={movieId} />
 
           <ActorsList actors={movieData.cast} />
 

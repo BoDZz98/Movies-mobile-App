@@ -4,42 +4,56 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
-import { Colors } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddCommentModal from "./components/movieDetails/AddCommentModal";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
-import AllCommentsScreen from "./screens/AllCommentsScreen";
 import MyListsScreen from "./screens/MyListsScreen";
 import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
-import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import {
+  addMovie,
+  checkMovie,
+  setUserId,
+  userId,
+} from "./util/firebase-services";
+import { onAuthStateChanged } from "firebase/auth";
+import { userActions } from "./store/user-data-slice";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  //
+  const dispatch = useDispatch();
+
   // Game comments modal----------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   function closeModalHandler() {
     setIsModalVisible(false);
   }
-  // Add movies to fav ----------------------
-  const userId = FIREBASE_AUTH.currentUser?.uid;
+  // Add movies to fav -------------------------------------------------------
   const [isFav, setIsFav] = useState(false);
+  const [idMovie, setIdMovie] = useState();
+  // i wanted the function helper to run only once
+  useEffect(() => {
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      setUserId();
+      dispatch(userActions.setUser(user));
+    });
+    helper(idMovie);
+  }, [idMovie]);
+
   async function helper(movieId) {
-    const docRef = doc(FIREBASE_DB, "users", userId);
-    const docSnap = await getDoc(docRef);
-    const isFavorite = docSnap.data().favMovies.includes(movieId);
-    setIsFav(isFavorite);
+    const isFav = await checkMovie(movieId, "fav");
+    setIsFav(isFav);
   }
   async function addToFav(movieId) {
-    const userRef = doc(FIREBASE_DB, "users", userId);
-    await updateDoc(userRef, {
-      favMovies: arrayUnion(movieId),
-    });
+    addMovie(movieId, isFav, "favMovies");
+    setIsFav((currentValue) => !currentValue);
   }
   return (
     <>
@@ -71,8 +85,7 @@ export default function App() {
               name="movieDetails"
               component={MovieDetailsScreen}
               options={({ route }) => {
-                helper(route.params.movieId);
-                console.log(isFav);
+                setIdMovie(route.params?.movieId);
                 return {
                   presentation: "modal",
                   headerTransparent: true,
@@ -80,10 +93,10 @@ export default function App() {
                   headerRight: ({ tintColor }) => {
                     return (
                       <Ionicons
-                        name={isFav ? "heart-circle-outline" : "heart-circle"}
+                        name={isFav ? "heart" : "heart-circle"}
                         color={tintColor}
                         size={40}
-                        onPress={addToFav.bind(null, route.params.movieId)}
+                        onPress={addToFav.bind(null, idMovie)}
                       />
                     );
                   },

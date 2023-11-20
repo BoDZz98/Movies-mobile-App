@@ -52,7 +52,7 @@ export async function fetchMovieDetails(movieId) {
     images: response.data.images.backdrops,
     cast: actors,
   };
-  console.log(newMovieObject.cast.length);
+  // console.log(newMovieObject.cast.length);
 
   return newMovieObject;
 }

@@ -19,13 +19,14 @@ const LoginScreen = ({ navigation }) => {
       dispatch(authActions.login());
 
       onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-        const docRef = doc(FIREBASE_DB, "users", user.uid);
+        const docRef = doc(FIREBASE_DB, "users", user?.uid);
         const docSnap = await getDoc(docRef);
         dispatch(userActions.setUser(docSnap.data()));
-        setUserId();
+        // setUserId();
       });
       navigation.navigate("all");
     } catch (error) {
+      console.log("error in login page");
       console.log(error);
     }
   }

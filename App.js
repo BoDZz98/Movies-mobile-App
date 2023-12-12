@@ -33,16 +33,16 @@ export default function App() {
   // Add movies to fav -------------------------------------------------------
   const [isFav, setIsFav] = useState(false);
   const [idMovie, setIdMovie] = useState();
-  // const userFavMovies = useSelector((state) => state.user.userData.favMovies);
+  const userFavMovies = useSelector((state) => state.user.userData.favMovies);
 
-  // i wanted the function helper to run only once
-  useEffect(() => {
-    helper(idMovie);
+  // i wanted the function helper to run when we tap on any movie
+  /* useEffect(() => {
+    idMovie ? helper(idMovie) : "";
   }, [idMovie]);
-
+ */
   async function helper(movieId) {
-    const isFav = await checkMovie(movieId, "fav");
-    setIsFav(isFav);
+    const isFavorite = await checkMovie(movieId, "fav");
+    setIsFav(isFavorite);
   }
   async function addToFav(movieId) {
     addMovie(movieId, isFav, "favMovies");
@@ -79,7 +79,8 @@ export default function App() {
               component={MovieDetailsScreen}
               options={({ route }) => {
                 setIdMovie(route.params?.movieId);
-                console.log(userFavMovies);
+                helper(idMovie);
+                // console.log(isFav);
                 return {
                   presentation: "modal",
                   headerTransparent: true,

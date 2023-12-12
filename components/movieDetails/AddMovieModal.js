@@ -15,28 +15,23 @@ import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import ModalCard from "../UI/ModalCard";
 import { addMovie, checkMovie } from "../../util/firebase-services";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
 const AddMovieModal = ({ isVisible, onClose, movieId }) => {
-  const [isFav, setIsFav] = useState();
-  const [isWishlist, setIsWishlist] = useState();
-  useEffect(() => {
-    helper(movieId);
-  }, [helper]);
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user.userData);
+  // !! is used to convert a value into a boolean
+  const isFav = !!userData.favMovies.find((item) => item === movieId);
+  const isWishlist = !!userData.wishlistMovies.find((item) => item === movieId);
 
-  async function helper(movieId) {
-    const isFavorite = await checkMovie(movieId, "fav");
-    const iswishlisted = await checkMovie(movieId, "wishlist");
-    setIsFav(isFavorite);
-    setIsWishlist(iswishlisted);
-    console.log('in here');
-  }
   function addMovieTo(list) {
     if (list === "fav") {
       addMovie(movieId, isFav, "favMovies");
-      setIsFav((currentValue) => !currentValue);
+      dispatch(userActions.addOrRemoveFavMovie(movieId));
     } else {
       addMovie(movieId, isWishlist, "wishlistMovies");
-      setIsWishlist((currentValue) => !currentValue);
+      dispatch(userActions.addOrRemoveWishlistMovie(movieId));
     }
   }
   return (

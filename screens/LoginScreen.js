@@ -4,7 +4,10 @@ import AuthContentCard from "../components/UI/AuthContentCard";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth-slice";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { userActions } from "../store/user-data-slice";
+import { setUserId } from "../util/firebase-services";
+import { doc, getDoc } from "firebase/firestore";
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -14,6 +17,13 @@ const LoginScreen = ({ navigation }) => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       dispatch(authActions.login());
+
+      onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+        const docRef = doc(FIREBASE_DB, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        dispatch(userActions.setUser(docSnap.data()));
+        setUserId();
+      });
       navigation.navigate("all");
     } catch (error) {
       console.log(error);

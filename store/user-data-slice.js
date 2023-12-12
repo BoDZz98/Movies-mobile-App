@@ -1,24 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initUserState = {
-  userId: "",
-  username: "",
-  favMovies: [],
-  wishlistMovies: [],
+  userData: {
+    userId: "",
+    username: "",
+    favMovies: [],
+    wishlistMovies: [],
+  },
 };
-
 const userSlice = createSlice({
   name: "userData",
   initialState: initUserState,
   reducers: {
     setUser(state, action) {
-      const userData = action.payload;
-      console.log(userData);
+      const data = action.payload;
+      state.userData = data;
+
+      // console.log(state.userData.favMovies);
     },
-    addMovie(state, action) {
-    },
-    removeMovie(state, action) {
-    },
+    addMovie(state, action) {},
+    removeMovie(state, action) {},
   },
 });
 

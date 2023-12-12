@@ -6,7 +6,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
 import { useEffect, useState } from "react";
@@ -14,7 +14,6 @@ import AddCommentModal from "./components/movieDetails/AddCommentModal";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
 import MyListsScreen from "./screens/MyListsScreen";
 import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
 import {
   addMovie,
   checkMovie,
@@ -22,14 +21,10 @@ import {
   userId,
 } from "./util/firebase-services";
 import { onAuthStateChanged } from "firebase/auth";
-import { userActions } from "./store/user-data-slice";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  //
-  const dispatch = useDispatch();
-
   // Game comments modal----------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   function closeModalHandler() {
@@ -38,12 +33,10 @@ export default function App() {
   // Add movies to fav -------------------------------------------------------
   const [isFav, setIsFav] = useState(false);
   const [idMovie, setIdMovie] = useState();
+  // const userFavMovies = useSelector((state) => state.user.userData.favMovies);
+
   // i wanted the function helper to run only once
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      setUserId();
-      dispatch(userActions.setUser(user));
-    });
     helper(idMovie);
   }, [idMovie]);
 
@@ -86,6 +79,7 @@ export default function App() {
               component={MovieDetailsScreen}
               options={({ route }) => {
                 setIdMovie(route.params?.movieId);
+                console.log(userFavMovies);
                 return {
                   presentation: "modal",
                   headerTransparent: true,

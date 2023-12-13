@@ -29,7 +29,7 @@ const userSlice = createSlice({
       } else {
         state.userData.favMovies.push(movieId);
       }
-      console.log("fav movies :", state.userData.favMovies);
+      // console.log("fav movies :", state.userData.favMovies);
     },
     addOrRemoveWishlistMovie(state, action) {
       const movieId = action.payload;
@@ -43,7 +43,7 @@ const userSlice = createSlice({
       } else {
         state.userData.wishlistMovies.push(movieId);
       }
-      console.log("wishlist Movies  :", state.userData.wishlistMovies);
+      // console.log("wishlist Movies  :", state.userData.wishlistMovies);
     },
   },
 });

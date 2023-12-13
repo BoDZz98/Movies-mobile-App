@@ -6,21 +6,14 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddCommentModal from "./components/movieDetails/AddCommentModal";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
 import MyListsScreen from "./screens/MyListsScreen";
-import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
-import {
-  addMovie,
-  checkMovie,
-  setUserId,
-  userId,
-} from "./util/firebase-services";
-import { onAuthStateChanged } from "firebase/auth";
+import FavButton from "./components/FavButton";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,24 +23,7 @@ export default function App() {
   function closeModalHandler() {
     setIsModalVisible(false);
   }
-  // Add movies to fav -------------------------------------------------------
-  const [isFav, setIsFav] = useState(false);
-  const [idMovie, setIdMovie] = useState();
-  const userFavMovies = useSelector((state) => state.user.userData.favMovies);
 
-  // i wanted the function helper to run when we tap on any movie
-  /* useEffect(() => {
-    idMovie ? helper(idMovie) : "";
-  }, [idMovie]);
- */
-  async function helper(movieId) {
-    const isFavorite = await checkMovie(movieId, "fav");
-    setIsFav(isFavorite);
-  }
-  async function addToFav(movieId) {
-    addMovie(movieId, isFav, "favMovies");
-    setIsFav((currentValue) => !currentValue);
-  }
   return (
     <>
       <StatusBar style="light" />
@@ -78,22 +54,12 @@ export default function App() {
               name="movieDetails"
               component={MovieDetailsScreen}
               options={({ route }) => {
-                setIdMovie(route.params?.movieId);
-                helper(idMovie);
-                // console.log(isFav);
                 return {
                   presentation: "modal",
                   headerTransparent: true,
                   headerTitle: "",
                   headerRight: ({ tintColor }) => {
-                    return (
-                      <Ionicons
-                        name={isFav ? "heart" : "heart-circle"}
-                        color={tintColor}
-                        size={40}
-                        onPress={addToFav.bind(null, idMovie)}
-                      />
-                    );
+                    return <FavButton movieId={route.params?.movieId} />;
                   },
                 };
               }}

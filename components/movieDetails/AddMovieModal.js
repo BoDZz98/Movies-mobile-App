@@ -18,20 +18,23 @@ import { addMovie, checkMovie } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
 
-const AddMovieModal = ({ isVisible, onClose, movieId }) => {
+const AddMovieModal = ({ isVisible, onClose, data }) => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData);
   // !! is used to convert a value into a boolean
-  const isFav = !!userData.favMovies.find((item) => item === movieId);
-  const isWishlist = !!userData.wishlistMovies.find((item) => item === movieId);
+  const isFav = !!userData.favMovies.find((movie) => movie.id === data.id);
+  const isWishlist = !!userData.wishlistMovies.find(
+    (movie) => movie.id === data.id
+  );
+  // console.log("in add movie modal", data);
 
   function addMovieTo(list) {
     if (list === "fav") {
-      addMovie(movieId, isFav, "favMovies");
-      dispatch(userActions.addOrRemoveFavMovie(movieId));
+      addMovie(data, isFav, "favMovies");
+      dispatch(userActions.addOrRemoveFavMovie(data));
     } else {
-      addMovie(movieId, isWishlist, "wishlistMovies");
-      dispatch(userActions.addOrRemoveWishlistMovie(movieId));
+      addMovie(data, isWishlist, "wishlistMovies");
+      dispatch(userActions.addOrRemoveWishlistMovie(data));
     }
   }
   return (

@@ -6,25 +6,32 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
-import { useSelector } from "react-redux";
 
 export function setUserId() {
   const userId = FIREBASE_AUTH?.currentUser?.uid;
-
   return userId;
 }
 
 // add movie to fav or wishlist-------------------------------------------
-export async function addMovie(movieId, isSet, list) {
+export async function addMovie(movieData, isSet, list) {
   const userId = setUserId();
   const userRef = doc(FIREBASE_DB, "users", userId);
+  const addedMovie = {
+    id: movieData.id,
+    title: movieData.title,
+    rating: movieData.vote_average,
+    poster: movieData.poster,
+    genres: movieData.genres,
+    runtime: movieData.runtime,
+    release_date: movieData.release_date,
+  };
   if (isSet) {
     await updateDoc(userRef, {
-      [list]: arrayRemove(movieId),
+      [list]: arrayRemove(addedMovie),
     });
   } else {
     await updateDoc(userRef, {
-      [list]: arrayUnion(movieId),
+      [list]: arrayUnion(addedMovie),
     });
   }
 }

@@ -4,37 +4,43 @@ import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import CategoryCont from "./UI/CategoryCont";
 
+const baseImageURL = "http://image.tmdb.org/t/p/original";
+
 function renderCategoryList(category) {
-  return <CategoryCont categoryName={category.item} />;
+  return <CategoryCont categoryName={category.item.name} />;
 }
 
-const FavMovieItem = ({ movie }) => {
+const FavMovieItem = ({ movieData }) => {
   return (
     <View style={styles.root}>
       <View style={styles.imageCont}>
-        <Image style={styles.image} resizeMode="stretch" source={movie.photo} />
+        <Image
+          style={styles.image}
+          resizeMode="stretch"
+          source={{ uri: baseImageURL + movieData.poster }}
+        />
       </View>
 
       <View style={styles.textCont}>
         <View style={styles.titleAndRatingCont}>
-          <Text style={styles.title}>{movie.name}</Text>
+          <Text style={styles.title}>{movieData.title}</Text>
           <Text style={styles.rating}>
-            {movie.rating}
+            {movieData.rating}
             <Ionicons name="star" color={Colors.accent500} size={15} />
           </Text>
         </View>
         <View style={styles.detailsCont}>
-          {/* <FlatList
-            data={movie.category}
-            key={(categoryItem) => categoryItem}
+          <FlatList
+            data={movieData.genres}
+            horizontal={true}
+            key={(categoryItem) => categoryItem.id}
             renderItem={renderCategoryList}
-          /> */}
-          {movie.category.map((category) => (
-            <CategoryCont key={category} categoryName={category} />
-          ))}
+          />
         </View>
-        <Text style={styles.text}>{movie.name}</Text>
-        <Text style={styles.text}>{movie.name}</Text>
+        <Text style={styles.text}>
+          Duration : <Text style={styles.innerText}>{movieData.runtime}</Text>
+        </Text>
+        <Text style={styles.text}>Release Date : <Text style={styles.innerText}>{movieData.release_date}</Text></Text>
       </View>
     </View>
   );
@@ -56,7 +62,6 @@ const styles = StyleSheet.create({
     width: "35%",
     height: "120%",
     borderRadius: 10,
-    
   },
   image: {
     bottom: 30,
@@ -94,5 +99,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  innerText: {
+    color: "grey",
+    fontWeight: "normal",
+    fontSize: 13,
   },
 });

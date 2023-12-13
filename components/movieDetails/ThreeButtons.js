@@ -6,9 +6,8 @@ import { Colors } from "../../constants/styles";
 import AddMovieModal from "./AddMovieModal";
 import { useNavigation } from "@react-navigation/native";
 
-const ThreeButtons = ({ poster, id }) => {
+const ThreeButtons = ({ movieData }) => {
   const navigation = useNavigation();
-
   const [modalVisible, setModalVisible] = useState(false);
   function CloseModalHandler() {
     setModalVisible(false);
@@ -29,12 +28,14 @@ const ThreeButtons = ({ poster, id }) => {
       <AddMovieModal
         isVisible={modalVisible}
         onClose={CloseModalHandler}
-        movieId={id}
+        data={movieData}
       />
       <MyButton
         style={styles.buttonCont}
         onPress={() => {
-          navigation.navigate("gameComments", { moviePoster: poster });
+          navigation.navigate("gameComments", {
+            moviePoster: movieData.poster,
+          });
         }}
       >
         <Ionicons name="share-social" color="white" size={20} />

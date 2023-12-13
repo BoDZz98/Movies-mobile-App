@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import FavMovieItem from "../components/FavMovieItem";
 import { Colors } from "../constants/styles";
 import { useRoute } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const DATA = [
   {
@@ -29,20 +30,24 @@ const DATA = [
 ];
 
 function renderMovieList(movieData) {
-  return <FavMovieItem movie={movieData.item} />;
+  return <FavMovieItem movieData={movieData.item} />;
 }
 
 const Fav_WishlistScreen = ({ route }) => {
-  // const route2 = useRoute();
-  const type = route.params?.type;
-  console.log(type);
+  const list = route.params?.list;
+  const userData = useSelector((state) => state.user.userData);
+  const favMoviesData = userData.favMovies;
+  const whislistMoviesData = userData.wishlistMovies;
+
   return (
     <View style={styles.root}>
-      <FlatList
-        data={DATA}
-        keyExtractor={(movieItem) => movieItem.id}
-        renderItem={renderMovieList}
-      />
+      <View style={styles.innerCont}>
+        <FlatList
+          data={list === "Favorites" ? favMoviesData : whislistMoviesData}
+          keyExtractor={(movieItem) => movieItem.id}
+          renderItem={renderMovieList}
+        />
+      </View>
     </View>
   );
 };
@@ -53,6 +58,8 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: Colors.primary800,
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 0,
   },
+  innerCont: { flex: 0.9 },
 });

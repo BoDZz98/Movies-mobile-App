@@ -1,13 +1,13 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Colors } from "../constants/styles";
-import { useSelector } from "react-redux";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import OverviewScreen from "./OverviewScreen";
 import Fav_WishlistScreen from "./Fav_WishlistScreen";
 import AllCommentsScreen from "./AllCommentsScreen";
 
 const Tab = createMaterialTopTabNavigator();
+
 export const MyTabs = () => {
   return (
     <Tab.Navigator
@@ -26,15 +26,20 @@ export const MyTabs = () => {
         component={AllCommentsScreen}
         options={{ tabBarLabelStyle: { fontSize: 10, color: "white" } }}
       />
-      {/* <Tab.Screen name="Comments" component={FavMoviesScreen} /> */}
-      <Tab.Screen name="fav" component={Fav_WishlistScreen} />
-      <Tab.Screen name="wishlist" component={Fav_WishlistScreen} />
+      <Tab.Screen
+        name="fav"
+        component={Fav_WishlistScreen}
+        initialParams={{ list: "Favorites" }}
+      />
+      <Tab.Screen
+        name="wishlist"
+        component={Fav_WishlistScreen}
+        initialParams={{ list: "Wishlist" }}
+      />
     </Tab.Navigator>
   );
 };
-const ProfileScreen = ({ navigation }) => {
-  const isAuth = useSelector((state) => state.auth.isAuth);
-  // console.log("isAuth", isAuth);
+const ProfileScreen = () => {
   return (
     <View style={styles.root}>
       <View style={styles.contentCont}>

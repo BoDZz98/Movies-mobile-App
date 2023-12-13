@@ -101,16 +101,7 @@ const BottomTabPages = () => {
               inActiveIcon="person-circle-outline"
             />
           ),
-          /*  headerRight: ({ tintColor }) => {
-            return (
-              <Ionicons
-                name={isAuth ? "log-out" : ""}
-                color={tintColor}
-                size={40}
-                onPress={logoutHandler}
-              />
-            );
-          }, */
+          
         }}
       />
     </Tab.Navigator>

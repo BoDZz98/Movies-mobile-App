@@ -22,6 +22,7 @@ const MovieDetailsScreen = ({ route }) => {
       const fetchedMovieData = await fetchMovieDetails(movieId);
       setMovieData(fetchedMovieData);
       setIsLoading(false);
+      // console.log(fetchedMovieData);
     }
     getData();
     // console.log(movieData);
@@ -58,7 +59,7 @@ const MovieDetailsScreen = ({ route }) => {
             ))}
           </View>
 
-          <ThreeButtons poster={movieData.poster} id={movieId} />
+          <ThreeButtons movieData={movieData} />
 
           <ActorsList actors={movieData.cast} />
 

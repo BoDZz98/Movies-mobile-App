@@ -3,6 +3,7 @@ import {
   arrayUnion,
   doc,
   getDoc,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
@@ -33,6 +34,21 @@ export async function addMovie(movieData, isSet, list) {
     await updateDoc(userRef, {
       [list]: arrayUnion(addedMovie),
     });
+  }
+}
+
+export async function addComment(commentData) {
+  const userId = setUserId();
+  
+  try {
+    const docRef = await setDoc(doc(FIREBASE_DB, "comments",'any2'), {
+      userId,
+      movieId: 'anyyyy',
+      commentDesc: commentData.desc,
+      rating: commentData.rating,
+    });
+  } catch (error) {
+    console.log("in firebase services , called from AddCommentModal.js", error);
   }
 }
 

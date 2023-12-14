@@ -7,9 +7,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
+import { addComment } from "../../util/firebase-services";
 
 const AddCommentModal = ({ isVisible, onClose }) => {
-  const [start, setStars] = useState();
+  const [stars, setStars] = useState();
   // Validation----------------------------------------------------
   const [input, setInput] = useState({
     value: "",
@@ -25,7 +26,7 @@ const AddCommentModal = ({ isVisible, onClose }) => {
     });
     if (descIsValid) {
       // do sth
-      console.log(input);
+      addComment({ desc: input.value, rating: stars });
       // close the modal and reset the value
       setInput({ value: "", isValid: true });
       onClose();
@@ -44,6 +45,7 @@ const AddCommentModal = ({ isVisible, onClose }) => {
         label="Description"
         labelStyle={styles.label}
         customInputStyle={styles.descInput}
+        descErrorStyle={!input.isValid && styles.descErrorStyle}
       />
       <Text style={styles.errorText}>{error}</Text>
       <Stars
@@ -81,6 +83,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     color: "black",
     textAlignVertical: "top",
+    // borderWidth:2
+  },
+  descErrorStyle: {
+    backgroundColor: "pink",
   },
   label: {
     color: "black",
@@ -101,6 +107,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 30,
-    // fontWeight: "bold",
+    //  fontWeight: "bold",
   },
 });

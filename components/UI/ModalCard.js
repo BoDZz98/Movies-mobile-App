@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-const ModalCard = ({ isVisible, onClose, children }) => {
+const ModalCard = ({ isVisible, onClose, children, modalStyle }) => {
   return (
     <Modal visible={isVisible} transparent={true} animationType="slide">
       <TouchableOpacity
@@ -17,7 +17,7 @@ const ModalCard = ({ isVisible, onClose, children }) => {
         activeOpacity={1}
       >
         <TouchableWithoutFeedback>
-          <View style={styles.modalContent}>{children}</View>
+          <View style={[styles.modalContent, modalStyle]}>{children}</View>
         </TouchableWithoutFeedback>
       </TouchableOpacity>
     </Modal>

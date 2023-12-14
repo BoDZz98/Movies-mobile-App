@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalCard from "../UI/ModalCard";
 import {
   Dimensions,
@@ -12,23 +12,58 @@ import Stars from "react-native-stars";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import MyButton from "../UI/MyButton";
+import { baseImageURL } from "../../util/firebase-services";
+import Input from "../Input";
 
-const EditCommentModal = ({ isVisible, onClose, commentDetails }) => {
-  const [start, setStars] = useState();
-
+const EditCommentModal = ({ isVisible, onClose, commentData }) => {
+  // Validation---------------------------------------------------------------------------------
+  const [stars, setStars] = useState(commentData.rating);
+  const [input, setInput] = useState({});
+  // when i press on diff comments the commentData will change, i want to run this file everytime commentData change,
+  // so i used useEffect , without useEffect all the desc would be the same for all comments
+  useEffect(() => {
+    setStars(commentData.rating);
+    setInput({
+      value: commentData.desc,
+      isValid: true,
+    });
+  }, [commentData]);
+  console.log(commentData);
+  function changeInputHandler(enteredValue) {
+    setInput({ value: enteredValue, isValid: true });
+  }
+  function submitHanlder() {
+    const descIsValid = input.value.length !== 0;
+    setInput((currentValues) => {
+      return { ...currentValues, isValid: descIsValid };
+    });
+    if (descIsValid) {
+      const commentData = { desc: input.value, rating: stars };
+      addComment(commentData, movieDetails);
+      dispatch(userActions.addOrRemoveComment({ commentData, movieDetails }));
+      // close the modal and reset the value
+      setInput({ value: "", isValid: true });
+      setStars(1);
+      onClose();
+    }
+  }
   return (
-    <ModalCard isVisible={isVisible} onClose={onClose}>
+    <ModalCard
+      isVisible={isVisible}
+      onClose={onClose}
+      modalStyle={styles.modalStyle}
+    >
       <Text style={styles.title}>Edit Comment </Text>
       <View style={styles.outerCont}>
         <Image
-          source={commentDetails.photo}
+          source={{ uri: baseImageURL + commentData.poster }}
           style={styles.movieImg}
           resizeMode="contain"
         />
         <View style={styles.innerCont}>
-          <Text style={styles.movieName}>{commentDetails.name}</Text>
+          <Text style={styles.movieName}>{commentData.title}</Text>
           <Stars
-            default={1}
+            default={commentData.rating}
             update={(val) => {
               setStars(val);
             }}
@@ -42,9 +77,18 @@ const EditCommentModal = ({ isVisible, onClose, commentDetails }) => {
         </View>
       </View>
 
-      <ScrollView style={styles.descCont}>
-        <Text style={styles.descText}>wow</Text>
-      </ScrollView>
+      <Input
+        textInputConfig={{
+          multiline: true,
+          value: input.value,
+          onChangeText: changeInputHandler,
+        }}
+        label="Description"
+        labelStyle={styles.label}
+        customInputStyle={styles.descInput}
+        descErrorStyle={!input.isValid && styles.descErrorStyle}
+      />
+
       <View style={styles.buttonsCont}>
         <MyButton
           //   onPress={submitHanlder}
@@ -66,6 +110,7 @@ const EditCommentModal = ({ isVisible, onClose, commentDetails }) => {
 export default EditCommentModal;
 
 const styles = StyleSheet.create({
+  modalStyle: { height: Dimensions.get("window").height * 0.5 },
   title: {
     textAlign: "center",
     fontSize: 20,
@@ -76,10 +121,12 @@ const styles = StyleSheet.create({
   outerCont: {
     flexDirection: "row",
     marginTop: 6,
+    width: "100%",
+    alignItems: "center",
   },
   innerCont: {
-    marginLeft: 6,
-    justifyContent: "center",
+    marginLeft: 10,
+    alignItems: "flex-start",
   },
   movieImg: {
     width: Dimensions.get("window").width * 0.2,
@@ -88,22 +135,32 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   movieName: {
-    // color: "white",
+    // backgroundColor: "white",
+    textAlign: "left",
+    width: "75%",
     marginVertical: 4,
     fontSize: 20,
   },
-  descCont: {
+  descInput: {
     backgroundColor: "white",
-    width: "100%",
-    marginTop: 8,
+    height: Dimensions.get("window").height * 0.1,
     borderRadius: 20,
-    padding: 8,
+    color: "black",
+    textAlignVertical: "top",
+    // borderWidth:2
+  },
+  label: {
+    color: "black",
+    fontSize: 16,
+  },
+  descErrorStyle: {
+    backgroundColor: "pink",
   },
   buttonsCont: {
     flexDirection: "row",
     width: "100%",
     height: "20%",
-    marginTop: 10,
+    // marginTop: 10,
   },
   saveButton: {
     backgroundColor: Colors.blue,

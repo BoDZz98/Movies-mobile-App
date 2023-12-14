@@ -20,6 +20,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   // Game comments modal----------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [movieData, setMovieData] = useState();
   function closeModalHandler() {
     setIsModalVisible(false);
   }
@@ -68,22 +69,28 @@ export default function App() {
             <Stack.Screen
               name="gameComments"
               component={GameCommentsScreen}
-              options={{
-                headerTitle: "",
-                headerTransparent: true,
-                headerRight: ({ tintColor }) => {
-                  {
-                    /* Modal logic is below */
-                  }
-                  return (
-                    <Ionicons
-                      name="add-circle"
-                      color={tintColor}
-                      size={50}
-                      onPress={() => setIsModalVisible(true)}
-                    />
-                  );
-                },
+              options={({ route }) => {
+                return {
+                  headerTitle: "",
+                  headerTransparent: true,
+                  headerRight: ({ tintColor }) => {
+                    //  Modal logic is below
+                    return (
+                      <Ionicons
+                        name="add-circle"
+                        color={tintColor}
+                        size={50}
+                        onPress={() => {
+                          setIsModalVisible(true);
+                          setMovieData({
+                            poster: route.params.moviePoster,
+                            title: route.params.movieName,
+                          });
+                        }}
+                      />
+                    );
+                  },
+                };
               }}
             />
             <Stack.Screen
@@ -99,6 +106,7 @@ export default function App() {
         <AddCommentModal
           isVisible={isModalVisible}
           onClose={closeModalHandler}
+          movieData={isModalVisible ? movieData : ""}
         />
       </Provider>
     </>
@@ -137,3 +145,20 @@ const styles = StyleSheet.create({
     photo: require("../assets/imgs/avatar.jpeg"),
   },
 ]; */
+
+// This can be used to overwrite an existing doc by specifying the id parm ,
+// if the id parm is found in the firebase it will update this doc , it will create a  new doc with this specified id
+/* const docRef = await setDoc(doc(FIREBASE_DB, "comments", "wwww2"), {
+  userId,
+  movieId: "anyyyy",
+  commentDesc: commentData.desc,
+  rating: commentData.rating,
+}); */
+
+// Create a new doc with a random ID
+/* const docRef = await addDoc(collection(FIREBASE_DB, "comments"), {
+  userId,
+  movieId: "anyyyy",
+  commentDesc: commentData.desc,
+  rating: commentData.rating,
+}); */

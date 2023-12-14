@@ -14,8 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
+import { baseImageURL } from "../util/firebase-services";
 
-const baseImageURL = "http://image.tmdb.org/t/p/original";
 const DATA = [
   {
     id: "m1",

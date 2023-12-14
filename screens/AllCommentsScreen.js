@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -15,52 +16,14 @@ import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 import DropDownPicker from "react-native-dropdown-picker";
 import EditCommentModal from "../components/profilePage/EditCommentModal";
+import { useSelector } from "react-redux";
+import { baseImageURL } from "../util/firebase-services";
 
-const DATA = [
-  {
-    id: "m1",
-    name: "Openhiemmer",
-    category: "fantasy",
-    rating: 9,
-    photo: require("../assets/imgs/open.jpg"),
-  },
-  {
-    id: "m2",
-    name: "world war z",
-    category: "zombies",
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m3",
-    name: "Avatar",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-  {
-    id: "m4",
-    name: "Avatar 2",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-  {
-    id: "m5",
-    name: "world war z",
-    category: "zombies",
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m6",
-    name: "Avatar",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-];
 const AllCommentsScreen = () => {
+  const USER_COMMENTS = useSelector(
+    (state) => state.user.userData.userComments
+  );
+
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [commentData, setCommentData] = useState();
@@ -74,27 +37,31 @@ const AllCommentsScreen = () => {
       <EditCommentModal
         isVisible={isModalVisible}
         onClose={closeModalHandler}
-        commentDetails={isModalVisible ? commentData : ""}
+        commentData={isModalVisible ? commentData : ""}
       />
 
       <FlatList
-        data={DATA}
-        key={(item) => item.id}
+        data={USER_COMMENTS}
+        key={(movie) => movie.id}
         numColumns={2}
         style={styles.flatListCont}
         renderItem={({ item }) => {
+          const movie = item;
           return (
             <Pressable
               onPress={() => {
                 setIsModalVisible(true);
-                setCommentData(item);
+                setCommentData(movie);
               }}
             >
               <View style={styles.commentCont}>
-                <Image source={item.photo} style={styles.profileImg} />
-                <Text style={styles.userName}>{item.name}</Text>
+                <Image
+                  source={{ uri: baseImageURL + movie.poster }}
+                  style={styles.profileImg}
+                />
+                <Text style={styles.movieName}>{movie.title}</Text>
                 <Stars
-                  display={2.5}
+                  display={movie.rating}
                   spacing={6}
                   count={5}
                   fullStar={<Ionicons name="star" color="yellow" size={20} />}
@@ -104,8 +71,8 @@ const AllCommentsScreen = () => {
                 />
                 <Ionicons
                   name="reorder-two-outline"
-                  size={25}
-                  style={{ marginTop: 12 }}
+                  size={30}
+                  style={{ marginTop: 6 }}
                 />
               </View>
             </Pressable>
@@ -142,12 +109,13 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 0.1,
     borderRadius: 100,
   },
-  userName: {
+
+  movieName: {
     width: "100%",
+    maxHeight: Dimensions.get("window").height * 0.03,
     textAlign: "center",
-    // color: "white",
     borderBottomWidth: 1,
-    marginVertical: 4,
+    marginVertical: 6,
     fontSize: 16,
   },
 });

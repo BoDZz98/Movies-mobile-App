@@ -35,6 +35,7 @@ const ThreeButtons = ({ movieData }) => {
         onPress={() => {
           navigation.navigate("gameComments", {
             moviePoster: movieData.poster,
+            movieName: movieData.title,
           });
         }}
       >

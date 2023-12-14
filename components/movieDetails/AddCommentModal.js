@@ -8,9 +8,12 @@ import { useState } from "react";
 import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import { addComment } from "../../util/firebase-services";
+import { userActions } from "../../store/user-data-slice";
+import { useDispatch } from "react-redux";
 
-const AddCommentModal = ({ isVisible, onClose }) => {
-  const [stars, setStars] = useState();
+const AddCommentModal = ({ isVisible, onClose, movieData }) => {
+  const dispatch = useDispatch();
+  const [stars, setStars] = useState(1);
   // Validation----------------------------------------------------
   const [input, setInput] = useState({
     value: "",
@@ -25,14 +28,20 @@ const AddCommentModal = ({ isVisible, onClose }) => {
       return { ...currentValues, isValid: descIsValid };
     });
     if (descIsValid) {
-      // do sth
-      addComment({ desc: input.value, rating: stars });
+      const commentData = { desc: input.value, rating: stars };
+      const movieDetails = { title: movieData.title, poster: movieData.poster };
+      ///////////////////////////////////////////////
+      const id = Math.floor(Math.random() * (10000000 - 0 + 1)) + 0;
+      addComment(commentData, movieDetails);
+      dispatch(userActions.addOrRemoveComment({ commentData, movieDetails }));
       // close the modal and reset the value
       setInput({ value: "", isValid: true });
+      setStars(1);
       onClose();
     }
   }
   const error = input.isValid ? "" : "please write a comment";
+
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>ADD Comment</Text>

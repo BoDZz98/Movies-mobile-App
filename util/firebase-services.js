@@ -1,12 +1,16 @@
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
+  collection,
   doc,
   getDoc,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
+
+export const baseImageURL = "http://image.tmdb.org/t/p/original";
 
 export function setUserId() {
   const userId = FIREBASE_AUTH?.currentUser?.uid;
@@ -37,14 +41,15 @@ export async function addMovie(movieData, isSet, list) {
   }
 }
 
-export async function addComment(commentData) {
+export async function addComment(commentData, movieData) {
   const userId = setUserId();
-  
+
   try {
-    const docRef = await setDoc(doc(FIREBASE_DB, "comments",'any2'), {
+    const docRef = await addDoc(collection(FIREBASE_DB, "comments"), {
       userId,
-      movieId: 'anyyyy',
-      commentDesc: commentData.desc,
+      title: movieData.title,
+      poster: movieData.poster,
+      desc: commentData.desc,
       rating: commentData.rating,
     });
   } catch (error) {

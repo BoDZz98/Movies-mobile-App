@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 ]; */
 
 // This can be used to overwrite an existing doc by specifying the id parm ,
-// if the id parm is found in the firebase it will update this doc , it will create a  new doc with this specified id
+// if the id parm is found in the firebase it will update this doc ,else it will create a  new doc with this specified id
 /* const docRef = await setDoc(doc(FIREBASE_DB, "comments", "wwww2"), {
   userId,
   movieId: "anyyyy",

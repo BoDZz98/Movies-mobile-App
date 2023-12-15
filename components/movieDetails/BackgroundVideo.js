@@ -15,11 +15,10 @@ const BackgroundVideo = () => {
         ref={(ref) => {
           this.player = ref;
         }}
-        source={require("../../assets/vid.mp4")} // Can be a URL or a local file.
+        // source={require("../../assets/vid.mp4")} // Can be a URL or a local file.
         onBuffer={onBuffer} // Callback when remote video is buffering
         onError={videoError} // Callback when video cannot be loaded
         resizeMode="contain"
-        
         style={styles.backgroundVideo}
       />
     </View>

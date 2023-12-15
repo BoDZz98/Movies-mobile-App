@@ -69,12 +69,33 @@ const userSlice = createSlice({
       // console.log("wishlist Movies  :", state.userData.wishlistMovies);
     },
     addOrRemoveComment(state, action) {
-      const commentData = action.payload.commentData;
-      const movieDetails = action.payload.movieDetails;
-      const id = Math.floor(Math.random() * (10000000 - 0 + 1)) + 0;
-      state.userData.userComments.push({ id, ...commentData, ...movieDetails });
+      const { commentId, commentData, movieDetails } = action.payload;
+      /* const commentData = action.payload.commentData;
+      const movieDetails = action.payload.movieDetails; */
+      state.userData.userComments.push({
+        commentId,
+        ...commentData,
+        ...movieDetails,
+      });
 
       // console.log("in user-data-slice :", state.userData.userComments);
+    },
+    updateComment(state, action) {
+      const { commentId } = action.payload;
+      const commentData = action.payload.comment;
+      state.userData.userComments = state.userData.userComments.map(
+        (comment, index) => {
+          if (comment.commentId === commentId) {
+            comment[index] = {
+              // ...comment,
+              ["desc"]: commentData.desc,
+              ["rating"]: commentData.rating,
+            };
+          }
+          console.log(index, "=>", comment);
+        }
+      );
+      console.log("in update comment : ", state.userData.userComments);
     },
   },
 });

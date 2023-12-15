@@ -12,10 +12,18 @@ import Stars from "react-native-stars";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import MyButton from "../UI/MyButton";
-import { baseImageURL } from "../../util/firebase-services";
+import {
+  addComment,
+  baseImageURL,
+  updateComment,
+} from "../../util/firebase-services";
 import Input from "../Input";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
 const EditCommentModal = ({ isVisible, onClose, commentData }) => {
+  const dispatch = useDispatch();
+
   // Validation---------------------------------------------------------------------------------
   const [stars, setStars] = useState(commentData.rating);
   const [input, setInput] = useState({});
@@ -28,22 +36,21 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       isValid: true,
     });
   }, [commentData]);
-  console.log(commentData);
+  // console.log(commentData);
   function changeInputHandler(enteredValue) {
     setInput({ value: enteredValue, isValid: true });
   }
   function submitHanlder() {
     const descIsValid = input.value.length !== 0;
-    setInput((currentValues) => {
-      return { ...currentValues, isValid: descIsValid };
-    });
+    setInput((currentValues) => ({ ...currentValues, isValid: descIsValid }));
     if (descIsValid) {
-      const commentData = { desc: input.value, rating: stars };
-      addComment(commentData, movieDetails);
-      dispatch(userActions.addOrRemoveComment({ commentData, movieDetails }));
-      // close the modal and reset the value
-      setInput({ value: "", isValid: true });
-      setStars(1);
+      const comment = { desc: input.value, rating: stars };
+      const commentId = commentData.commentId;
+      updateComment(commentId, comment);
+      dispatch(
+        userActions.updateComment({ commentId, comment })
+      );
+      // close the modal
       onClose();
     }
   }
@@ -97,7 +104,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
           textStyle={styles.buttonText}
         />
         <MyButton
-          //   onPress={submitHanlder}
+          onPress={submitHanlder}
           text="Save"
           style={styles.saveButton}
           textStyle={styles.buttonText}

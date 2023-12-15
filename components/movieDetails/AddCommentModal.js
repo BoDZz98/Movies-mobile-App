@@ -30,10 +30,12 @@ const AddCommentModal = ({ isVisible, onClose, movieData }) => {
     if (descIsValid) {
       const commentData = { desc: input.value, rating: stars };
       const movieDetails = { title: movieData.title, poster: movieData.poster };
-      ///////////////////////////////////////////////
-      const id = Math.floor(Math.random() * (10000000 - 0 + 1)) + 0;
-      addComment(commentData, movieDetails);
-      dispatch(userActions.addOrRemoveComment({ commentData, movieDetails }));
+      
+      const commentId = Math.floor(Math.random() * (1000000000 - 0 + 1)) + 0;
+      addComment(commentId, commentData, movieDetails);
+      dispatch(
+        userActions.addOrRemoveComment({ commentId, commentData, movieDetails })
+      );
       // close the modal and reset the value
       setInput({ value: "", isValid: true });
       setStars(1);

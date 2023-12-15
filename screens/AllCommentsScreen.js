@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   FlatList,
@@ -23,6 +23,10 @@ const AllCommentsScreen = () => {
   const USER_COMMENTS = useSelector(
     (state) => state.user.userData.userComments
   );
+  const [stars, setStars] = useState();
+
+  // console.log(USER_COMMENTS);
+  // useEffect(() => {}, [USER_COMMENTS]);
 
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -42,7 +46,7 @@ const AllCommentsScreen = () => {
 
       <FlatList
         data={USER_COMMENTS}
-        key={(movie) => movie.id}
+        keyExtractor={(comment) => comment.commentId}
         numColumns={2}
         style={styles.flatListCont}
         renderItem={({ item }) => {
@@ -61,7 +65,8 @@ const AllCommentsScreen = () => {
                 />
                 <Text style={styles.movieName}>{movie.title}</Text>
                 <Stars
-                  display={movie.rating}
+                  // default={item.rating}
+                  display={item.rating}
                   spacing={6}
                   count={5}
                   fullStar={<Ionicons name="star" color="yellow" size={20} />}

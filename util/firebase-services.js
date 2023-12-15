@@ -41,19 +41,36 @@ export async function addMovie(movieData, isSet, list) {
   }
 }
 
-export async function addComment(commentData, movieData) {
+export async function addComment(commentId, commentData, movieData) {
   const userId = setUserId();
 
   try {
-    const docRef = await addDoc(collection(FIREBASE_DB, "comments"), {
-      userId,
-      title: movieData.title,
-      poster: movieData.poster,
+    const docRef = await setDoc(
+      doc(FIREBASE_DB, "comments", commentId.toString()),
+      {
+        userId,
+        title: movieData?.title,
+        poster: movieData?.poster,
+        desc: commentData.desc,
+        rating: commentData.rating,
+      }
+    );
+  } catch (error) {
+    console.log("in firebase services , called from AddCommentModal.js", error);
+  }
+}
+export async function updateComment(commentId, commentData) {
+  try {
+    const commentRef = doc(FIREBASE_DB, "comments", commentId.toString());
+    await updateDoc(commentRef, {
       desc: commentData.desc,
       rating: commentData.rating,
     });
   } catch (error) {
-    console.log("in firebase services , called from AddCommentModal.js", error);
+    console.log(
+      "in firebase services , called from EditCommentModal.js",
+      error
+    );
   }
 }
 

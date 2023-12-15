@@ -41,7 +41,7 @@ const LoginScreen = ({ navigation }) => {
         const userCommentsSnapshot = await getDocs(userComments);
         userCommentsSnapshot.forEach((doc) => {
           // Each doc is a comment
-          comments.push({ id: doc.id, ...doc.data() });
+          comments.push({ commentId: doc.id, ...doc.data() });
         });
         // set data of the user-------------------------------------------------------------------
         dispatch(

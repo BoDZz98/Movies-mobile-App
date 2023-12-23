@@ -23,10 +23,9 @@ const AllCommentsScreen = () => {
   const USER_COMMENTS = useSelector(
     (state) => state.user.userData.userComments
   );
-  const [stars, setStars] = useState();
 
   // console.log(USER_COMMENTS);
-  // useEffect(() => {}, [USER_COMMENTS]);
+  useEffect(() => {}, [USER_COMMENTS]);
 
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -65,8 +64,8 @@ const AllCommentsScreen = () => {
                 />
                 <Text style={styles.movieName}>{movie.title}</Text>
                 <Stars
-                  // default={item.rating}
-                  display={item.rating}
+                  default={movie.rating}
+                  display={movie.rating}
                   spacing={6}
                   count={5}
                   fullStar={<Ionicons name="star" color="yellow" size={20} />}

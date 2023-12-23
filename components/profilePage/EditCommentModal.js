@@ -47,9 +47,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       const comment = { desc: input.value, rating: stars };
       const commentId = commentData.commentId;
       updateComment(commentId, comment);
-      dispatch(
-        userActions.updateComment({ commentId, comment })
-      );
+      dispatch(userActions.updateComment({ commentId, comment }));
       // close the modal
       onClose();
     }

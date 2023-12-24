@@ -4,11 +4,13 @@ import { Colors } from "../../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/auth-slice";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 const ProfilePageHeader = () => {
   const dispatch = useDispatch();
   function logoutHandler() {
     dispatch(authActions.logout());
+    FIREBASE_AUTH.signOut();
   }
   return (
     <View style={styles.root}>
@@ -74,6 +76,6 @@ const styles = StyleSheet.create({
     width: "30%",
     height: "65%",
     borderRadius: 3000,
-    marginBottom:4
+    marginBottom: 4,
   },
 });

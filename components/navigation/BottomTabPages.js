@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../../constants/styles";
@@ -9,6 +9,18 @@ import StartScreen from "../../screens/StartScreen";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import ProfilePageHeader from "./ProfilePageHeader";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { authActions } from "../../store/auth-slice";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { userActions } from "../../store/user-data-slice";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -48,10 +60,37 @@ function TabButton({ props, activeIcon, inActiveIcon }) {
     </TouchableOpacity>
   );
 }
-//-------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 const BottomTabPages = () => {
-  // Logout---------
   const isAuth = useSelector((state) => state.auth.isAuth);
+
+  const dispatch = useDispatch();
+  // setting the data of this user , same as in login page -----------------------------------------------------
+  onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+    if (!!user) {
+      dispatch(authActions.login());
+
+      const userRefDoc = doc(FIREBASE_DB, "users", user?.uid);
+      const userSnapDoc = await getDoc(userRefDoc);
+      // getting comments of this particular user-------------
+      const comments = [];
+      const userComments = query(
+        collection(FIREBASE_DB, "comments"),
+        where("userId", "==", user.uid)
+      );
+      const userCommentsSnapshot = await getDocs(userComments);
+      userCommentsSnapshot.forEach((doc) => {
+        // Each doc is a comment
+        comments.push({ commentId: doc.id, ...doc.data() });
+      });
+      dispatch(
+        userActions.setUser({
+          userDoc: userSnapDoc.data(),
+          userComments: comments,
+        })
+      );
+    }
+  });
 
   return (
     // Notice the diffrence in screenOptions syntex , we wrote an array function the return an object containing our normal options ,
@@ -101,7 +140,6 @@ const BottomTabPages = () => {
               inActiveIcon="person-circle-outline"
             />
           ),
-          
         }}
       />
     </Tab.Navigator>

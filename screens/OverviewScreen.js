@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
+import UserListsModal from "../components/profilePage/UserListsModal";
 
 const OverviewScreen = ({ navigation }) => {
+  // User data -----------------------------------------------------------------------------------------
   const userData = useSelector((state) => state.user.userData);
   const userFavMoviesLength = userData.favMovies.length;
   const userWishlistMoviesLength = userData.wishlistMovies.length;
+  const userCommentsLength = userData.userComments.length;
   const data = [
     {
       name: "My Lists",
@@ -21,7 +24,7 @@ const OverviewScreen = ({ navigation }) => {
       subName: "Comments",
       icon: "chatbox-ellipses-outline",
       pageName: "Comments",
-      length: "0",
+      length: userCommentsLength,
     },
     {
       name: "Favorites",
@@ -39,27 +42,41 @@ const OverviewScreen = ({ navigation }) => {
     },
   ];
 
+  // User lists modal logic ---------------------------------------------------------------------------------------
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  function closeHandler() {
+    setIsModalVisible(false);
+  }
+
   return (
     <View style={styles.root}>
       {data.map((item) => {
         return (
           <Pressable
             style={styles.container}
-            onPress={
-              () => navigation.navigate(item.pageName, { list: item.name }) //List param is only for the fav and wishlist tabs
-            }
+            onPress={() => {
+              if (item.name === "My Lists") {
+                // Modal Component is below
+                setIsModalVisible(true);
+              } else {
+                navigation.navigate(item.pageName, { list: item.name }); //List param is only for the fav and wishlist tabs
+              }
+            }}
             android_ripple={{ color: Colors.primary800 }}
             key={item.name}
           >
             <Ionicons name={item.icon} color="white" size={40} />
             <View style={styles.textCont}>
               <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.number}>{item.subName} : {item.length}</Text>
+              <Text style={styles.number}>
+                {item.subName} : {item.length}
+              </Text>
             </View>
             <Ionicons name="arrow-forward-outline" color="white" size={30} />
           </Pressable>
         );
       })}
+      <UserListsModal isVisible={isModalVisible} onClose={closeHandler} />
     </View>
   );
 };

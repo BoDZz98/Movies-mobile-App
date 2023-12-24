@@ -86,22 +86,8 @@ const userSlice = createSlice({
       const exisitingItem = state.userData.userComments.find(
         (comment) => comment.commentId === commentId
       );
-      console.log("old existing item =>", exisitingItem);
       exisitingItem.desc = commentData.desc;
       exisitingItem.rating = commentData.rating;
-      /* state.userData.userComments = state.userData.userComments.map(
-        (comment, index) => {
-          if (comment.commentId === commentId) {
-            return {
-              ...comment,
-              ["desc"]: commentData.desc,
-              ["rating"]: commentData.rating,
-            };
-          }
-          console.log(index, "=>", comment);
-        }
-      ); */
-      console.log("in update comment 2: ", state.userData.userComments);
     },
   },
 });

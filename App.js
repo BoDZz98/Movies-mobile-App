@@ -6,7 +6,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import { Ionicons } from "@expo/vector-icons";
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
 import { useState } from "react";
@@ -14,17 +14,25 @@ import AddCommentModal from "./components/movieDetails/AddCommentModal";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
 import MyListsScreen from "./screens/MyListsScreen";
 import FavButton from "./components/FavButton";
-
+import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  // Game comments modal----------------------------------
+  // Game comments modal-----------------------------------------------------------------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [movieData, setMovieData] = useState();
   function closeModalHandler() {
     setIsModalVisible(false);
   }
+  // Setting the user -----------------------------------------------------------------------------------
+  //  const dispatch = useDispatch();
 
+  onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+    if (user) {
+      // dispatch(authActions.login());
+    }
+  });
   return (
     <>
       <StatusBar style="light" />

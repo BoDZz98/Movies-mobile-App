@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalCard from "../UI/ModalCard";
 import {
   Button,
@@ -11,10 +11,53 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Input from "../Input";
-import MyButton from "../UI/MyButton";
+import { addList, setUserId } from "../../util/firebase-services";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
 
 const UserListsModal = ({ isVisible, onClose }) => {
+  const [input, setInput] = useState({ value: "", isValid: true });
+  const [listExist, setListExist] = useState(false);
+  const [userLists, setUserLists] = useState([]);
+
+  // Validation for input -----------------------------------------------------------------------
+  function changeInputHandler(enteredValue) {
+    setInput({ value: enteredValue, isValid: true });
+  }
+  async function addListHandler() {
+    const listNameValid = input.value.length != 0;
+    setInput((currentValues) => ({ ...currentValues, isValid: listNameValid }));
+    if (input.isValid) {
+      const bool = await addList(input.value);
+      setListExist(bool);
+      setInput({ value: "", isValid: true });
+    }
+  }
+
+  // getting the user lists from firebase ---------------------------------------------------------------
+
+  useEffect(() => {
+    onSnapshot(
+      query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
+      (snapshot) => {
+        snapshot.docs.map((doc) =>
+          setUserLists(
+            snapshot.docs.map((doc) => ({
+              listName: doc.id,
+              ...doc.data(),
+            }))
+          )
+        );
+      }
+    );
+  }, []);
+
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>Your Lists </Text>
@@ -24,27 +67,29 @@ const UserListsModal = ({ isVisible, onClose }) => {
         indicatorStyle="black"
         showsVerticalScrollIndicator={false}
       >
-        <Pressable style={styles.listCont}>
-          <View style={styles.textCont}>
-            <Text style={styles.listName}>List Name</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-          <Ionicons name="arrow-forward" color="black" size={30} />
-        </Pressable>
-        <Pressable style={styles.listCont}>
-          <View style={styles.textCont}>
-            <Text style={styles.listName}>List Name</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-          <Ionicons name="arrow-forward" color="black" size={30} />
-        </Pressable>
+        {userLists.map((list) => {
+          return (
+            <Pressable style={styles.listCont} key={list.listName}>
+              <View style={styles.textCont}>
+                <Text style={styles.listName}>{list.listName}</Text>
+                <Text style={styles.number}>Movies :{list.movies.length}</Text>
+              </View>
+              <Ionicons name="arrow-forward" color="black" size={30} />
+            </Pressable>
+          );
+        })}
 
         <View style={{ flexDirection: "row" }}>
-          <TextInput style={styles.inputStyle} placeholder="Enter List Name" />
-          <TouchableOpacity
-            style={{ padding: 10 }}
-            // onPress={handleButtonClick}
-          >
+          <TextInput
+            style={styles.inputStyle}
+            onChangeText={changeInputHandler}
+            value={input.value}
+            placeholder={
+              listExist ? "List name already exist" : "Enter List Name"
+            }
+            placeholderTextColor={!input.isValid && "red"}
+          />
+          <TouchableOpacity style={{ padding: 10 }} onPress={addListHandler}>
             <Text style={{ color: "black" }}>Add</Text>
           </TouchableOpacity>
         </View>

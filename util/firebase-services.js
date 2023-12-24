@@ -1,4 +1,5 @@
 import {
+  Firestore,
   addDoc,
   arrayRemove,
   arrayUnion,
@@ -17,7 +18,7 @@ export function setUserId() {
   return userId;
 }
 
-// add movie to fav or wishlist-------------------------------------------
+// add movie to fav or wishlist--------------------------------------------------------------------------------------
 export async function addMovie(movieData, isSet, list) {
   const userId = setUserId();
   const userRef = doc(FIREBASE_DB, "users", userId);
@@ -41,6 +42,7 @@ export async function addMovie(movieData, isSet, list) {
   }
 }
 
+// add comment-------------------------------------------------------------------------------------------------
 export async function addComment(commentId, commentData, movieData) {
   const userId = setUserId();
 
@@ -59,6 +61,8 @@ export async function addComment(commentId, commentData, movieData) {
     console.log("in firebase services , called from AddCommentModal.js", error);
   }
 }
+
+// Update comment -----------------------------------------------------------------------------------------------------------
 export async function updateComment(commentId, commentData) {
   try {
     const commentRef = doc(FIREBASE_DB, "comments", commentId.toString());
@@ -74,6 +78,54 @@ export async function updateComment(commentId, commentData) {
   }
 }
 
+// Create list (Sub-Collection)-------------------------------------------------------------------------------------------------------------
+export async function addList(listname) {
+  const userId = setUserId();
+
+  // Check whether this list already exist or not ---------------------
+  const parentDocRef = doc(FIREBASE_DB, "users", userId);
+  const subcollectionRef = doc(parentDocRef, "lists", listname);
+  const document = await getDoc(subcollectionRef);
+  if (document.exists()) {
+    return true;
+  }
+  // Add a sub collection with a specified id --------------------------
+  try {
+    const userDocRef = doc(
+      FIREBASE_DB,
+      "users",
+      userId,
+      "lists",
+      listname // custom Id
+    );
+
+    setDoc(userDocRef, {
+      movies: [],
+    });
+    return false;
+  } catch (error) {
+    console.log("error in adding list :", error);
+    return true;
+  }
+
+  /*
+  // Add a sub collection with a random id --------------------------
+  const userDocRef = doc(FIREBASE_DB, "users", userId);
+  const listDocRef = collection(userDocRef, "lists");
+  // Set the data for the new subdocument
+  addDoc(listDocRef, {
+    field1: "Value 1",
+    field2: "Value 2",
+  }); */
+}
+
+export async function addMovieToList(data) {
+  const { movieId, poster, listName } = data;
+  const listRef = doc(FIREBASE_DB, "users", setUserId(), "lists", listName);
+  await updateDoc(listRef, {
+    movies: arrayUnion({ movieId, poster }),
+  });
+}
 // check whether a movie is in fav or wishlist-------------------------------------------
 export async function checkMovie(movieId, list) {
   // This is function is always called when we open the app so we make sure if the user is logged in first or not , to prevent an warning

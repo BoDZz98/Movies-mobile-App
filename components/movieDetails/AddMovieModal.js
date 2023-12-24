@@ -14,20 +14,46 @@ import { Ionicons } from "@expo/vector-icons";
 import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import ModalCard from "../UI/ModalCard";
-import { addMovie, checkMovie } from "../../util/firebase-services";
+import {
+  addMovie,
+  addMovieToList,
+  setUserId,
+} from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
 
 const AddMovieModal = ({ isVisible, onClose, data }) => {
+  // Reading user data from user-data-slice ------------------------------------------------------------
   const dispatch = useDispatch();
+  // console.log("data is", data);
   const userData = useSelector((state) => state.user.userData);
   // !! is used to convert a value into a boolean
   const isFav = !!userData.favMovies.find((movie) => movie.id === data.id);
   const isWishlist = !!userData.wishlistMovies.find(
     (movie) => movie.id === data.id
   );
-  // console.log("in add movie modal", data);
 
+  // reading user lists from the firebase ------------------------------------------------------------------
+  const [userLists, setUserLists] = useState([]);
+
+  useEffect(() => {
+    onSnapshot(
+      query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
+      (snapshot) => {
+        snapshot.docs.map((doc) =>
+          setUserLists(
+            snapshot.docs.map((doc) => ({
+              listName: doc.id,
+              ...doc.data(),
+            }))
+          )
+        );
+      }
+    );
+  }, []);
+  // Adding the movie to user-data-slice (redux) and to our firebase -----------------------------
   function addMovieTo(list) {
     if (list === "fav") {
       addMovie(data, isFav, "favMovies");
@@ -36,6 +62,11 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
       addMovie(data, isWishlist, "wishlistMovies");
       dispatch(userActions.addOrRemoveWishlistMovie(data));
     }
+  }
+
+  // Add movie to list in our firebase
+  function addMovieintoList() {
+    addMovieToList();
   }
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
@@ -68,27 +99,25 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
         indicatorStyle="black"
         showsVerticalScrollIndicator={false}
       >
-        <Pressable style={styles.listCont}>
-          <View style={styles.textCont}>
-            <Text style={styles.listName}>List Name</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-          <Ionicons name="add-circle-outline" color="black" size={30} />
-        </Pressable>
-        <Pressable style={styles.listCont}>
-          <View style={styles.textCont}>
-            <Text style={styles.listName}>List Name</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-          <Ionicons name="add-circle-outline" color="black" size={30} />
-        </Pressable>
-        <Pressable style={styles.listCont}>
-          <View style={styles.textCont}>
-            <Text style={styles.listName}>List Name</Text>
-            <Text style={styles.number}>Movies : 3</Text>
-          </View>
-          <Ionicons name="add-circle-outline" color="black" size={30} />
-        </Pressable>
+        {userLists.map((list) => {
+          return (
+            <TouchableOpacity
+              style={styles.listCont}
+              key={list.listName}
+              onPress={addMovieToList.bind(null, {
+                movieId: data.id,
+                poster: data.poster,
+                listName: list.listName,
+              })}
+            >
+              <View style={styles.textCont}>
+                <Text style={styles.listName}>{list.listName}</Text>
+                <Text style={styles.number}>Movies :{list.movies.length}</Text>
+              </View>
+              <Ionicons name="add-circle" color="black" size={30} />
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </ModalCard>
   );

@@ -70,8 +70,6 @@ const userSlice = createSlice({
     },
     addOrRemoveComment(state, action) {
       const { commentId, commentData, movieDetails } = action.payload;
-      /* const commentData = action.payload.commentData;
-      const movieDetails = action.payload.movieDetails; */
       state.userData.userComments.push({
         commentId,
         ...commentData,
@@ -88,6 +86,12 @@ const userSlice = createSlice({
       );
       exisitingItem.desc = commentData.desc;
       exisitingItem.rating = commentData.rating;
+    },
+    deleteComment(state, action) {
+      const commentId = action.payload;
+      state.userData.userComments.filter(
+        (comment) => comment.commentId !== commentId
+      );
     },
   },
 });

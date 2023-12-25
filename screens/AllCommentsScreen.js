@@ -25,7 +25,7 @@ const AllCommentsScreen = () => {
   );
 
   // console.log(USER_COMMENTS);
-  useEffect(() => {}, [USER_COMMENTS]);
+  // useEffect(() => {}, [USER_COMMENTS]);
 
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);

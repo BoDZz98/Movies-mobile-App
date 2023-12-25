@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   FlatList,
@@ -15,6 +15,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 import { baseImageURL } from "../util/firebase-services";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { FIREBASE_DB } from "../firebaseConfig";
 
 const DATA = [
   {
@@ -64,13 +73,40 @@ const DATA = [
 const GameCommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;
 
+  //Modal Logic ------------------------------------------------------------------------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [commentData, setCommentData] = useState();
-
   function closeModalHandler() {
     setIsModalVisible(false);
   }
 
+  // fetching comments on this movie ------------------------------------------------------------------------------------------------------
+  const [movieComments, setMovieComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    onSnapshot(
+      query(collection(FIREBASE_DB, "comments"), where("poster", "==", poster)),
+      (snapshot) => {
+        const tempArray = [];
+        snapshot.docs.map(async (document) => {
+          const userRefDoc = doc(FIREBASE_DB, "users", document.data().userId);
+          const userSnapDoc = await getDoc(userRefDoc);
+          tempArray.push({
+            commentId: document.id,
+            userName: userSnapDoc.data().userName,
+            desc: document.data().desc,
+            rating: document.data().rating,
+          });
+          setMovieComments(tempArray);
+        });
+        setIsLoading(false);
+      }
+    );
+  }, []);
+
+  if (isLoading) {
+    return <Text>loading</Text>;
+  }
   return (
     <View style={{ flex: 1 }}>
       <Image
@@ -88,11 +124,12 @@ const GameCommentsScreen = ({ route }) => {
           commentDetails={isModalVisible ? commentData : ""}
         />
         <FlatList
-          data={DATA}
-          key={(item) => item.id}
+          data={movieComments}
+          keyExtractor={(item) => item.commentId}
           numColumns={2}
           style={styles.flatListCont}
           renderItem={({ item }) => {
+            // console.log("item is :", item);
             return (
               <Pressable
                 onPress={() => {
@@ -102,9 +139,9 @@ const GameCommentsScreen = ({ route }) => {
               >
                 <View style={styles.commentCont}>
                   <Image source={item.photo} style={styles.profileImg} />
-                  <Text style={styles.userName}>{item.name}</Text>
+                  <Text style={styles.userName}>{item.userName}</Text>
                   <Stars
-                    display={2.5}
+                    display={item.rating}
                     spacing={6}
                     count={5}
                     fullStar={<Ionicons name="star" color="yellow" size={20} />}

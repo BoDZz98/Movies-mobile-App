@@ -10,16 +10,16 @@ const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>Comment Details</Text>
       <Image source={commentDetails.photo} style={styles.profileImg} />
-      <Text style={styles.userName}>{commentDetails.name}</Text>
+      <Text style={styles.userName}>{commentDetails.userName}</Text>
       <Stars
-        display={2.5}
+        display={commentDetails.rating}
         spacing={6}
         count={5}
         fullStar={<Ionicons name="star" color="yellow" size={20} />}
         emptyStar={<Ionicons name="star-outline" color="yellow" size={20} />}
       />
       <ScrollView style={styles.descCont}>
-        <Text style={styles.descText}>wow</Text>
+        <Text style={styles.descText}>{commentDetails.desc}</Text>
       </ScrollView>
     </ModalCard>
   );

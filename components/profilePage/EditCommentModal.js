@@ -15,16 +15,18 @@ import MyButton from "../UI/MyButton";
 import {
   addComment,
   baseImageURL,
+  deleteComment,
   updateComment,
 } from "../../util/firebase-services";
 import Input from "../Input";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
+import { useNavigation } from "@react-navigation/native";
 
 const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   const dispatch = useDispatch();
 
-  // Validation---------------------------------------------------------------------------------
+  // Validation--------------------------------------------------------------------------------------------------
   const [stars, setStars] = useState(commentData.rating);
   const [input, setInput] = useState({});
   // when i press on diff comments the commentData will change, i want to run this file everytime commentData change,
@@ -51,6 +53,12 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       // close the modal
       onClose();
     }
+  } // Delete comment----------------------------------------------------------------------------------------------------
+  const navigation = useNavigation();
+  function deleteHanlder() {
+    deleteComment(commentData.commentId);
+    dispatch(userActions.deleteComment(commentData.commentId));
+    navigation.navigate("Overview");
   }
   return (
     <ModalCard
@@ -88,15 +96,15 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
           value: input.value,
           onChangeText: changeInputHandler,
         }}
-        label="Description"
-        labelStyle={styles.label}
+        label={!input.isValid ? "pls enter desc" : "Description"}
+        labelStyle={[styles.label, !input.isValid && { color: "red" }]}
         customInputStyle={styles.descInput}
         descErrorStyle={!input.isValid && styles.descErrorStyle}
       />
 
       <View style={styles.buttonsCont}>
         <MyButton
-          //   onPress={submitHanlder}
+          onPress={deleteHanlder}
           text="Delete"
           style={styles.deleteButton}
           textStyle={styles.buttonText}

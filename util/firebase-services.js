@@ -4,6 +4,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
@@ -78,6 +79,11 @@ export async function updateComment(commentId, commentData) {
       error
     );
   }
+}
+// Delete a comment from the user -----------------------------------------------------------------------------------------------------
+export async function deleteComment(commentId) {
+  const commentRefDoc = doc(FIREBASE_DB, "comments", commentId);
+  await deleteDoc(commentRefDoc);
 }
 
 // Create list (Sub-Collection)-------------------------------------------------------------------------------------------------------------

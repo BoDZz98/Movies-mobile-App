@@ -6,6 +6,8 @@ import {
   collection,
   doc,
   getDoc,
+  onSnapshot,
+  query,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -119,14 +121,26 @@ export async function addList(listname) {
   }); */
 }
 
-export async function addMovieToList(data) {
+// Adding a movie to our list -----------------------------------------------------------------------------------------------------------
+export async function addDeleteMovieInList(data) {
   const { movieId, poster, listName } = data;
   const listRef = doc(FIREBASE_DB, "users", setUserId(), "lists", listName);
-  await updateDoc(listRef, {
-    movies: arrayUnion({ movieId, poster }),
-  });
+  const listDoc = await getDoc(listRef);
+  const movieFound = !!listDoc
+    .data()
+    .movies.find((movie) => movie.movieId === movieId);
+  if (movieFound) {
+    await updateDoc(listRef, {
+      movies: arrayRemove({ movieId, poster }),
+    });
+  } else {
+    await updateDoc(listRef, {
+      movies: arrayUnion({ movieId, poster }),
+    });
+  }
 }
-// check whether a movie is in fav or wishlist-------------------------------------------
+
+// check whether a movie is in fav or wishlist------------------------------------------------------------------------------------------------
 export async function checkMovie(movieId, list) {
   // This is function is always called when we open the app so we make sure if the user is logged in first or not , to prevent an warning
   if (!FIREBASE_AUTH.currentUser) {

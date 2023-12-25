@@ -11,7 +11,11 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { addList, setUserId } from "../../util/firebase-services";
+import {
+  addList,
+  readUserLists,
+  setUserId,
+} from "../../util/firebase-services";
 import {
   collection,
   doc,
@@ -41,18 +45,15 @@ const UserListsModal = ({ isVisible, onClose }) => {
   }
 
   // getting the user lists from firebase ---------------------------------------------------------------
-
   useEffect(() => {
     onSnapshot(
       query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
       (snapshot) => {
-        snapshot.docs.map((doc) =>
-          setUserLists(
-            snapshot.docs.map((doc) => ({
-              listName: doc.id,
-              ...doc.data(),
-            }))
-          )
+        setUserLists(
+          snapshot.docs.map((doc) => ({
+            listName: doc.id,
+            ...doc.data(),
+          }))
         );
       }
     );

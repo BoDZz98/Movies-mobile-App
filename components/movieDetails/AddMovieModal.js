@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
-  Dimensions,
-  Modal,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,8 +11,8 @@ import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import ModalCard from "../UI/ModalCard";
 import {
+  addDeleteMovieInList,
   addMovie,
-  addMovieToList,
   setUserId,
 } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,9 +21,9 @@ import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 
 const AddMovieModal = ({ isVisible, onClose, data }) => {
-  // Reading user data from user-data-slice ------------------------------------------------------------
   const dispatch = useDispatch();
-  // console.log("data is", data);
+
+  // Reading user data from user-data-slice ----------------------------------------------------------------------
   const userData = useSelector((state) => state.user.userData);
   // !! is used to convert a value into a boolean
   const isFav = !!userData.favMovies.find((movie) => movie.id === data.id);
@@ -35,25 +31,24 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
     (movie) => movie.id === data.id
   );
 
-  // reading user lists from the firebase ------------------------------------------------------------------
+  // reading user lists from the firebase -----------------------------------------------------------------------------------
   const [userLists, setUserLists] = useState([]);
 
   useEffect(() => {
     onSnapshot(
       query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
       (snapshot) => {
-        snapshot.docs.map((doc) =>
-          setUserLists(
-            snapshot.docs.map((doc) => ({
-              listName: doc.id,
-              ...doc.data(),
-            }))
-          )
+        setUserLists(
+          snapshot.docs.map((doc) => ({
+            listName: doc.id,
+            ...doc.data(),
+          }))
         );
       }
     );
   }, []);
-  // Adding the movie to user-data-slice (redux) and to our firebase -----------------------------
+
+  // Adding the movie to user-data-slice (redux) and to our firebase ----------------------------------------------------------------
   function addMovieTo(list) {
     if (list === "fav") {
       addMovie(data, isFav, "favMovies");
@@ -64,10 +59,6 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
     }
   }
 
-  // Add movie to list in our firebase
-  function addMovieintoList() {
-    addMovieToList();
-  }
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>ADD MOVIE</Text>
@@ -100,11 +91,17 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
         showsVerticalScrollIndicator={false}
       >
         {userLists.map((list) => {
+          const movieFound = !!list.movies.find(
+            (movie) => movie.movieId === data.id
+          );
           return (
             <TouchableOpacity
-              style={styles.listCont}
+              style={[
+                styles.listCont,
+                movieFound && { backgroundColor: "#888d8f" },
+              ]}
               key={list.listName}
-              onPress={addMovieToList.bind(null, {
+              onPress={addDeleteMovieInList.bind(null, {
                 movieId: data.id,
                 poster: data.poster,
                 listName: list.listName,
@@ -114,7 +111,13 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
                 <Text style={styles.listName}>{list.listName}</Text>
                 <Text style={styles.number}>Movies :{list.movies.length}</Text>
               </View>
-              <Ionicons name="add-circle" color="black" size={30} />
+              <Ionicons
+                name={
+                  movieFound ? "checkmark-circle-outline" : "add-circle-outline"
+                }
+                color="black"
+                size={30}
+              />
             </TouchableOpacity>
           );
         })}

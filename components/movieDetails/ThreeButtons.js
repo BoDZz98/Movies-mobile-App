@@ -1,20 +1,34 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import MyButton from "../UI/MyButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import AddMovieModal from "./AddMovieModal";
 import { useNavigation } from "@react-navigation/native";
+import { Video } from "expo-av";
 
-const ThreeButtons = ({ movieData }) => {
+const ThreeButtons = ({ movieData, onClickTrailer }) => {
   const navigation = useNavigation();
+
+  // Modal logic here ----------------------------------------------------------------------------------------------------------
   const [modalVisible, setModalVisible] = useState(false);
   function CloseModalHandler() {
     setModalVisible(false);
   }
+  // Trailer button ----------------------------------------------------------------------------------------------------------
+  const [isClicked, setIsClicked] = useState(false);
+  function trailerButtonHandnler() {
+    setIsClicked((currentValue) => !currentValue);
+    onClickTrailer();
+  }
+
   return (
     <View style={styles.buttonsCont}>
-      <MyButton text="Watch Trailer" style={styles.trailerButton}>
+      <MyButton
+        text={isClicked ? "Close Trailer" : "Watch Trailer"}
+        style={styles.trailerButton}
+        onPress={trailerButtonHandnler}
+      >
         <Ionicons
           name="play"
           color="white"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,37 +8,55 @@ import ActorsList from "../components/movieDetails/ActorsList";
 import MovieImgs from "../components/movieDetails/MovieImgs";
 import { fetchMovieDetails } from "../util/api-services";
 import CategoryCont from "../components/UI/CategoryCont";
-import BackgroundVideo from "../components/movieDetails/BackgroundVideo";
-import { MyTabs } from "./ProfileScreen";
+import YoutubePlayer from "react-native-youtube-iframe";
+import { baseImageURL } from "../util/firebase-services";
 
 const MovieDetailsScreen = ({ route }) => {
   //
   const [movieData, setMovieData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+
   const movieId = route.params.movieId;
-  // console.log(movieId);
+
   useEffect(() => {
     async function getData() {
+      // Fetching movie data ---------------------------------
       const fetchedMovieData = await fetchMovieDetails(movieId);
       setMovieData(fetchedMovieData);
       setIsLoading(false);
-      // console.log(fetchedMovieData);
     }
     getData();
     // console.log(movieData);
   }, [movieId, setMovieData]);
-
+  // Video player ----------------------------------------------------------------------------------------------------------
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoOpened, setVideoOpened] = useState(false);
+  function openCloseVideo() {
+    setVideoOpened((currentValue) => !currentValue);
+  }
   if (isLoading) {
     return <Text>Loading</Text>;
   }
+
   return (
     <>
-      <Image
-        style={styles.image}
-        source={require("../assets/imgs/avatar2.jpg")}
-        resizeMode="cover"
-      />
-      {/* <BackgroundVideo /> */}
+      {videoOpened ? (
+        <View style={styles.videoCont}>
+          <YoutubePlayer
+            height="100%"
+            play={true}
+            videoId={movieData.youtubeTrailerKey}
+          />
+        </View>
+      ) : (
+        <View style={styles.imgCont}>
+          <Image
+            style={styles.image}
+            source={{ uri: baseImageURL + movieData.poster }}
+            resizeMode="cover"
+          />
+        </View>
+      )}
       <LinearGradient
         style={styles.container}
         colors={[Colors.primary800, Colors.gray500]}
@@ -59,7 +77,7 @@ const MovieDetailsScreen = ({ route }) => {
             ))}
           </View>
 
-          <ThreeButtons movieData={movieData} />
+          <ThreeButtons movieData={movieData} onClickTrailer={openCloseVideo} />
 
           <ActorsList actors={movieData.cast} />
 
@@ -75,17 +93,25 @@ const MovieDetailsScreen = ({ route }) => {
 export default MovieDetailsScreen;
 
 const styles = StyleSheet.create({
+  videoCont: {
+    height: "40%",
+    backgroundColor: Colors.primary800,
+    paddingTop: "20%",
+    // alignItems: "center",
+  },
+  imgCont: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50%",
+    backgroundColor: Colors.primary800,
+  },
   image: {
-    // flex: 0.2,
-    height: "30%",
-    width: "100%",
+    width: "70%",
+    height: "90%",
     resizeMode: "center",
+    borderRadius: 20,
   },
-  container: {
-    flex: 1,
-    // height:'100%',
-    padding: 18,
-  },
+  container: { flex: 1, padding: 18 },
   title: {
     color: "white",
     fontSize: 40,

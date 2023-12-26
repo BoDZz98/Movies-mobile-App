@@ -25,50 +25,6 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_DB } from "../firebaseConfig";
 
-const DATA = [
-  {
-    id: "m1",
-    name: "Openhiemmer",
-    category: "fantasy",
-    rating: 9,
-    photo: require("../assets/imgs/open.jpg"),
-  },
-  {
-    id: "m2",
-    name: "world war z",
-    category: "zombies",
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m3",
-    name: "Avatar",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-  {
-    id: "m4",
-    name: "Avatar 2",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-  {
-    id: "m5",
-    name: "world war z",
-    category: "zombies",
-    rating: 7,
-    photo: require("../assets/imgs/war.jpg"),
-  },
-  {
-    id: "m6",
-    name: "Avatar",
-    category: "fiction",
-    rating: 8.5,
-    photo: require("../assets/imgs/avatar.jpeg"),
-  },
-];
 
 const GameCommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;

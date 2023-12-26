@@ -41,6 +41,10 @@ export async function fetchMovieDetails(movieId) {
   // console.log(response.data);
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
   const actors = response.data.credits.cast.slice(0, 5);
+  const youtubeTrailerKey = response.data.videos.results.find(
+    (video) => video.type === "Trailer"
+  ).key;
+  // console.log("trailer is", trailerKey);
   const newMovieObject = {
     id: response.data.id,
     title: response.data.title,
@@ -52,6 +56,7 @@ export async function fetchMovieDetails(movieId) {
     genres: response.data.genres,
     images: response.data.images.backdrops,
     cast: actors,
+    youtubeTrailerKey,
   };
   // console.log(newMovieObject.cast.length);
 

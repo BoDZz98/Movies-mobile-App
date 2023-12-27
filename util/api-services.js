@@ -40,7 +40,7 @@ export async function fetchMovieDetails(movieId) {
   );
   // console.log(response.data);
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
-  const actors = response.data.credits.cast.slice(0, 5);
+  const actors = response.data.credits.cast.slice(0, 20);
   const youtubeTrailerKey = response.data.videos.results.find(
     (video) => video.type === "Trailer"
   ).key;

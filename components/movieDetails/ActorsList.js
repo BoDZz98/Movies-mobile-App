@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Dimensions,
   FlatList,
   Image,
   ScrollView,
@@ -17,7 +18,7 @@ function renderActor(itemData) {
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={require("../../assets/imgs/war.jpg")}
+        source={{ uri: baseImageURL + actor.profile_path }}
         resizeMode="stretch"
       />
       <View style={styles.namesCont}>
@@ -29,7 +30,7 @@ function renderActor(itemData) {
 }
 const ActorsList = ({ actors }) => {
   return (
-    /* <View style={{ flex:1 ,backgroundColor:'red'}}>
+    <View style={styles.root}>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -37,8 +38,8 @@ const ActorsList = ({ actors }) => {
         keyExtractor={(item) => item.id}
         renderItem={renderActor}
       />
-    </View> */
-    <ScrollView horizontal={true} style={styles.root}>
+    </View>
+    /* <ScrollView horizontal={true} style={styles.root}>
       {actors.map((actor) => {
         return (
           <View key={actor.id} style={styles.container}>
@@ -54,20 +55,18 @@ const ActorsList = ({ actors }) => {
           </View>
         );
       })}
-    </ScrollView>
+    </ScrollView> */
   );
 };
 
 export default ActorsList;
 
 const styles = StyleSheet.create({
-  root: {
-  },
   container: {
     marginHorizontal: 8,
     flexDirection: "row",
-    gap: 20,
-    width: "30%",
+    // gap: 20,
+    width: Dimensions.get("window").width * 0.6,
     borderRadius: 20,
     backgroundColor: Colors.gray700,
     overflow: "hidden",

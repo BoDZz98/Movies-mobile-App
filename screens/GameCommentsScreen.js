@@ -25,7 +25,6 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_DB } from "../firebaseConfig";
 
-
 const GameCommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;
 
@@ -65,11 +64,14 @@ const GameCommentsScreen = ({ route }) => {
   }
   return (
     <View style={{ flex: 1 }}>
-      <Image
-        style={styles.poster}
-        source={{ uri: baseImageURL + poster }}
-        resizeMode="stretch"
-      />
+      <View style={styles.imgCont}>
+        <Image
+          style={styles.poster}
+          source={{ uri: baseImageURL + poster }}
+          resizeMode="cover"
+        />
+      </View>
+
       <LinearGradient
         style={styles.root}
         colors={[Colors.primary800, Colors.gray500]}
@@ -123,16 +125,20 @@ const GameCommentsScreen = ({ route }) => {
 export default GameCommentsScreen;
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
+  root: { flex: 1 },
+  imgCont: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50%",
+    backgroundColor: Colors.primary800,
   },
   poster: {
-    height: "50%",
-    width: "100%",
+    width: "70%",
+    height: "90%",
+    resizeMode: "center",
+    borderRadius: 20,
   },
-  flatListCont: {
-    paddingHorizontal: 12,
-  },
+  flatListCont: { paddingHorizontal: 12 },
   commentCont: {
     width: Dimensions.get("window").width * 0.425,
     height: Dimensions.get("window").height * 0.23,

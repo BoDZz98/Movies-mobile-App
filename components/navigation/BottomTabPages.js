@@ -21,6 +21,7 @@ import {
   where,
 } from "firebase/firestore";
 import { userActions } from "../../store/user-data-slice";
+import SearchScreen from "../../screens/SearchScreen";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -107,7 +108,6 @@ const BottomTabPages = () => {
         component={HomeScreen}
         options={{
           // tabBarLabel: "Home",
-
           /* tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -120,6 +120,23 @@ const BottomTabPages = () => {
               props={props}
               activeIcon="home"
               inActiveIcon="home-outline"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="search"
+        component={SearchScreen}
+        options={{
+          headerShown: true,
+          header: () => {
+            return <ProfilePageHeader />;
+          },
+          tabBarButton: (props) => (
+            <TabButton
+              props={props}
+              activeIcon="search"
+              inActiveIcon="search-outline"
             />
           ),
         }}

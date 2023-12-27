@@ -29,7 +29,6 @@ const MovieDetailsScreen = ({ route }) => {
     // console.log(movieData);
   }, [movieId, setMovieData]);
   // Video player ----------------------------------------------------------------------------------------------------------
-  const [videoReady, setVideoReady] = useState(false);
   const [videoOpened, setVideoOpened] = useState(false);
   function openCloseVideo() {
     setVideoOpened((currentValue) => !currentValue);

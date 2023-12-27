@@ -37,7 +37,7 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
         />
       </MyButton>
       <MyButton style={styles.buttonCont} onPress={() => setModalVisible(true)}>
-        <Ionicons name="open" color="white" size={20} />
+        <Ionicons name="push-outline" color="white" size={25} />
       </MyButton>
       <AddMovieModal
         isVisible={modalVisible}
@@ -53,7 +53,7 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
           });
         }}
       >
-        <Ionicons name="share-social" color="white" size={20} />
+        <Ionicons name="chatbox-ellipses-outline" color="white" size={25} />
       </MyButton>
     </View>
   );

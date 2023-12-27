@@ -87,7 +87,7 @@ export default function App() {
                       <Ionicons
                         name="add-circle"
                         color={tintColor}
-                        size={50}
+                        size={40}
                         onPress={() => {
                           setIsModalVisible(true);
                           setMovieData({

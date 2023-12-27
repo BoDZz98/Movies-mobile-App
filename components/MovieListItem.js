@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import BlurredImage from "./BlurredImage";
 
 const MovieListItem = ({ movie, width, height }) => {
-  const rootContSize = { width: width, height: height };
+  const rootContSize = { width, height };
   // top: height - numY, left: width - numX
   const titleContPosition = { top: 250, left: 10 };
   const ratingContPosition = { top: 250, right: 10 };
@@ -36,7 +36,9 @@ const MovieListItem = ({ movie, width, height }) => {
           <Text style={styles.text}>{movie.title}</Text>
         </View>
         <View style={[isPopular && styles.ratingCont, ratingContPosition]}>
-          <Text style={[styles.text, { fontSize: 16 }]}>{movie.rating}</Text>
+          <Text style={[styles.text, { fontSize: 16 }]}>
+            {movie.rating.toFixed(1)}
+          </Text>
           <Ionicons name="star" color={Colors.accent500} size={20} />
         </View>
       </View>

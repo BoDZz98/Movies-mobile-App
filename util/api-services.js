@@ -62,3 +62,46 @@ export async function fetchMovieDetails(movieId) {
 
   return newMovieObject;
 }
+//  Used as a helper function to get all the genres details available at the API --------------------------------------------------------
+export async function getAllGenres() {
+  const allGenres = await axios.get(
+    "https://api.themoviedb.org/3/genre/movie/list",
+    {
+      headers: configHeaders,
+    }
+  );
+  return allGenres.data.genres;
+}
+// Function used for fetching movies according to the user input
+export async function searchMovie(movieName) {
+  const response = await axios.get(
+    `https://api.themoviedb.org/3/search/movie?query=${movieName}&language=en-US&page=1`,
+    {
+      headers: configHeaders,
+    }
+  );
+
+  const genresDetails = await getAllGenres();
+  const newFormatedData = [];
+
+  response.data.results.map((movie) => {
+    // getting the genres names by it's ID's --------------
+    const genreNames = [];
+    movie.genre_ids.map((movieGenres) => {
+      const genreObject = genresDetails.find(
+        (genre) => genre.id === movieGenres
+      );
+      genreNames.push(genreObject.name);
+    });
+
+    newFormatedData.push({
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster_path,
+      rating: movie.vote_average.toFixed(1),
+      release_date: movie.release_date,
+      genres: genreNames,
+    });
+  });
+  return newFormatedData;
+}

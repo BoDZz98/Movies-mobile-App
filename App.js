@@ -46,7 +46,9 @@ export default function App() {
             <Stack.Screen
               name="all"
               component={BottomTabPages}
-              options={{ headerShown: false }}
+              options={{
+                headerShown: false,
+              }}
             />
             <Stack.Screen
               name="login"

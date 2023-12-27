@@ -128,10 +128,6 @@ const BottomTabPages = () => {
         name="search"
         component={SearchScreen}
         options={{
-          headerShown: true,
-          header: () => {
-            return <ProfilePageHeader />;
-          },
           tabBarButton: (props) => (
             <TabButton
               props={props}

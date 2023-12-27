@@ -7,10 +7,10 @@ import CategoryCont from "./UI/CategoryCont";
 const baseImageURL = "http://image.tmdb.org/t/p/original";
 
 function renderCategoryList(category) {
-  return <CategoryCont categoryName={category.item.name} />;
+  return <CategoryCont categoryName={category.item} />;
 }
-
 const FavMovieItem = ({ movieData }) => {
+  // console.log("movieData genres : ", movieData.genres);
   return (
     <View style={styles.root}>
       <View style={styles.imageCont}>
@@ -33,14 +33,17 @@ const FavMovieItem = ({ movieData }) => {
           <FlatList
             data={movieData.genres}
             horizontal={true}
-            key={(categoryItem) => categoryItem.id}
-            renderItem={renderCategoryList}
+            key={(categoryItem) => categoryItem}
+            renderItem={({ item }) => <CategoryCont categoryName={item} />}
           />
         </View>
         <Text style={styles.text}>
           Duration : <Text style={styles.innerText}>{movieData.runtime}</Text>
         </Text>
-        <Text style={styles.text}>Release Date : <Text style={styles.innerText}>{movieData.release_date}</Text></Text>
+        <Text style={styles.text}>
+          Release Date :{" "}
+          <Text style={styles.innerText}>{movieData.release_date}</Text>
+        </Text>
       </View>
     </View>
   );

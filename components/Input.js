@@ -13,7 +13,7 @@ const Input = ({
     <View style={styles.container}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        {...textInputConfig}
+        {...textInputConfig} 
         style={[styles.input, customInputStyle, descErrorStyle]}
       />
     </View>

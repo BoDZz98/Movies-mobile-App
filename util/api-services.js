@@ -7,6 +7,7 @@ const configHeaders = {
     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3N2U0ZWRkZDlmN2I2ZTVlY2Q3NmQyYzcxNDdkODBmZiIsInN1YiI6IjY1MTUyZTc2YzUwYWQyMDBlYWJjYTllNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sQnd-ukFhZTaf5BUPQn1TZxBHK0Qkj-cANZ5AsTZuhg",
 };
 
+// Get Popular Movies ----------------------------------------------------------------------------------------------------------------------------
 export async function fetchPopularMovies() {
   const response = await axios.get(
     "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
@@ -14,12 +15,10 @@ export async function fetchPopularMovies() {
       headers: configHeaders,
     }
   );
-  // The response return an array of objects with a key called results
-  // console.log(response.data.results[0].title);
-
   return response.data.results;
 }
 
+// Get new Movies ----------------------------------------------------------------------------------------------------------------------------
 export async function fetchNewMovies() {
   const response = await axios.get(
     "https://api.themoviedb.org/3/movie/upcoming",
@@ -31,6 +30,18 @@ export async function fetchNewMovies() {
   return response.data.results;
 }
 
+// Get Top Rated Movies ----------------------------------------------------------------------------------------------------------------------------
+export async function fetchTopRatedMovies() {
+  const response = await axios.get(
+    "https://api.themoviedb.org/3/movie/top_rated",
+    {
+      headers: configHeaders,
+    }
+  );
+  return response.data.results;
+}
+
+// Get all details related to a movie ------------------------------------------------------------------------------------------------------
 export async function fetchMovieDetails(movieId) {
   const response = await axios.get(
     `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,images,credits`,

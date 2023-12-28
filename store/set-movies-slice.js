@@ -5,6 +5,7 @@ const baseImageURL = "http://image.tmdb.org/t/p/original";
 const initMoviesState = {
   popularMovies: [],
   newMovies: [],
+  topRatedMovies: [],
 };
 
 const moviesSlice = createSlice({
@@ -17,7 +18,7 @@ const moviesSlice = createSlice({
         const movieObject = {
           id: movies[index].id,
           title: movies[index].title,
-          rating: movies[index].vote_average,
+          rating: movies[index].vote_average.toFixed(1),
           cover: baseImageURL + movies[index].poster_path,
         };
         state.popularMovies.push(movieObject);
@@ -30,10 +31,22 @@ const moviesSlice = createSlice({
         const movieObject = {
           id: movies[index].id,
           title: movies[index].title,
-          rating: movies[index].vote_average,
+          rating: movies[index].vote_average.toFixed(1),
           cover: baseImageURL + movies[index].poster_path,
         };
         state.newMovies.push(movieObject);
+      }
+    },
+    setTopRatedMovies(state, action) {
+      const movies = action.payload;
+      for (const index in movies) {
+        const movieObject = {
+          id: movies[index].id,
+          title: movies[index].title,
+          rating: movies[index].vote_average.toFixed(1),
+          cover: baseImageURL + movies[index].poster_path,
+        };
+        state.topRatedMovies.push(movieObject);
       }
     },
   },

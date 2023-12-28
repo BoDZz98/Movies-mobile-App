@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Colors } from "../constants/styles";
 import MovieListItem from "../components/MovieListItem";
 import FlatButton from "../components/UI/FlatButton";
-import { fetchNewMovies, fetchPopularMovies } from "../util/api-services";
+import {
+  fetchNewMovies,
+  fetchPopularMovies,
+  fetchTopRatedMovies,
+} from "../util/api-services";
 import { useDispatch, useSelector } from "react-redux";
 import { moviesAction } from "../store/set-movies-slice";
 
@@ -20,10 +31,11 @@ const HomeScreen = () => {
   useEffect(() => {
     async function getData() {
       const fetchedPopularMovies = await fetchPopularMovies();
-      
       const fetchedNewMovies = await fetchNewMovies();
+      const fetchedTopRatedMovies = await fetchTopRatedMovies();
       dispatch(moviesAction.setPopularMovies(fetchedPopularMovies));
       dispatch(moviesAction.setNewMovies(fetchedNewMovies));
+      dispatch(moviesAction.setTopRatedMovies(fetchedTopRatedMovies));
     }
     popularMovies.length === 0 && getData();
   }, []);
@@ -38,11 +50,18 @@ const HomeScreen = () => {
         <FlatList
           data={popularMovies}
           horizontal
-          snapToInterval={150}
+          snapToInterval={Dimensions.get("window").width * 0.55}
           decelerationRate={"fast"}
           showsHorizontalScrollIndicator={false}
-          renderItem={renderMoviesHandler.bind(null, 200, 300)}
           keyExtractor={(movieItem) => movieItem.id}
+          renderItem={({ item }) => (
+            <MovieListItem
+              movie={item}
+              width={Dimensions.get("window").width * 0.55}
+              height={Dimensions.get("window").height * 0.4}
+              showDetails={true}
+            />
+          )}
         />
       </View>
       <View style={styles.newMoviesCont}>
@@ -53,11 +72,17 @@ const HomeScreen = () => {
         <FlatList
           data={newMovies}
           numColumns={2}
-          snapToInterval={275}
+          snapToInterval={Dimensions.get("window").height * 0.32}
           decelerationRate={"fast"}
-          renderItem={renderMoviesHandler.bind(null, 150, 250)} //145,40
-          // I wrote any bec a have 2 flatlists which may render the same content giving a warning regarding duplictae keeys
+          // I wrote any bec a have 2 flatlists which may render the same content giving a warning regarding duplicate keys
           keyExtractor={(movieItem) => `${movieItem.id} any`}
+          renderItem={({ item }) => (
+            <MovieListItem
+              movie={item}
+              width={Dimensions.get("window").width * 0.4}
+              height={Dimensions.get("window").height * 0.3}
+            />
+          )}
         />
       </View>
     </View>
@@ -86,11 +111,9 @@ const styles = StyleSheet.create({
   poularMoviesCont: {
     flex: 0.5,
     paddingVertical: 12,
-    // backgroundColor: Colors.gray500,
   },
   newMoviesCont: {
     flex: 0.5,
     paddingVertical: 12,
-    // backgroundColor: Colors.accent500,
   },
 });

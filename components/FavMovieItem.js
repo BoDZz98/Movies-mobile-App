@@ -1,18 +1,27 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import CategoryCont from "./UI/CategoryCont";
+import { baseImageURL } from "../util/firebase-services";
+import { useNavigation } from "@react-navigation/native";
 
-const baseImageURL = "http://image.tmdb.org/t/p/original";
-
-function renderCategoryList(category) {
-  return <CategoryCont categoryName={category.item} />;
-}
 const FavMovieItem = ({ movieData }) => {
-  // console.log("movieData genres : ", movieData.genres);
+  const navigation = useNavigation();
   return (
-    <View style={styles.root}>
+    <TouchableOpacity
+      style={styles.root}
+      onPress={() => {
+        navigation.navigate("movieDetails", { movieId: movieData.id });
+      }}
+    >
       <View style={styles.imageCont}>
         <Image
           style={styles.image}
@@ -29,23 +38,28 @@ const FavMovieItem = ({ movieData }) => {
             <Ionicons name="star" color={Colors.accent500} size={15} />
           </Text>
         </View>
-        <View style={styles.detailsCont}>
+        <View style={{ marginVertical: 8 }}>
           <FlatList
             data={movieData.genres}
             horizontal={true}
             key={(categoryItem) => categoryItem}
-            renderItem={({ item }) => <CategoryCont categoryName={item} />}
+            renderItem={({ item }) => (
+              // I made this condition bec I use this component in 2 diff location with diff data given
+              <CategoryCont categoryName={item.name ? item.name : item} />
+            )}
           />
         </View>
+        {movieData.runtime && (
+          <Text style={styles.text}>
+            Duration : <Text style={styles.innerText}>{movieData.runtime}</Text>
+          </Text>
+        )}
         <Text style={styles.text}>
-          Duration : <Text style={styles.innerText}>{movieData.runtime}</Text>
-        </Text>
-        <Text style={styles.text}>
-          Release Date :{" "}
+          Release Date :
           <Text style={styles.innerText}>{movieData.release_date}</Text>
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -75,7 +89,6 @@ const styles = StyleSheet.create({
   },
   textCont: {
     width: "55%",
-    // backgroundColor: "blue",
     marginHorizontal: 16,
     marginVertical: 10,
   },
@@ -85,20 +98,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  detailsCont: {
-    flexDirection: "row",
-    marginVertical: 8,
-  },
+
   rating: {
     color: "#cccc",
     fontSize: 15,
     fontWeight: "bold",
     marginTop: 4,
+    paddingHorizontal: 4,
   },
   title: {
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
+    maxWidth: "95%",
   },
   text: {
     color: "white",

@@ -14,6 +14,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { getUserData } from "../util/api-services";
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -28,33 +29,18 @@ const LoginScreen = ({ navigation }) => {
       dispatch(authActions.login());
 
       onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-        // getting the data in the user doc-------------------------------------------------------------------------------
-        const userRefDoc = doc(FIREBASE_DB, "users", user?.uid);
-        const userSnapDoc = await getDoc(userRefDoc);
-
-        // getting comments of this particular user--------------------------------------------------------------
-        const comments = [];
-        const userComments = query(
-          collection(FIREBASE_DB, "comments"),
-          where("userId", "==", user.uid)
-        );
-        const userCommentsSnapshot = await getDocs(userComments);
-        userCommentsSnapshot.forEach((doc) => {
-          // Each doc is a comment
-          comments.push({ commentId: doc.id, ...doc.data() });
-        });
-        // set data of the user-------------------------------------------------------------------
+        const { userData, comments } = await getUserData(user);
+        // set data of the user in ract redux-------------------------------------------------------------------
         dispatch(
           userActions.setUser({
-            userDoc: userSnapDoc.data(),
+            userDoc: userData,
             userComments: comments,
           })
         );
       });
-      navigation.navigate("all");
+      navigation.navigate("home");
     } catch (error) {
-      console.log("error in login page");
-      console.log(error);
+      console.log("error in login page : ", error);
     }
   }
   return (

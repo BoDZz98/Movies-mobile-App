@@ -22,6 +22,7 @@ import {
 } from "firebase/firestore";
 import { userActions } from "../../store/user-data-slice";
 import SearchScreen from "../../screens/SearchScreen";
+import { getUserData } from "../../util/api-services";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -71,22 +72,11 @@ const BottomTabPages = () => {
     if (!!user) {
       dispatch(authActions.login());
 
-      const userRefDoc = doc(FIREBASE_DB, "users", user?.uid);
-      const userSnapDoc = await getDoc(userRefDoc);
-      // getting comments of this particular user-------------
-      const comments = [];
-      const userComments = query(
-        collection(FIREBASE_DB, "comments"),
-        where("userId", "==", user.uid)
-      );
-      const userCommentsSnapshot = await getDocs(userComments);
-      userCommentsSnapshot.forEach((doc) => {
-        // Each doc is a comment
-        comments.push({ commentId: doc.id, ...doc.data() });
-      });
+      const { userData, comments } = await getUserData(user);
+      // set data of the user in ract redux-------------------------------------------------------------------
       dispatch(
         userActions.setUser({
-          userDoc: userSnapDoc.data(),
+          userDoc: userData,
           userComments: comments,
         })
       );

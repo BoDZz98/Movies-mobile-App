@@ -1,10 +1,13 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import OverviewScreen from "./OverviewScreen";
 import Fav_WishlistScreen from "./Fav_WishlistScreen";
 import AllCommentsScreen from "./AllCommentsScreen";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ProfilePageHeader from "../components/navigation/ProfilePageHeader";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -39,13 +42,33 @@ export const MyTabs = () => {
     </Tab.Navigator>
   );
 };
-const ProfileScreen = () => {
+
+const ProfileScreen = ({ navigation }) => {
+  const [bottomSheetShown, setBottomSheetShown] = useState(false);
+  // Editing UserData ---------------------------------------------------------
+  function EditUserData() {
+    setBottomSheetShown(true);
+  }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => {
+        return <ProfilePageHeader onClickHandler={EditUserData} />;
+      },
+    });
+  }, [navigation]);
   return (
-    <View style={styles.root}>
+    <GestureHandlerRootView style={styles.root}>
       <View style={styles.contentCont}>
         <MyTabs />
+        {bottomSheetShown && (
+          <BottomSheet snapPoints={["25%"]}>
+            <BottomSheetView>
+              <Text>Hello</Text>
+            </BottomSheetView>
+          </BottomSheet>
+        )}
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 

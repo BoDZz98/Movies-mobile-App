@@ -7,7 +7,6 @@ import UserListsModal from "../components/profilePage/UserListsModal";
 
 const OverviewScreen = ({ navigation }) => {
   // User data -----------------------------------------------------------------------------------------
-
   const userData = useSelector((state) => state.user.userData);
   const data = [
     {

@@ -128,9 +128,7 @@ const BottomTabPages = () => {
         options={{
           headerShown: isAuth ? true : false,
           title: "Profile",
-          header: () => {
-            return <ProfilePageHeader />;
-          },
+
           tabBarButton: (props) => (
             <TabButton
               props={props}

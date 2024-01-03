@@ -7,10 +7,12 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
 
@@ -19,6 +21,34 @@ export const baseImageURL = "http://image.tmdb.org/t/p/original";
 export function setUserId() {
   const userId = FIREBASE_AUTH?.currentUser?.uid;
   return userId;
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+export async function getUserListsLength() {
+  const lists = query(
+    collection(doc(FIREBASE_DB, "users", setUserId()), "lists")
+  );
+  const listsLength = (await getDocs(lists)).size;
+  return listsLength;
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------
+export async function getUserData(user) {
+  // getting the data in the user doc-----------------------------
+  const userRefDoc = doc(FIREBASE_DB, "users", user?.uid);
+  const userSnapDoc = await getDoc(userRefDoc);
+
+  // getting comments of this particular user------------------
+  const comments = [];
+  const userComments = query(
+    collection(FIREBASE_DB, "comments"),
+    where("userId", "==", user.uid)
+  );
+  const userCommentsSnapshot = await getDocs(userComments);
+  userCommentsSnapshot.forEach((doc) => {
+    comments.push({ commentId: doc.id, ...doc.data() });
+  });
+  return { userData: userSnapDoc.data(), comments };
 }
 
 // add movie to fav or wishlist--------------------------------------------------------------------------------------
@@ -80,7 +110,7 @@ export async function updateComment(commentId, commentData) {
     );
   }
 }
-// Delete a comment from the user -----------------------------------------------------------------------------------------------------
+// Delete a comment  -----------------------------------------------------------------------------------------------------
 export async function deleteComment(commentId) {
   const commentRefDoc = doc(FIREBASE_DB, "comments", commentId);
   await deleteDoc(commentRefDoc);
@@ -145,7 +175,6 @@ export async function addDeleteMovieInList(data) {
     });
   }
 }
-
 // check whether a movie is in fav or wishlist------------------------------------------------------------------------------------------------
 export async function checkMovie(movieId, list) {
   // This is function is always called when we open the app so we make sure if the user is logged in first or not , to prevent an warning

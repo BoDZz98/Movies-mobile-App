@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { userActions } from "../store/user-data-slice";
-import { getUserData } from "../util/api-services";
+import { getUserData } from "../util/firebase-services";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();

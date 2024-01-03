@@ -12,17 +12,10 @@ import ProfilePageHeader from "./ProfilePageHeader";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { authActions } from "../../store/auth-slice";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+
 import { userActions } from "../../store/user-data-slice";
 import SearchScreen from "../../screens/SearchScreen";
-import { getUserData } from "../../util/api-services";
+import { getUserData, getUserListsLength } from "../../util/firebase-services";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -73,11 +66,13 @@ const BottomTabPages = () => {
       dispatch(authActions.login());
 
       const { userData, comments } = await getUserData(user);
-      // set data of the user in ract redux-------------------------------------------------------------------
+      const userListsLength = await getUserListsLength();
+      // set data of the user in react redux-------------------------------------------------------------------
       dispatch(
         userActions.setUser({
           userDoc: userData,
           userComments: comments,
+          userListsLength,
         })
       );
     }

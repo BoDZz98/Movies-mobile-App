@@ -6,15 +6,8 @@ import { authActions } from "../store/auth-slice";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { userActions } from "../store/user-data-slice";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { getUserData } from "../util/api-services";
+import { getUserData } from "../util/firebase-services";
+
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();

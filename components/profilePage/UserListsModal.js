@@ -24,8 +24,11 @@ import {
   query,
 } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
 const UserListsModal = ({ isVisible, onClose }) => {
+  const dispatch = useDispatch();
   const [input, setInput] = useState({ value: "", isValid: true });
   const [listExist, setListExist] = useState(false);
   const [userLists, setUserLists] = useState([]);
@@ -36,8 +39,13 @@ const UserListsModal = ({ isVisible, onClose }) => {
   }
   async function addListHandler() {
     const listNameValid = input.value.length != 0;
-    setInput((currentValues) => ({ ...currentValues, isValid: listNameValid }));
-    if (input.isValid) {
+    setInput((currentValues) => {
+      return {
+        value: currentValues.value,
+        isValid: listNameValid,
+      };
+    });
+    if (listNameValid) {
       const bool = await addList(input.value);
       setListExist(bool);
       setInput({ value: "", isValid: true });
@@ -57,7 +65,7 @@ const UserListsModal = ({ isVisible, onClose }) => {
         );
       }
     );
-  }, []);
+  }, [isVisible]);
 
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>

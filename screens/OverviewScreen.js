@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,41 +7,38 @@ import UserListsModal from "../components/profilePage/UserListsModal";
 
 const OverviewScreen = ({ navigation }) => {
   // User data -----------------------------------------------------------------------------------------
+
   const userData = useSelector((state) => state.user.userData);
-  const userFavMoviesLength = userData.favMovies.length;
-  const userWishlistMoviesLength = userData.wishlistMovies.length;
-  const userCommentsLength = userData.userComments.length;
   const data = [
     {
       name: "My Lists",
       subName: "lists",
       icon: "list",
       pageName: "myLists",
-      length: "0",
+      length: userData.userListsLength,
     },
     {
       name: "Comments",
       subName: "Comments",
       icon: "chatbox-ellipses-outline",
       pageName: "Comments",
-      length: userCommentsLength,
+      length: userData.userComments.length,
     },
     {
       name: "Favorites",
       subName: "Movies",
       icon: "heart-circle",
       pageName: "fav",
-      length: userFavMoviesLength,
+      length: userData.favMovies.length,
     },
     {
       name: "Wishlist",
       subName: "Movies",
       icon: "book-outline",
       pageName: "wishlist",
-      length: userWishlistMoviesLength,
+      length: userData.wishlistMovies.length,
     },
   ];
-
   // User lists modal logic ---------------------------------------------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   function closeHandler() {

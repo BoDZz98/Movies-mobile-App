@@ -1,38 +1,11 @@
 import axios from "axios";
 import { convertMinutesToTime } from "./time";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { FIREBASE_DB } from "../firebaseConfig";
 
 const configHeaders = {
   "Content-Type": "application/json",
   Authorization:
     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3N2U0ZWRkZDlmN2I2ZTVlY2Q3NmQyYzcxNDdkODBmZiIsInN1YiI6IjY1MTUyZTc2YzUwYWQyMDBlYWJjYTllNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sQnd-ukFhZTaf5BUPQn1TZxBHK0Qkj-cANZ5AsTZuhg",
 };
-
-export async function getUserData(user) {
-  // getting the data in the user doc------------------------------------------------------------------------------------------------------------
-  const userRefDoc = doc(FIREBASE_DB, "users", user?.uid);
-  const userSnapDoc = await getDoc(userRefDoc);
-
-  // getting comments of this particular user------------------
-  const comments = [];
-  const userComments = query(
-    collection(FIREBASE_DB, "comments"),
-    where("userId", "==", user.uid)
-  );
-  const userCommentsSnapshot = await getDocs(userComments);
-  userCommentsSnapshot.forEach((doc) => {
-    comments.push({ commentId: doc.id, ...doc.data() });
-  });
-  return { userData: userSnapDoc.data(), comments };
-}
 
 // Get Popular Movies ----------------------------------------------------------------------------------------------------------------------------
 export async function fetchPopularMovies() {

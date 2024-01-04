@@ -1,16 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useState } from "react";
 import {
+  Dimensions,
   Image,
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Colors } from "../../constants/styles";
@@ -21,11 +15,13 @@ import { FIREBASE_AUTH, STORAGE } from "../../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { ref, uploadBytes } from "firebase/storage";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MyButton from "../UI/MyButton";
+import { LinearGradient } from "expo-linear-gradient";
 
-const ProfilePageHeader = ({ onClickHandler }) => {
+const ProfilePageHeader = ({
+  openBottomSheetHandler,
+  userName,
+  bottomSheetOpened,
+}) => {
   const dispatch = useDispatch();
 
   //  logout -----------------------------------------------------------------------------------------------------------------------
@@ -90,7 +86,7 @@ const ProfilePageHeader = ({ onClickHandler }) => {
   // Bottom Sheet ------------------------------------------------------------------------------------------------------------
 
   return (
-    <Pressable style={styles.root} onPress={() => onClickHandler()}>
+    <View style={styles.root}>
       <View style={styles.container}>
         <Text style={styles.text}>Profile</Text>
         <Ionicons
@@ -100,27 +96,30 @@ const ProfilePageHeader = ({ onClickHandler }) => {
           onPress={logoutHandler}
         />
       </View>
-      <View style={styles.userCard}>
-        <Image
-          style={styles.iconImage}
-          resizeMode="cover"
-          source={
-            image ? { uri: image } : require("../../assets/imgs/logo2.png")
-          }
-        />
-        <View style={styles.buttonsCont}>
-          {/* <MyButton
-            text="Upload"
-            style={styles.button}
-            textStyle={{ fontWeight: "normal" ,fontSize:12 }}
-            onPress={async () => {
-              await pickImage(false), uploadImage();
-            }}
-          /> */}
-        </View>
-        <Text>Abdelrahman Elsiefy</Text>
-      </View>
-    </Pressable>
+      {!bottomSheetOpened && (
+        <LinearGradient colors={["gray", "white"]} style={styles.outerUserCard}>
+          <Pressable
+            style={styles.innerUserCard}
+            onPress={() => openBottomSheetHandler()}
+          >
+            <Image
+              style={styles.iconImage}
+              resizeMode="cover"
+              source={
+                image ? { uri: image } : require("../../assets/imgs/logo2.png")
+              }
+            />
+            <Text style={{ fontWeight: "bold", fontSize: 22 }}>{userName}</Text>
+            <Ionicons
+              name={"filter-outline"}
+              color="black"
+              size={25}
+              style={{ position: "absolute", bottom: 4, right: 4 }}
+            />
+          </Pressable>
+        </LinearGradient>
+      )}
+    </View>
   );
 };
 
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    height: 300,
+    height: Dimensions.get("window").height * 0.38,
     width: "100%",
     backgroundColor: Colors.gray500,
     flexDirection: "row",
@@ -148,31 +147,26 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "bold",
   },
-  userCard: {
-    backgroundColor: "white",
+  outerUserCard: {
     position: "absolute",
-    top: 120,
-    height: 150,
+    top: Dimensions.get("window").height * 0.15,
+    height: Dimensions.get("window").height * 0.2,
     width: "80%",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
     borderRadius: 20,
-    zIndex: 1,
+    // zIndex: 1,
+  },
+  innerUserCard: {
+    // backgroundColor: "red",
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   iconImage: {
-    width: "30%",
-    height: "65%",
+    width: Dimensions.get("window").width * 0.3,
+    height: Dimensions.get("window").width * 0.3,
     borderRadius: 3000,
     marginBottom: 4,
-  },
-  button: {
-    backgroundColor: Colors.blue,
-    paddingHorizontal: 2,
-    borderRadius: 10,
-  },
-  buttonsCont: {
-    flexDirection: "row",
   },
 });

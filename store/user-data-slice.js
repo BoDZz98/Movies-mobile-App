@@ -4,7 +4,7 @@ import { fetchMovieDetails } from "../util/api-services";
 const initUserState = {
   userData: {
     userId: "",
-    username: "",
+    userName: "",
     favMovies: [],
     wishlistMovies: [],
     userComments: [],

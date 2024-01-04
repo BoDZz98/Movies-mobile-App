@@ -16,6 +16,8 @@ import MyListsScreen from "./screens/MyListsScreen";
 import FavButton from "./components/FavButton";
 import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -36,89 +38,93 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerTintColor: "white",
-            }}
-          >
-            <Stack.Screen
-              name="all"
-              component={BottomTabPages}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="login"
-              component={LoginScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="signup"
-              component={SignupScreen}
-              options={{ headerShown: false }}
-            />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <Provider store={store}>
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerTintColor: "white",
+                }}
+              >
+                <Stack.Screen
+                  name="all"
+                  component={BottomTabPages}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="signup"
+                  component={SignupScreen}
+                  options={{ headerShown: false }}
+                />
 
-            <Stack.Screen
-              name="movieDetails"
-              component={MovieDetailsScreen}
-              options={({ route }) => {
-                return {
-                  presentation: "modal",
-                  headerTransparent: true,
-                  headerTitle: "",
-                  headerRight: ({ tintColor }) => {
-                    return <FavButton movieId={route.params?.movieId} />;
-                  },
-                };
-              }}
-            />
+                <Stack.Screen
+                  name="movieDetails"
+                  component={MovieDetailsScreen}
+                  options={({ route }) => {
+                    return {
+                      presentation: "modal",
+                      headerTransparent: true,
+                      headerTitle: "",
+                      headerRight: ({ tintColor }) => {
+                        return <FavButton movieId={route.params?.movieId} />;
+                      },
+                    };
+                  }}
+                />
 
-            <Stack.Screen
-              name="gameComments"
-              component={GameCommentsScreen}
-              options={({ route }) => {
-                return {
-                  headerTitle: "",
-                  headerTransparent: true,
-                  headerRight: ({ tintColor }) => {
-                    //  Modal logic is below
-                    return (
-                      <Ionicons
-                        name="add-circle"
-                        color={tintColor}
-                        size={40}
-                        onPress={() => {
-                          setIsModalVisible(true);
-                          setMovieData({
-                            poster: route.params.moviePoster,
-                            title: route.params.movieName,
-                          });
-                        }}
-                      />
-                    );
-                  },
-                };
-              }}
+                <Stack.Screen
+                  name="gameComments"
+                  component={GameCommentsScreen}
+                  options={({ route }) => {
+                    return {
+                      headerTitle: "",
+                      headerTransparent: true,
+                      headerRight: ({ tintColor }) => {
+                        //  Modal logic is below
+                        return (
+                          <Ionicons
+                            name="add-circle"
+                            color={tintColor}
+                            size={40}
+                            onPress={() => {
+                              setIsModalVisible(true);
+                              setMovieData({
+                                poster: route.params.moviePoster,
+                                title: route.params.movieName,
+                              });
+                            }}
+                          />
+                        );
+                      },
+                    };
+                  }}
+                />
+                <Stack.Screen
+                  name="myLists"
+                  component={MyListsScreen}
+                  options={{
+                    headerTitle: "",
+                    headerTransparent: true,
+                  }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+            <AddCommentModal
+              isVisible={isModalVisible}
+              onClose={closeModalHandler}
+              movieData={isModalVisible ? movieData : ""}
             />
-            <Stack.Screen
-              name="myLists"
-              component={MyListsScreen}
-              options={{
-                headerTitle: "",
-                headerTransparent: true,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <AddCommentModal
-          isVisible={isModalVisible}
-          onClose={closeModalHandler}
-          movieData={isModalVisible ? movieData : ""}
-        />
-      </Provider>
+          </Provider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </>
   );
 }

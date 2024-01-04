@@ -1,13 +1,15 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import OverviewScreen from "./OverviewScreen";
 import Fav_WishlistScreen from "./Fav_WishlistScreen";
 import AllCommentsScreen from "./AllCommentsScreen";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ProfilePageHeader from "../components/navigation/ProfilePageHeader";
+import MyBottomSheet from "../components/profilePage/MyBottomSheet";
+import { useSelector } from "react-redux";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -45,28 +47,37 @@ export const MyTabs = () => {
 
 const ProfileScreen = ({ navigation }) => {
   const [bottomSheetShown, setBottomSheetShown] = useState(false);
-  // Editing UserData ---------------------------------------------------------
-  function EditUserData() {
-    setBottomSheetShown(true);
-  }
+  const name = useSelector((state) => state.user.userData.userName);
+  //  Editing UserData ---------------------------------------------------------
+  const ref = useRef(null);
+  const bottomSheetOpened = ref.current?.snapPoints?.length > 0;
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: () => {
-        return <ProfilePageHeader onClickHandler={EditUserData} />;
-      },
+      header: () =>
+        !bottomSheetOpened && (
+          <ProfilePageHeader
+            openBottomSheetHandler={() => {
+              ref.current?.present();
+            }}
+            userName={name}
+            bottomSheetOpened={bottomSheetShown}
+          />
+        ),
     });
-  }, [navigation]);
+  }, [bottomSheetShown]);
   return (
     <GestureHandlerRootView style={styles.root}>
       <View style={styles.contentCont}>
         <MyTabs />
-        {bottomSheetShown && (
-          <BottomSheet snapPoints={["25%"]}>
-            <BottomSheetView>
-              <Text>Hello</Text>
-            </BottomSheetView>
-          </BottomSheet>
-        )}
+
+        <MyBottomSheet
+          closeBottomSheetHandler={() => {
+            ref.current?.close();
+            /*  setBottomSheetShown(false); */
+          }}
+          userName={name}
+          sheetRef={ref}
+        />
       </View>
     </GestureHandlerRootView>
   );

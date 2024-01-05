@@ -65,7 +65,7 @@ const BottomTabPages = () => {
     if (!!user) {
       dispatch(authActions.login());
 
-      const { userData, comments } = await getUserData(user);
+      const { userData, comments, profilePicture } = await getUserData(user);
       const userListsLength = await getUserListsLength();
       // set data of the user in react redux-------------------------------------------------------------------
       dispatch(
@@ -73,6 +73,7 @@ const BottomTabPages = () => {
           userDoc: userData,
           userComments: comments,
           userListsLength,
+          profilePicture,
         })
       );
     }

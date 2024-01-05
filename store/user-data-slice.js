@@ -5,6 +5,7 @@ const initUserState = {
   userData: {
     userId: "",
     userName: "",
+    profilePicture: "",
     favMovies: [],
     wishlistMovies: [],
     userComments: [],
@@ -16,11 +17,19 @@ const userSlice = createSlice({
   initialState: initUserState,
   reducers: {
     setUser(state, action) {
-      const { userDoc, userComments, userListsLength } = action.payload;
-      // console.log(userDoc);
+      const { userDoc, userComments, userListsLength, profilePicture } =
+        action.payload;
       // userData is an object itself , so we used the spread operator ... to spread/move the userData
       // object properties into state.userData object , then we added the userComments
-      state.userData = { ...userDoc, userComments, userListsLength };
+      state.userData = {
+        ...userDoc,
+        userComments,
+        userListsLength,
+        profilePicture,
+      };
+    },
+    updateprofilePicture(state, action) {
+      state.userData.profilePicture === action.payload;
     },
     addOrRemoveFavMovie(state, action) {
       const movieData = action.payload;

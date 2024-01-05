@@ -47,7 +47,6 @@ export const MyTabs = () => {
 
 const ProfileScreen = ({ navigation }) => {
   const [bottomSheetShown, setBottomSheetShown] = useState(false);
-  const name = useSelector((state) => state.user.userData.userName);
   //  Editing UserData ---------------------------------------------------------
   const ref = useRef(null);
   const bottomSheetOpened = ref.current?.snapPoints?.length > 0;
@@ -59,7 +58,6 @@ const ProfileScreen = ({ navigation }) => {
             openBottomSheetHandler={() => {
               ref.current?.present();
             }}
-            userName={name}
             bottomSheetOpened={bottomSheetShown}
           />
         ),
@@ -75,7 +73,6 @@ const ProfileScreen = ({ navigation }) => {
             ref.current?.close();
             /*  setBottomSheetShown(false); */
           }}
-          userName={name}
           sheetRef={ref}
         />
       </View>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -9,81 +9,39 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/auth-slice";
 import { FIREBASE_AUTH, STORAGE } from "../../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { setUserId } from "../../util/firebase-services";
 
-const ProfilePageHeader = ({
-  openBottomSheetHandler,
-  userName,
-  bottomSheetOpened,
-}) => {
+const ProfilePageHeader = ({ openBottomSheetHandler, bottomSheetOpened }) => {
   const dispatch = useDispatch();
+  // const [profilePicture, setProfilePicture] = useState();
+  const imgsRef = ref(STORAGE, `profileImages/${setUserId()}`);
+  const userName = useSelector((state) => state.user.userData.userName);
+  const profilePicture = useSelector(
+    (state) => state.user.userData.profilePicture
+  );
+  // console.log(profilePicture);
+  useEffect(() => {
+    /* listAll(imgsRef).then((response) => {
+      console.log(response.items);
+      response.items.forEach((item) =>
+        getDownloadURL(item).then((url) => setProfilePicture(url))
+      );
+    }); */
+    // getDownloadURL(imgsRef).then((url) => setProfilePicture(url));
+  }, []);
 
   //  logout -----------------------------------------------------------------------------------------------------------------------
   function logoutHandler() {
     dispatch(authActions.logout());
     FIREBASE_AUTH.signOut();
   }
-  // Camera ---------------------------------------------------------------------------------------------------------------
-  const [image, setImage] = useState();
-  const [uploading, setUploading] = useState();
-  const options = (ImagePicker.ImagePickerOptions = {
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
-
-  async function pickImage(useLibrary) {
-    let result;
-    if (useLibrary) {
-      result = await ImagePicker.launchImageLibraryAsync(options);
-    } else {
-      await ImagePicker.requestCameraPermissionsAsync();
-      result = await ImagePicker.launchCameraAsync(options);
-    }
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  }
-
-  async function uploadImage() {
-    try {
-      const { uri } = await FileSystem.getInfoAsync(image);
-
-      const blob = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = () => {
-          resolve(xhr.response);
-        };
-        xhr.onerror = (e) => {
-          console.log("error", e);
-          reject(new TypeError("Network request failed"));
-        };
-        xhr.responseType = "blob";
-        xhr.open("GET", uri, true);
-        xhr.send(null);
-      });
-
-      const fileName = image.substring(image.lastIndexOf("/") + 1);
-      // console.log("in heere", fileName);
-
-      const imgRef = ref(STORAGE, fileName);
-
-      uploadBytes(imgRef, blob).then(() => {
-        alert("Imagen subida correctamente");
-      });
-      setUploading(false);
-      setImage(null);
-    } catch (error) {}
-  }
-  // Bottom Sheet ------------------------------------------------------------------------------------------------------------
 
   return (
     <View style={styles.root}>
@@ -106,7 +64,9 @@ const ProfilePageHeader = ({
               style={styles.iconImage}
               resizeMode="cover"
               source={
-                image ? { uri: image } : require("../../assets/imgs/logo2.png")
+                profilePicture
+                  ? { uri: profilePicture }
+                  : require("../../assets/imgs/logo2.png")
               }
             />
             <Text style={{ fontWeight: "bold", fontSize: 22 }}>{userName}</Text>

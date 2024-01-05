@@ -17,14 +17,20 @@ import MyButton from "../UI/MyButton";
 import { LinearGradient } from "expo-linear-gradient";
 import Input from "../Input";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+import { pickImage, uploadImage } from "../../storage-services";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
-const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
-  const [isFocused, setIsFocused] = useState(false);
+const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
+  const dispatch = useDispatch();
+  const userName = useSelector((state) => state.user.userData.userName);
+  const profilePicture = useSelector(
+    (state) => state.user.userData.profilePicture
+  );
+  const [image, setImage] = useState(profilePicture);
+  console.log(profilePicture);
+
   // Bottom Sheet logic ------------------------------------------------------------------------------------------
-  // const sheetRef = useRef(null);
-
   const renderBackdrop = useCallback(
     (props) => (
       <BottomSheetBackdrop
@@ -37,34 +43,8 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
     []
   );
 
-  // Camera ---------------------------------------------------------------------------------------------------------------
-  const [image, setImage] = useState();
-  const [uploading, setUploading] = useState();
-  const options = (ImagePicker.ImagePickerOptions = {
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
-
-  async function pickImage(useLibrary) {
-    let result;
-    if (useLibrary) {
-      result = await ImagePicker.launchImageLibraryAsync(options);
-    } else {
-      await ImagePicker.requestCameraPermissionsAsync();
-      result = await ImagePicker.launchCameraAsync(options);
-    }
-
-    if (!result.canceled) {
-      console.log(result.assets[0].uri);
-      setImage(result.assets[0].uri);
-    }
-  }
-  const inputStyle = styles.defaultInputCont;
   return (
     <BottomSheetModal
-    
       ref={sheetRef}
       snapPoints={["50%"]}
       enablePanDownToClose
@@ -76,9 +56,7 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
           <Image
             style={styles.iconImage}
             resizeMode="cover"
-            source={
-              image ? { uri: image } : require("../../assets/imgs/logo2.png")
-            }
+            // source={{ uri: image }}
           />
 
           <View style={{ flexDirection: "row", columnGap: 10 }}>
@@ -87,7 +65,8 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
               style={styles.cameraButton}
               textStyle={{ fontWeight: "normal", fontSize: 16 }}
               onPress={async () => {
-                await pickImage(false);
+                const url = await pickImage(false);
+                setImage(url);
               }}
             />
             <MyButton
@@ -95,7 +74,8 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
               style={styles.gallaryButton}
               textStyle={{ fontWeight: "normal", fontSize: 16 }}
               onPress={async () => {
-                await pickImage(true);
+                const url = await pickImage(true);
+                setImage(url);
               }}
             />
           </View>
@@ -105,8 +85,6 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
               label="userName"
               textInputConfig={{
                 value: userName,
-                onFocus: () => setIsFocused(true),
-                onBlur: () => setIsFocused(false),
               }}
             />
           </View>
@@ -122,7 +100,10 @@ const MyBottomSheet = ({ closeBottomSheetHandler, userName, sheetRef }) => {
               name={"checkmark-outline"}
               color={Colors.green}
               size={50}
-              onPress={closeBottomSheetHandler}
+              onPress={() => {
+                uploadImage(image);
+                dispatch(userActions.updateprofilePicture(image));
+              }}
             />
           </View>
         </LinearGradient>

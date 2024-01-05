@@ -14,7 +14,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB, STORAGE } from "../firebaseConfig";
+import { getDownloadURL, ref } from "firebase/storage";
 
 export const baseImageURL = "http://image.tmdb.org/t/p/original";
 
@@ -48,7 +49,15 @@ export async function getUserData(user) {
   userCommentsSnapshot.forEach((doc) => {
     comments.push({ commentId: doc.id, ...doc.data() });
   });
-  return { userData: userSnapDoc.data(), comments };
+  // getting profile picture
+
+  try {
+    const imgsRef = ref(STORAGE, `profileImages/${user.uid}`);
+    const profilePicture = await getDownloadURL(imgsRef);
+    return { userData: userSnapDoc.data(), comments, profilePicture };
+  } catch (error) {
+    return { userData: userSnapDoc.data(), comments, profilePicture: "" };
+  }
 }
 
 // add movie to fav or wishlist--------------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ export async function uploadImage(image) {
     });
 
     const imgRef = ref(STORAGE, `profileImages/${setUserId()}`);
-    uploadBytes(imgRef, blob).then(() => {});
+    await uploadBytes(imgRef, blob);
   } catch (error) {
     console.log("error in storage services", error);
   }

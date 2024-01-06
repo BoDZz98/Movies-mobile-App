@@ -31,6 +31,13 @@ const userSlice = createSlice({
     updateprofilePicture(state, action) {
       state.userData.profilePicture === action.payload;
     },
+    updateUserName(state, action) {
+      state.userData.userName = action.payload;
+    },
+    /* updateprofileinfo(state, action) {
+      const { identifier, value } = action.payload;
+      state.userData == { ...state.userData, [identifier]: value };
+    }, */
     addOrRemoveFavMovie(state, action) {
       const movieData = action.payload;
       const addedMovie = {

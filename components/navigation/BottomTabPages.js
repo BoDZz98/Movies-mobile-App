@@ -61,23 +61,27 @@ const BottomTabPages = () => {
 
   const dispatch = useDispatch();
   // setting the data of this user , same as in login page -----------------------------------------------------
-  onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-    if (!!user) {
-      dispatch(authActions.login());
 
-      const { userData, comments, profilePicture } = await getUserData(user);
-      const userListsLength = await getUserListsLength();
-      // set data of the user in react redux-------------------------------------------------------------------
-      dispatch(
-        userActions.setUser({
-          userDoc: userData,
-          userComments: comments,
-          userListsLength,
-          profilePicture,
-        })
-      );
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+      console.log("in bottomTabPages");
+      if (!!user) {
+        dispatch(authActions.login());
+
+        const { userData, comments, profilePicture } = await getUserData(user);
+        const userListsLength = await getUserListsLength();
+        // set data of the user in react redux-------------------------------------------------------------------
+        dispatch(
+          userActions.setUser({
+            userDoc: userData,
+            userComments: comments,
+            userListsLength,
+            profilePicture,
+          })
+        );
+      }
+    });
+  }, []);
 
   return (
     // Notice the diffrence in screenOptions syntex , we wrote an array function the return an object containing our normal options ,

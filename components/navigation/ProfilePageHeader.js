@@ -11,32 +11,15 @@ import { Colors } from "../../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/auth-slice";
-import { FIREBASE_AUTH, STORAGE } from "../../firebaseConfig";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { LinearGradient } from "expo-linear-gradient";
-import { setUserId } from "../../util/firebase-services";
 
 const ProfilePageHeader = ({ openBottomSheetHandler, bottomSheetOpened }) => {
   const dispatch = useDispatch();
-  // const [profilePicture, setProfilePicture] = useState();
-  const imgsRef = ref(STORAGE, `profileImages/${setUserId()}`);
   const userName = useSelector((state) => state.user.userData.userName);
   const profilePicture = useSelector(
     (state) => state.user.userData.profilePicture
   );
-  // console.log(profilePicture);
-  useEffect(() => {
-    /* listAll(imgsRef).then((response) => {
-      console.log(response.items);
-      response.items.forEach((item) =>
-        getDownloadURL(item).then((url) => setProfilePicture(url))
-      );
-    }); */
-    // getDownloadURL(imgsRef).then((url) => setProfilePicture(url));
-  }, []);
-
   //  logout -----------------------------------------------------------------------------------------------------------------------
   function logoutHandler() {
     dispatch(authActions.logout());

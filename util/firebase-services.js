@@ -49,8 +49,7 @@ export async function getUserData(user) {
   userCommentsSnapshot.forEach((doc) => {
     comments.push({ commentId: doc.id, ...doc.data() });
   });
-  // getting profile picture
-
+  // getting profile picture -------------------
   try {
     const imgsRef = ref(STORAGE, `profileImages/${user.uid}`);
     const profilePicture = await getDownloadURL(imgsRef);
@@ -60,6 +59,13 @@ export async function getUserData(user) {
   }
 }
 
+// Update user name---------------------------------------------------------------------------------
+export async function updateUserName(newUserName) {
+  const userRef = doc(FIREBASE_DB, "users", setUserId());
+  await updateDoc(userRef, {
+    userName: newUserName,
+  });
+}
 // add movie to fav or wishlist--------------------------------------------------------------------------------------
 export async function addMovie(movieData, isSet, list) {
   const userId = setUserId();

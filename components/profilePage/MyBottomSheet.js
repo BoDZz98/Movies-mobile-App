@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -20,15 +20,28 @@ import { Ionicons } from "@expo/vector-icons";
 import { pickImage, uploadImage } from "../../storage-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
+import { useNavigation } from "@react-navigation/native";
+import { updateUserName } from "../../util/firebase-services";
 
 const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const userName = useSelector((state) => state.user.userData.userName);
   const profilePicture = useSelector(
     (state) => state.user.userData.profilePicture
   );
+  const noProfilePicture = profilePicture?.length === 0;
+
   const [image, setImage] = useState(profilePicture);
-  console.log(profilePicture);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userInput, setUserInput] = useState({});
+  useEffect(() => {
+    setUserInput({
+      value: userName,
+      isValid: true,
+    });
+  }, [userName]);
 
   // Bottom Sheet logic ------------------------------------------------------------------------------------------
   const renderBackdrop = useCallback(
@@ -43,6 +56,31 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
     []
   );
 
+  // Validation----------------------------------------------------------------------------------
+  function userInputHandler(enteredValue) {
+    setUserInput({ value: enteredValue, isValid: true });
+  }
+  async function submitHandler() {
+    try {
+      const nameIsValid = userInput.value.length !== 0;
+      setUserInput((currentValues) => ({
+        ...currentValues,
+        isValid: nameIsValid,
+      }));
+
+      if (!nameIsValid) return;
+      setIsLoading(true);
+      dispatch(userActions.updateUserName(userInput.value));
+      updateUserName(userInput.value);
+      await uploadImage(image);
+      dispatch(userActions.updateprofilePicture(image));
+      setIsLoading(false);
+      navigation.navigate("profile");
+      closeBottomSheetHandler();
+    } catch (error) {
+      closeBottomSheetHandler();
+    }
+  }
   return (
     <BottomSheetModal
       ref={sheetRef}
@@ -53,10 +91,18 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
     >
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <LinearGradient colors={["white", Colors.gray500]} style={styles.root}>
+          {noProfilePicture && !image && (
+            <Image
+              style={styles.iconImage}
+              resizeMode="cover"
+              source={require("../../assets/imgs/logo2.png")}
+            />
+          )}
+
           <Image
             style={styles.iconImage}
             resizeMode="cover"
-            // source={{ uri: image }}
+            source={{ uri: image ? image : profilePicture }}
           />
 
           <View style={{ flexDirection: "row", columnGap: 10 }}>
@@ -84,28 +130,30 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
             <Input
               label="userName"
               textInputConfig={{
-                value: userName,
+                value: userInput.value,
+                onChangeText: userInputHandler,
               }}
             />
           </View>
 
-          <View style={{ flexDirection: "row", columnGap: 30 }}>
-            <Ionicons
-              name={"close-outline"}
-              color="red"
-              size={50}
-              onPress={closeBottomSheetHandler}
-            />
-            <Ionicons
-              name={"checkmark-outline"}
-              color={Colors.green}
-              size={50}
-              onPress={() => {
-                uploadImage(image);
-                dispatch(userActions.updateprofilePicture(image));
-              }}
-            />
-          </View>
+          {isLoading ? (
+            <Text style={styles.loadingText}>Saving...</Text>
+          ) : (
+            <View style={{ flexDirection: "row", columnGap: 30 }}>
+              <Ionicons
+                name={"close-outline"}
+                color="red"
+                size={50}
+                onPress={closeBottomSheetHandler}
+              />
+              <Ionicons
+                name={"checkmark-outline"}
+                color={Colors.green}
+                size={50}
+                onPress={() => submitHandler()}
+              />
+            </View>
+          )}
         </LinearGradient>
       </KeyboardAvoidingView>
     </BottomSheetModal>
@@ -140,4 +188,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
   },
+  loadingText: { color: Colors.green, fontWeight: "bold", fontSize: 22 },
 });

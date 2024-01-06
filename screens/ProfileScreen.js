@@ -8,8 +8,6 @@ import AllCommentsScreen from "./AllCommentsScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ProfilePageHeader from "../components/navigation/ProfilePageHeader";
 import MyBottomSheet from "../components/profilePage/MyBottomSheet";
-import { useSelector } from "react-redux";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -46,8 +44,7 @@ export const MyTabs = () => {
 };
 
 const ProfileScreen = ({ navigation }) => {
-  const [bottomSheetShown, setBottomSheetShown] = useState(false);
-  //  Editing UserData ---------------------------------------------------------
+  //  Editing UserData --------------------------------------------------------------------------------------------------
   const ref = useRef(null);
   const bottomSheetOpened = ref.current?.snapPoints?.length > 0;
   useLayoutEffect(() => {
@@ -58,11 +55,10 @@ const ProfileScreen = ({ navigation }) => {
             openBottomSheetHandler={() => {
               ref.current?.present();
             }}
-            bottomSheetOpened={bottomSheetShown}
           />
         ),
     });
-  }, [bottomSheetShown]);
+  }, []);
   return (
     <GestureHandlerRootView style={styles.root}>
       <View style={styles.contentCont}>
@@ -71,7 +67,6 @@ const ProfileScreen = ({ navigation }) => {
         <MyBottomSheet
           closeBottomSheetHandler={() => {
             ref.current?.close();
-            /*  setBottomSheetShown(false); */
           }}
           sheetRef={ref}
         />

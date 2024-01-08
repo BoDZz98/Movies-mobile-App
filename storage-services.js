@@ -7,7 +7,7 @@ import { STORAGE } from "./firebaseConfig";
 const options = (ImagePicker.ImagePickerOptions = {
   mediaTypes: ImagePicker.MediaTypeOptions.Images,
   allowsEditing: true,
-  aspect: [4, 3],
+  aspect: [1, 1],
   quality: 1,
 });
 

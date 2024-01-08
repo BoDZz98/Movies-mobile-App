@@ -29,7 +29,7 @@ const userSlice = createSlice({
       };
     },
     updateprofilePicture(state, action) {
-      state.userData.profilePicture === action.payload;
+      state.userData.profilePicture = action.payload;
     },
     updateUserName(state, action) {
       state.userData.userName = action.payload;

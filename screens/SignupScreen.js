@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { userActions } from "../store/user-data-slice";
-import { getUserData } from "../util/firebase-services";
+import { getUserData, getUserListsLength } from "../util/firebase-services";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -37,14 +37,16 @@ const SignupScreen = ({ navigation }) => {
       );
       dispatch(authActions.login());
 
-      // save the user data in our user data slice using react redux
       onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-        const { userData, comments } = await getUserData(user);
-        // set data of the user in ract redux-------------------------------------------------------------------
+        // save the user data in our user data slice using react redux----
+        const { userData, comments, profilePicture } = await getUserData(user);
+        const userListsLength = await getUserListsLength();
         dispatch(
           userActions.setUser({
             userDoc: userData,
             userComments: comments,
+            userListsLength,
+            profilePicture,
           })
         );
       });

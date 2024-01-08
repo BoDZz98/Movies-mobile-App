@@ -52,6 +52,7 @@ const ProfilePageHeader = ({ openBottomSheetHandler, bottomSheetOpened }) => {
                   : require("../../assets/imgs/logo2.png")
               }
             />
+
             <Text style={{ fontWeight: "bold", fontSize: 22 }}>{userName}</Text>
             <Ionicons
               name={"filter-outline"}

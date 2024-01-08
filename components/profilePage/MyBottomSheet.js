@@ -33,7 +33,7 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
   );
   const noProfilePicture = profilePicture?.length === 0;
 
-  const [image, setImage] = useState(profilePicture);
+  const [image, setImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [userInput, setUserInput] = useState({});
   useEffect(() => {
@@ -91,19 +91,19 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
     >
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <LinearGradient colors={["white", Colors.gray500]} style={styles.root}>
-          {noProfilePicture && !image && (
+          {noProfilePicture && !image ? (
             <Image
               style={styles.iconImage}
               resizeMode="cover"
               source={require("../../assets/imgs/logo2.png")}
             />
+          ) : (
+            <Image
+              style={styles.iconImage}
+              resizeMode="cover"
+              source={{ uri: image ? image : profilePicture }}
+            />
           )}
-
-          <Image
-            style={styles.iconImage}
-            resizeMode="cover"
-            source={{ uri: image ? image : profilePicture }}
-          />
 
           <View style={{ flexDirection: "row", columnGap: 10 }}>
             <MyButton

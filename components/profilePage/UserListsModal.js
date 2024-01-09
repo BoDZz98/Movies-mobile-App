@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ModalCard from "../UI/ModalCard";
 import {
-  Button,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,24 +10,13 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  addList,
-  readUserLists,
-  setUserId,
-} from "../../util/firebase-services";
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { addList, setUserId } from "../../util/firebase-services";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
-import { useDispatch } from "react-redux";
-import { userActions } from "../../store/user-data-slice";
+import { useNavigation } from "@react-navigation/native";
 
 const UserListsModal = ({ isVisible, onClose }) => {
-  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [input, setInput] = useState({ value: "", isValid: true });
   const [listExist, setListExist] = useState(false);
   const [userLists, setUserLists] = useState([]);
@@ -78,7 +66,16 @@ const UserListsModal = ({ isVisible, onClose }) => {
       >
         {userLists.map((list) => {
           return (
-            <Pressable style={styles.listCont} key={list.listName}>
+            <Pressable
+              style={styles.listCont}
+              key={list.listName}
+              onPress={() =>
+                navigation.navigate("listGames", {
+                  listMovies: list.movies,
+                  listName: list.listName,
+                })
+              }
+            >
               <View style={styles.textCont}>
                 <Text style={styles.listName}>{list.listName}</Text>
                 <Text style={styles.number}>Movies :{list.movies.length}</Text>
@@ -93,10 +90,11 @@ const UserListsModal = ({ isVisible, onClose }) => {
             style={styles.inputStyle}
             onChangeText={changeInputHandler}
             value={input.value}
+            placeholderTextColor={!input.isValid && "red"}
+            maxLength={10}
             placeholder={
               listExist ? "List name already exist" : "Enter List Name"
             }
-            placeholderTextColor={!input.isValid && "red"}
           />
           <TouchableOpacity style={{ padding: 10 }} onPress={addListHandler}>
             <Text style={{ color: "black" }}>Add</Text>

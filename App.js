@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,12 +12,12 @@ import BottomTabPages from "./components/navigation/BottomTabPages";
 import { useState } from "react";
 import AddCommentModal from "./components/movieDetails/AddCommentModal";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
-import MyListsScreen from "./screens/MyListsScreen";
 import FavButton from "./components/FavButton";
 import { FIREBASE_AUTH, FIREBASE_DB } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ListGames from "./screens/ListGames";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -108,11 +108,10 @@ export default function App() {
                   }}
                 />
                 <Stack.Screen
-                  name="myLists"
-                  component={MyListsScreen}
+                  name="listGames"
+                  component={ListGames}
                   options={{
-                    headerTitle: "",
-                    headerTransparent: true,
+                    headerTitle: "wow",
                   }}
                 />
               </Stack.Navigator>

@@ -17,17 +17,23 @@ const MovieListItem = ({ movie, width, height, showDetails }) => {
   const titleContPosition = { top: height / 1.5 };
 
   const navigation = useNavigation();
+  // Because we pass to this component values with diff names --------------
+  const moviePoster = movie.cover
+    ? movie.cover
+    : "http://image.tmdb.org/t/p/original" + movie.poster;
+  const movieId = movie.id ? movie.id : movie.movieId;
+
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate("movieDetails", { movieId: movie.id });
+        navigation.navigate("movieDetails", { movieId: movieId });
       }}
     >
       <View style={[styles.rootCont, rootContSize]}>
         {showDetails ? (
-          <BlurredImage imageUri={movie.cover} size={rootContSize} />
+          <BlurredImage imageUri={moviePoster} size={rootContSize} />
         ) : (
-          <Image style={styles.image} source={{ uri: movie.cover }} />
+          <Image style={styles.image} source={{ uri: moviePoster }} />
         )}
         <View style={[showDetails && styles.titleCont, titleContPosition]}>
           <Text style={styles.text}>{movie.title}</Text>

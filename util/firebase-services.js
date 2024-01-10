@@ -171,16 +171,14 @@ export async function addList(listname) {
     field2: "Value 2",
   }); */
 }
-
+// Edit List---------------------------------------------------------------------------------------------------
 export async function editList(oldListname, newListName) {
   const userId = setUserId();
-
   // Check whether this list already exist or not ---------------------
   const parentDocRef = doc(FIREBASE_DB, "users", userId);
   const subcollectionRef = doc(parentDocRef, "lists", newListName);
   const document = await getDoc(subcollectionRef);
   if (document.exists()) {
-    console.log("exist");
     return true;
   }
   // Copy the data of the old list ,then delete it --
@@ -200,7 +198,12 @@ export async function editList(oldListname, newListName) {
 
   return false;
 }
-
+// Delete List--------------------------------------------------------------------------------
+export function deleteList(listName) {
+  const parentDocRef = doc(FIREBASE_DB, "users", setUserId());
+  const listRef = doc(parentDocRef, "lists", listName);
+  deleteDoc(listRef);
+}
 // Adding a movie to our list -----------------------------------------------------------------------------------------------------------
 export async function addDeleteMovieInList(data) {
   const { movieId, poster, listName } = data;

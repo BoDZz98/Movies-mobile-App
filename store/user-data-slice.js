@@ -34,6 +34,11 @@ const userSlice = createSlice({
     updateUserName(state, action) {
       state.userData.userName = action.payload;
     },
+    updateUserListsLength(state, action) {
+      action.payload === "inc"
+        ? (state.userData.userListsLength += 1)
+        : (state.userData.userListsLength -= 1);
+    },
     /* updateprofileinfo(state, action) {
       const { identifier, value } = action.payload;
       state.userData == { ...state.userData, [identifier]: value };

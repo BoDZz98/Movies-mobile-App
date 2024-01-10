@@ -14,9 +14,12 @@ import { addList, setUserId } from "../../util/firebase-services";
 import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
 const UserListsModal = ({ isVisible, onClose }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [input, setInput] = useState({ value: "", isValid: true });
   const [listExist, setListExist] = useState(false);
   const [userLists, setUserLists] = useState([]);
@@ -35,6 +38,7 @@ const UserListsModal = ({ isVisible, onClose }) => {
     });
     if (listNameValid) {
       const bool = await addList(input.value);
+      bool !== true && dispatch(userActions.updateUserListsLength("inc"));
       setListExist(bool);
       setInput({ value: "", isValid: true });
     }

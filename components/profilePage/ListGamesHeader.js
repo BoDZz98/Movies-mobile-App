@@ -5,16 +5,19 @@ import { Colors } from "../../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { editList } from "../../util/firebase-services";
+import { deleteList, editList } from "../../util/firebase-services";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../store/user-data-slice";
 
 const ListGamesHeader = ({ listName }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
 
   const [input, setInput] = useState({ value: listName, isValid: true });
   const [isFocused, setIsFocused] = useState(false);
   const [listExist, setListExist] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState();
   function changeInputHandler(enteredValue) {
     setInput({ value: enteredValue, isValid: true });
   }
@@ -30,16 +33,34 @@ const ListGamesHeader = ({ listName }) => {
   }
 
   async function editListHandler() {
+    // checking whether the list name is changed or not --------
+    if (input.value === listName) {
+      setErrorMessage("Same Name");
+      return;
+    }
+
     const listNameValid = input.value.length != 0;
-    setInput((currentValues) => {
+    /* setInput((currentValues) => {
       return {
         value: currentValues.value,
         isValid: listNameValid,
       };
-    });
-    if (listNameValid) {
+    }); */
+    if (!listNameValid) {
+      setErrorMessage("list must have a name");
+      return;
+    } else {
       const bool = await editList(listName, input.value);
-      setListExist(bool);
+      if (bool === true) {
+        setErrorMessage("List already exist");
+      } else {
+        /* setInput((currentVal) => {
+          return { value: currentVal };
+        }); */
+        setErrorMessage("Edit successfully");
+        inputRef.current.blur();
+        setIsFocused(false);
+      }
     }
   }
   console.log("list exist :", listExist);
@@ -53,16 +74,25 @@ const ListGamesHeader = ({ listName }) => {
           color="white"
         />
       </TouchableOpacity>
-      <TextInput
-        ref={inputRef}
-        style={styles.inputStyle}
-        onChangeText={changeInputHandler}
-        value={input.value}
-        placeholderTextColor={!input.isValid && "red"}
-        maxLength={15}
-        // editable={isFocused ? true : false}
-        placeholder={listExist ? "List name already exist" : "Enter List Name"}
-      />
+      <View style={styles.inputCont}>
+        <TextInput
+          ref={inputRef}
+          style={styles.inputStyle}
+          onChangeText={changeInputHandler}
+          value={input.value}
+          maxLength={15}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+        <Text
+          style={{
+            color: errorMessage === "Edit successfully" ? "green" : "red",
+            fontSize: 12,
+          }}
+        >
+          {errorMessage}
+        </Text>
+      </View>
       <View style={styles.iconsCont}>
         {!isFocused && (
           <Ionicons
@@ -88,7 +118,16 @@ const ListGamesHeader = ({ listName }) => {
             onPress={handleEditButton}
           />
         )}
-        <Ionicons name="trash" color="red" size={30} />
+        <Ionicons
+          name="trash"
+          color="red"
+          size={30}
+          onPress={() => {
+            deleteList(listName);
+            dispatch(userActions.updateUserListsLength("dec"));
+            navigation.goBack();
+          }}
+        />
       </View>
     </View>
   );
@@ -103,11 +142,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
   },
+  inputCont: {
+    flexDirection: "column",
+    width: "50%",
+  },
   inputStyle: {
     color: "white",
     fontSize: 36,
     fontWeight: "bold",
-    width: "48%",
+    // width: "48%",
   },
   iconsCont: { flexDirection: "row", columnGap: 6 },
 });

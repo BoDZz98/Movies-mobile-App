@@ -59,7 +59,7 @@ const HomeScreen = () => {
               movie={item}
               width={Dimensions.get("window").width * 0.55}
               height={Dimensions.get("window").height * 0.4}
-              showDetails={true}
+              showDetails
             />
           )}
         />

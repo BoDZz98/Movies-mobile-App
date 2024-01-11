@@ -20,7 +20,7 @@ const MovieListItem = ({ movie, width, height, showDetails }) => {
   // Because we pass to this component values with diff names --------------
   const moviePoster = movie.cover
     ? movie.cover
-    : "http://image.tmdb.org/t/p/original" + movie.poster;
+    : "http://image.tmdb.org/t/p/original" + movie.poster_path; //poster
   const movieId = movie.id ? movie.id : movie.movieId;
 
   return (

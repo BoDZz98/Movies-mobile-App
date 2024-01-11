@@ -10,6 +10,7 @@ import { fetchMovieDetails } from "../util/api-services";
 import CategoryCont from "../components/UI/CategoryCont";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { baseImageURL } from "../util/firebase-services";
+import SimilarMovies from "../components/movieDetails/SimilarMovies";
 
 const MovieDetailsScreen = ({ route }) => {
   //
@@ -83,6 +84,8 @@ const MovieDetailsScreen = ({ route }) => {
           <Text style={styles.summary}>{movieData.overview}</Text>
 
           <MovieImgs movieData={movieData.images} />
+
+          <SimilarMovies movies={movieData.similarMovies} />
         </ScrollView>
       </LinearGradient>
     </>

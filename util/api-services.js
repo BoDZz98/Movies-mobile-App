@@ -44,14 +44,15 @@ export async function fetchTopRatedMovies() {
 // Get all details related to a movie ------------------------------------------------------------------------------------------------------
 export async function fetchMovieDetails(movieId) {
   const response = await axios.get(
-    `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,images,credits`,
+    `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,images,credits,similar`,
     {
       headers: configHeaders,
     }
   );
-  // console.log(response.data);
+  // console.log(response.data.similar.results);
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
   const actors = response.data.credits.cast.slice(0, 20);
+  const similarMovies = response.data.similar.results; /* .slice(0, 10) */
   const youtubeTrailerKey = response.data.videos.results.find(
     (video) => video.type === "Trailer"
   ).key;
@@ -68,6 +69,7 @@ export async function fetchMovieDetails(movieId) {
     images: response.data.images.backdrops,
     cast: actors,
     youtubeTrailerKey,
+    similarMovies,
   };
   // console.log(newMovieObject.cast.length);
 

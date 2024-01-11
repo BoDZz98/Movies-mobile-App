@@ -13,8 +13,6 @@ import Stars from "react-native-stars";
 import { Colors } from "../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
-import DropDownPicker from "react-native-dropdown-picker";
 import EditCommentModal from "../components/profilePage/EditCommentModal";
 import { useSelector } from "react-redux";
 import { baseImageURL } from "../util/firebase-services";
@@ -24,9 +22,6 @@ const AllCommentsScreen = () => {
     (state) => state.user.userData.userComments
   );
 
-  // console.log(USER_COMMENTS);
-  // useEffect(() => {}, [USER_COMMENTS]);
-
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [commentData, setCommentData] = useState();
@@ -35,6 +30,20 @@ const AllCommentsScreen = () => {
   }
   //-------------------------------------------------
 
+  // if (USER_COMMENTS.length === 0) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         backgroundColor: Colors.primary800,
+  //       }}
+  //     >
+  //     <Text style={{ color: "white" }}>wow</Text>
+  //      </View>
+  //   );
+  // }
   return (
     <View style={styles.root}>
       <EditCommentModal
@@ -42,7 +51,9 @@ const AllCommentsScreen = () => {
         onClose={closeModalHandler}
         commentData={isModalVisible ? commentData : ""}
       />
-
+      {USER_COMMENTS.length === 0 && (
+        <Text style={styles.msg}>No Comments </Text>
+      )}
       <FlatList
         data={USER_COMMENTS}
         keyExtractor={(comment) => comment.commentId}
@@ -121,5 +132,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 6,
     fontSize: 16,
+  },
+  msg: {
+    color: "white",
+    alignSelf: "center",
+    marginTop: "40%",
+    fontSize: 30,
+    fontWeight: "bold",
   },
 });

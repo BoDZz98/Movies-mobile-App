@@ -14,18 +14,17 @@ const ListGamesHeader = ({ listName }) => {
   const dispatch = useDispatch();
   const inputRef = useRef(null);
 
-  const [input, setInput] = useState({ value: listName, isValid: true });
+  const [input, setInput] = useState(listName);
   const [isFocused, setIsFocused] = useState(false);
-  const [listExist, setListExist] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   function changeInputHandler(enteredValue) {
-    setInput({ value: enteredValue, isValid: true });
+    setInput(enteredValue);
   }
 
   function handleEditButton() {
     if (isFocused) {
       inputRef.current.blur(); // Unfocus the input
-      setInput({ value: listName, isValid: true });
+      setInput(listName);
     } else {
       inputRef.current.focus(); // Focus the input
     }
@@ -39,18 +38,13 @@ const ListGamesHeader = ({ listName }) => {
       return;
     }
 
-    const listNameValid = input.value.length != 0;
-    /* setInput((currentValues) => {
-      return {
-        value: currentValues.value,
-        isValid: listNameValid,
-      };
-    }); */
+    const listNameValid = input.length != 0;
     if (!listNameValid) {
       setErrorMessage("list must have a name");
       return;
     } else {
-      const bool = await editList(listName, input.value);
+      // sth not right here (listName)
+      const bool = await editList(listName, input);
       if (bool === true) {
         setErrorMessage("List already exist");
       } else {
@@ -63,7 +57,6 @@ const ListGamesHeader = ({ listName }) => {
       }
     }
   }
-  console.log("list exist :", listExist);
   return (
     <View style={styles.root}>
       <TouchableOpacity>
@@ -79,7 +72,7 @@ const ListGamesHeader = ({ listName }) => {
           ref={inputRef}
           style={styles.inputStyle}
           onChangeText={changeInputHandler}
-          value={input.value}
+          value={input}
           maxLength={15}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}

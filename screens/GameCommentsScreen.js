@@ -54,14 +54,14 @@ const GameCommentsScreen = ({ route }) => {
           });
           setMovieComments(tempArray);
         });
-        setIsLoading(false);
       }
     );
+    setIsLoading(false);
   }, []);
 
-  if (isLoading) {
+  /* if (movieComments.length === 0 && !isLoading) {
     return <Text>loading</Text>;
-  }
+  } */
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.imgCont}>
@@ -81,6 +81,10 @@ const GameCommentsScreen = ({ route }) => {
           onClose={closeModalHandler}
           commentDetails={isModalVisible ? commentData : ""}
         />
+        {!isLoading && movieComments.length === 0 && (
+          <Text style={styles.msg}>No Comments </Text>
+        )}
+        {isLoading && <Text style={styles.msg}>Loading... </Text>}
         <FlatList
           data={movieComments}
           keyExtractor={(item) => item.commentId}
@@ -162,5 +166,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 4,
     fontSize: 16,
+  },
+  msg: {
+    color: "white",
+    alignSelf: "center",
+    marginTop: "40%",
+    fontSize: 30,
+    fontWeight: "bold",
   },
 });

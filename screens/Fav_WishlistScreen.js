@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import FavMovieItem from "../components/FavMovieItem";
 import { Colors } from "../constants/styles";
 import { useRoute } from "@react-navigation/native";
@@ -38,9 +38,28 @@ const Fav_WishlistScreen = ({ route }) => {
   const userData = useSelector((state) => state.user.userData);
   const favMoviesData = userData.favMovies;
   const whislistMoviesData = userData.wishlistMovies;
+  if (list === "Favorites" && favMoviesData.length === 0) {
+    return (
+      <View style={{ backgroundColor: Colors.primary800, flex: 1 }}>
+        <Text style={styles.msg}>No Favorite Movies </Text>
+      </View>
+    );
+  }
+  if (list !== "Favorites" && whislistMoviesData.length === 0) {
+    return (
+      <View style={{ backgroundColor: Colors.primary800, flex: 1 }}>
+        <Text style={styles.msg}>No Wishlist Movies </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
+      {/* {favMoviesData.length === 0 && <Text style={styles.msg}>No Movies </Text>}
+      {whislistMoviesData.length === 0 && (
+        <Text style={styles.msg}>No Movies </Text>
+      )} */}
+
       <View style={styles.innerCont}>
         <FlatList
           data={list === "Favorites" ? favMoviesData : whislistMoviesData}
@@ -62,4 +81,11 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   innerCont: { flex: 0.9 },
+  msg: {
+    color: "white",
+    alignSelf: "center",
+    marginTop: "40%",
+    fontSize: 30,
+    fontWeight: "bold",
+  },
 });

@@ -9,7 +9,10 @@ const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>Comment Details</Text>
-      <Image source={commentDetails.photo} style={styles.profileImg} />
+      <Image
+        source={{ uri: commentDetails.profilePicture }}
+        style={styles.profileImg}
+      />
       <Text style={styles.userName}>{commentDetails.userName}</Text>
       <Stars
         display={commentDetails.rating}

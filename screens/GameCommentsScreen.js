@@ -23,7 +23,8 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { FIREBASE_DB } from "../firebaseConfig";
+import { FIREBASE_DB, STORAGE } from "../firebaseConfig";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const GameCommentsScreen = ({ route }) => {
   const poster = route.params.moviePoster;
@@ -39,29 +40,33 @@ const GameCommentsScreen = ({ route }) => {
   const [movieComments, setMovieComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    setIsLoading(true);
     onSnapshot(
       query(collection(FIREBASE_DB, "comments"), where("poster", "==", poster)),
       (snapshot) => {
         const tempArray = [];
         snapshot.docs.map(async (document) => {
-          const userRefDoc = doc(FIREBASE_DB, "users", document.data().userId);
+          const userId = document.data().userId;
+          // Getting username -----------------------------
+          const userRefDoc = doc(FIREBASE_DB, "users", userId);
           const userSnapDoc = await getDoc(userRefDoc);
-          tempArray.push({
-            commentId: document.id,
-            userName: userSnapDoc.data().userName,
-            desc: document.data().desc,
-            rating: document.data().rating,
+          // Getting profile Picture ----------------------
+          const userImgRef = ref(STORAGE, `profileImages/${userId}`);
+          getDownloadURL(userImgRef).then((response) => {
+            tempArray.push({
+              commentId: document.id,
+              userName: userSnapDoc.data().userName,
+              desc: document.data().desc,
+              rating: document.data().rating,
+              profilePicture: response,
+            });
+            setMovieComments(tempArray);
           });
-          setMovieComments(tempArray);
         });
+        setIsLoading(false);
       }
     );
-    setIsLoading(false);
   }, []);
-
-  /* if (movieComments.length === 0 && !isLoading) {
-    return <Text>loading</Text>;
-  } */
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.imgCont}>
@@ -100,7 +105,10 @@ const GameCommentsScreen = ({ route }) => {
                 }}
               >
                 <View style={styles.commentCont}>
-                  <Image source={item.photo} style={styles.profileImg} />
+                  <Image
+                    source={{ uri: item.profilePicture }}
+                    style={styles.profileImg}
+                  />
                   <Text style={styles.userName}>{item.userName}</Text>
                   <Stars
                     display={item.rating}

@@ -1,14 +1,16 @@
 import React, { useRef, useState } from "react";
-import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
+import { Alert, Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import MyButton from "../UI/MyButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import AddMovieModal from "./AddMovieModal";
 import { useNavigation } from "@react-navigation/native";
 import { Video } from "expo-av";
+import { useSelector } from "react-redux";
 
 const ThreeButtons = ({ movieData, onClickTrailer }) => {
   const navigation = useNavigation();
+  const isAuth = useSelector((state) => state.auth.isAuth);
 
   // Modal logic here ----------------------------------------------------------------------------------------------------------
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,14 +38,22 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
           style={{ marginHorizontal: 4 }}
         />
       </MyButton>
-      <MyButton style={styles.buttonCont} onPress={() => setModalVisible(true)}>
+      <MyButton
+        style={styles.buttonCont}
+        onPress={() => {
+          !isAuth && Alert.alert("Opps", "Tou must sign in first");
+          setModalVisible(true);
+        }}
+      >
         <Ionicons name="push-outline" color="white" size={25} />
       </MyButton>
-      <AddMovieModal
-        isVisible={modalVisible}
-        onClose={CloseModalHandler}
-        data={movieData}
-      />
+      {isAuth && (
+        <AddMovieModal
+          isVisible={modalVisible}
+          onClose={CloseModalHandler}
+          data={movieData}
+        />
+      )}
       <MyButton
         style={styles.buttonCont}
         onPress={() => {

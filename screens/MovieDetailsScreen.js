@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Colors } from "../constants/styles";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,15 +11,21 @@ import CategoryCont from "../components/UI/CategoryCont";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { baseImageURL } from "../util/firebase-services";
 import SimilarMovies from "../components/movieDetails/SimilarMovies";
+import FavButton from "../components/FavButton";
 
-const MovieDetailsScreen = ({ route }) => {
+const MovieDetailsScreen = ({ navigation, route }) => {
   //
   const [movieData, setMovieData] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   const movieId = route.params.movieId;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: ({ tintColor }) => {
+        return <FavButton movieId={movieId} />;
+      },
+    });
     async function getData() {
       // Fetching movie data ---------------------------------
       const fetchedMovieData = await fetchMovieDetails(movieId);
@@ -61,7 +67,7 @@ const MovieDetailsScreen = ({ route }) => {
         style={styles.container}
         colors={[Colors.primary800, Colors.gray500]}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>{movieData.title}</Text>
           <View style={styles.detailsCont}>
             <Text style={styles.detailsText}>

@@ -38,6 +38,7 @@ const Fav_WishlistScreen = ({ route }) => {
   const userData = useSelector((state) => state.user.userData);
   const favMoviesData = userData.favMovies;
   const whislistMoviesData = userData.wishlistMovies;
+
   if (list === "Favorites" && favMoviesData.length === 0) {
     return (
       <View style={{ backgroundColor: Colors.primary800, flex: 1 }}>
@@ -55,11 +56,6 @@ const Fav_WishlistScreen = ({ route }) => {
 
   return (
     <View style={styles.root}>
-      {/* {favMoviesData.length === 0 && <Text style={styles.msg}>No Movies </Text>}
-      {whislistMoviesData.length === 0 && (
-        <Text style={styles.msg}>No Movies </Text>
-      )} */}
-
       <View style={styles.innerCont}>
         <FlatList
           data={list === "Favorites" ? favMoviesData : whislistMoviesData}

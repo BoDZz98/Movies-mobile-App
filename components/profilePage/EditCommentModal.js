@@ -25,6 +25,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   // Validation--------------------------------------------------------------------------------------------------
   const [stars, setStars] = useState(commentData.rating);
@@ -38,7 +39,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       isValid: true,
     });
   }, [commentData]);
-  // console.log(commentData);
+  // --------------------------------------------------------------------------------------------------------------------
   function changeInputHandler(enteredValue) {
     setInput({ value: enteredValue, isValid: true });
   }
@@ -50,11 +51,11 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       const commentId = commentData.commentId;
       updateComment(commentId, comment);
       dispatch(userActions.updateComment({ commentId, comment }));
+      // navigation.navigate("Overview");
       // close the modal
       onClose();
     }
   } // Delete comment----------------------------------------------------------------------------------------------------
-  const navigation = useNavigation();
   function deleteHanlder() {
     deleteComment(commentData.commentId);
     dispatch(userActions.deleteComment(commentData.commentId));

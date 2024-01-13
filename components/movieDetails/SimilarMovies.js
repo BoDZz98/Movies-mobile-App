@@ -14,14 +14,7 @@ function renderMovieItem(itemData) {
 }
 const SimilarMovies = ({ movies }) => {
   return (
-    <View
-      style={{
-        // backgroundColor: "red",
-        justifyContent: "center",
-        alignItems: "center",
-        paddingVertical: 12,
-      }}
-    >
+    <View style={{ alignItems: "center", paddingVertical: 26 }}>
       <Text style={styles.title}>Similar Movies</Text>
       <FlatList
         data={movies}
@@ -41,5 +34,9 @@ const SimilarMovies = ({ movies }) => {
 
 export default SimilarMovies;
 const styles = StyleSheet.create({
-  title: { fontSize: 20, fontWeight: "bold", color: "white" },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "white",
+  },
 });

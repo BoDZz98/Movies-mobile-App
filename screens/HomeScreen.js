@@ -54,14 +54,17 @@ const HomeScreen = () => {
           decelerationRate={"fast"}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(movieItem) => movieItem.id}
-          renderItem={({ item }) => (
-            <MovieListItem
-              movie={item}
-              width={Dimensions.get("window").width * 0.55}
-              height={Dimensions.get("window").height * 0.4}
-              showDetails
-            />
-          )}
+          renderItem={({ item }) => {
+            // console.log(item);
+            return (
+              <MovieListItem
+                movie={item}
+                width={Dimensions.get("window").width * 0.55}
+                height={Dimensions.get("window").height * 0.4}
+                showDetails
+              />
+            );
+          }}
         />
       </View>
       <View style={styles.newMoviesCont}>

@@ -2,13 +2,6 @@ import React from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-const IMGS = [
-  require("../assets/imgs/avatar.jpeg"),
-  require("../assets/imgs/war.jpg"),
-];
-
-const dum = ["1zzzzzzz", "sssssss2", "31111", "4ssss"];
-
 const StartScreenImgs = () => {
   const movies = useSelector((state) => state.movies.popularMovies);
   return (
@@ -20,7 +13,7 @@ const StartScreenImgs = () => {
           renderItem={({ item, index }) => {
             if (index < 4 && index % 2 === 0) {
               return (
-                <Image style={styles.leftImage} source={{ uri: item.cover }} />
+                <Image style={styles.leftImage} source={{ uri: item.poster }} />
               );
             }
           }}
@@ -33,7 +26,7 @@ const StartScreenImgs = () => {
           renderItem={({ item, index }) => {
             if (index < 4 && index % 2 !== 0) {
               return (
-                <Image style={styles.rightImage} source={{ uri: item.cover }} />
+                <Image style={styles.rightImage} source={{ uri: item.poster }} />
               );
             }
           }}

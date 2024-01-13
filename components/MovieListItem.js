@@ -18,9 +18,9 @@ const MovieListItem = ({ movie, width, height, showDetails }) => {
 
   const navigation = useNavigation();
   // Because we pass to this component values with diff names --------------
-  const moviePoster = movie.cover
-    ? movie.cover
-    : "http://image.tmdb.org/t/p/original" + movie.poster_path; //poster
+  const moviePoster = movie.poster
+    ? movie.poster
+    : "http://image.tmdb.org/t/p/original" + movie.poster_path; // for similar games only
   const movieId = movie.id ? movie.id : movie.movieId;
 
   return (

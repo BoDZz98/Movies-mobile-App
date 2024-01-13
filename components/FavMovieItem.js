@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,15 +12,17 @@ import { Ionicons } from "@expo/vector-icons";
 import CategoryCont from "./UI/CategoryCont";
 import { baseImageURL } from "../util/firebase-services";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const FavMovieItem = ({ movieData }) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity
+    <Pressable
       style={styles.root}
       onPress={() => {
         navigation.navigate("movieDetails", { movieId: movieData.id });
       }}
+      android_ripple={{ color: "#ccc" }}
     >
       <View style={styles.imageCont}>
         <Image
@@ -38,17 +40,13 @@ const FavMovieItem = ({ movieData }) => {
             <Ionicons name="star" color={Colors.accent500} size={15} />
           </Text>
         </View>
-        <View style={{ marginVertical: 8 }}>
-          <FlatList
-            data={movieData.genres}
-            horizontal={true}
-            key={(categoryItem) => categoryItem}
-            renderItem={({ item }) => (
-              // I made this condition bec I use this component in 2 diff location with diff data given
-              <CategoryCont categoryName={item.name ? item.name : item} />
-            )}
-          />
-        </View>
+
+        <ScrollView style={{ marginVertical: 8 }} horizontal>
+          {movieData.genres.map((genre) => {
+            return <CategoryCont key={genre.name} categoryName={genre.name} />;
+          })}
+        </ScrollView>
+
         {movieData.runtime && (
           <Text style={styles.text}>
             Duration : <Text style={styles.innerText}>{movieData.runtime}</Text>
@@ -59,7 +57,7 @@ const FavMovieItem = ({ movieData }) => {
           <Text style={styles.innerText}>{movieData.release_date}</Text>
         </Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

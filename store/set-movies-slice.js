@@ -19,7 +19,7 @@ const moviesSlice = createSlice({
           id: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
-          cover: baseImageURL + movies[index].poster_path,
+          poster: baseImageURL + movies[index].poster_path,
         };
         state.popularMovies.push(movieObject);
       }
@@ -32,7 +32,7 @@ const moviesSlice = createSlice({
           id: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
-          cover: baseImageURL + movies[index].poster_path,
+          poster: baseImageURL + movies[index].poster_path,
         };
         state.newMovies.push(movieObject);
       }
@@ -44,7 +44,7 @@ const moviesSlice = createSlice({
           id: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
-          cover: baseImageURL + movies[index].poster_path,
+          poster: baseImageURL + movies[index].poster_path,
         };
         state.topRatedMovies.push(movieObject);
       }

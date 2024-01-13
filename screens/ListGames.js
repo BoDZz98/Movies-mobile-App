@@ -22,7 +22,7 @@ const ListGames = ({ navigation, route }) => {
   }, []);
   return (
     <LinearGradient
-      style={{ flex: 1 ,alignItems:'center'}}
+      style={{ flex: 1, alignItems: "center" }}
       colors={[Colors.primary800, Colors.gray500]}
     >
       <FlatList
@@ -30,6 +30,7 @@ const ListGames = ({ navigation, route }) => {
         numColumns={2}
         keyExtractor={(movie) => movie.movieId}
         renderItem={({ item }) => {
+          // console.log(item);
           return (
             <MovieListItem
               movie={item}

@@ -107,10 +107,11 @@ const userSlice = createSlice({
       );
       exisitingItem.desc = commentData.desc;
       exisitingItem.rating = commentData.rating;
+      // console.log(exisitingItem);
     },
     deleteComment(state, action) {
       const commentId = action.payload;
-      state.userData.userComments.filter(
+      state.userData.userComments = state.userData.userComments.filter(
         (comment) => comment.commentId !== commentId
       );
     },

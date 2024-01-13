@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -25,21 +26,53 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_DB, STORAGE } from "../firebaseConfig";
 import { getDownloadURL, ref } from "firebase/storage";
+import { useSelector } from "react-redux";
+import AddCommentModal from "../components/movieDetails/AddCommentModal";
 
-const GameCommentsScreen = ({ route }) => {
+const GameCommentsScreen = ({ navigation, route }) => {
   const poster = route.params.moviePoster;
+  const isAuth = useSelector((state) => state.auth.isAuth);
 
-  //Modal Logic ------------------------------------------------------------------------------------------------------------------
+  //comment details Modal Logic ------------------------------------------------------------------------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [commentData, setCommentData] = useState();
   function closeModalHandler() {
     setIsModalVisible(false);
   }
-
-  // fetching comments on this movie ------------------------------------------------------------------------------------------------------
+  //Add comment Modal Logic ------------------------------------------------------------------------------------------------------------------
+  const [addCommentModalVisible, setAddCommentModalVisible] = useState(false);
+  const [movieData, setMovieData] = useState();
+  function closeAddCommentModalHandler() {
+    setAddCommentModalVisible(false);
+  }
   const [movieComments, setMovieComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Header right logic ----------------------------------------------
+    navigation.setOptions({
+      headerRight: ({ tintColor }) => {
+        //  Modal logic is below
+        return (
+          <Ionicons
+            name="add-circle"
+            color={tintColor}
+            size={40}
+            onPress={() => {
+              if (isAuth) {
+                setAddCommentModalVisible(true);
+                setMovieData({
+                  poster: route.params.moviePoster,
+                  title: route.params.movieName,
+                });
+              } else {
+                Alert.alert("Opps", "Tou must sign in first");
+              }
+            }}
+          />
+        );
+      },
+    });
+    // fetching comments on this movie --------------------------------------------------------
     setIsLoading(true);
     onSnapshot(
       query(collection(FIREBASE_DB, "comments"), where("poster", "==", poster)),
@@ -128,6 +161,11 @@ const GameCommentsScreen = ({ route }) => {
               </Pressable>
             );
           }}
+        />
+        <AddCommentModal
+          isVisible={addCommentModalVisible}
+          onClose={closeAddCommentModalHandler}
+          movieData={addCommentModalVisible ? movieData : ""}
         />
       </LinearGradient>
     </View>

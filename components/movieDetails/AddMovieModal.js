@@ -13,6 +13,7 @@ import ModalCard from "../UI/ModalCard";
 import {
   addDeleteMovieInList,
   addMovie,
+  baseImageURL,
   setUserId,
 } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
@@ -103,7 +104,7 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
               key={list.listName}
               onPress={addDeleteMovieInList.bind(null, {
                 movieId: data.id,
-                poster: data.poster,
+                poster: baseImageURL + data.poster,
                 listName: list.listName,
               })}
             >

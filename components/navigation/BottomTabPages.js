@@ -67,18 +67,23 @@ const BottomTabPages = () => {
       console.log("in bottomTabPages");
       if (!!user) {
         dispatch(authActions.login());
-
-        const { userData, comments, profilePicture } = await getUserData(user);
-        const userListsLength = await getUserListsLength();
-        // set data of the user in react redux-------------------------------------------------------------------
-        dispatch(
-          userActions.setUser({
-            userDoc: userData,
-            userComments: comments,
-            userListsLength,
-            profilePicture,
-          })
-        );
+        try {
+          const { userData, comments, profilePicture } = await getUserData(
+            user
+          );
+          const userListsLength = await getUserListsLength();
+          // set data of the user in react redux-------------------------------------------------------------------
+          dispatch(
+            userActions.setUser({
+              userDoc: userData,
+              userComments: comments,
+              userListsLength,
+              profilePicture,
+            })
+          );
+        } catch (error) {
+          console.log("error in bottom tab pages : ", error);
+        }
       }
     });
   }, []);

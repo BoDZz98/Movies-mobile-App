@@ -70,7 +70,7 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
           <Ionicons
             name={isFav ? "heart" : "heart-outline"}
             color="white"
-            size={20}
+            size={25}
           />
         </MyButton>
         <MyButton
@@ -80,7 +80,7 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
           <Ionicons
             name={isWishlist ? "book" : "book-outline"}
             color="white"
-            size={20}
+            size={25}
           />
         </MyButton>
       </View>
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
   },
   buttonCont: {
     borderWidth: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 1,
+    width: "22%",
+    paddingVertical: 2,
   },
   pressedButton: { backgroundColor: "#111111" },
   subTitle: { textAlign: "left", width: "100%" },

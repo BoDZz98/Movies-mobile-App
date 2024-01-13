@@ -23,11 +23,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
     justifyContent: "center",
     overflow: "hidden",
+    // height: 50,
   },
   pressableCont: {
     flexDirection: "row",
     justifyContent: "center",
     paddingVertical: 10,
+    // height: "",
   },
   text: {
     textAlign: "center",

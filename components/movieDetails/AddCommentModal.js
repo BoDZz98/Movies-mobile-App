@@ -30,7 +30,7 @@ const AddCommentModal = ({ isVisible, onClose, movieData }) => {
     if (descIsValid) {
       const commentData = { desc: input.value, rating: stars };
       const movieDetails = { title: movieData.title, poster: movieData.poster };
-      
+
       const commentId = Math.floor(Math.random() * (1000000000 - 0 + 1)) + 0;
       addComment(commentId, commentData, movieDetails);
       dispatch(
@@ -45,7 +45,13 @@ const AddCommentModal = ({ isVisible, onClose, movieData }) => {
   const error = input.isValid ? "" : "please write a comment";
 
   return (
-    <ModalCard isVisible={isVisible} onClose={onClose}>
+    <ModalCard
+      isVisible={isVisible}
+      onClose={() => {
+        onClose();
+        setInput({ value: "", isValid: true });
+      }}
+    >
       <Text style={styles.title}>ADD Comment</Text>
       <Input
         textInputConfig={{

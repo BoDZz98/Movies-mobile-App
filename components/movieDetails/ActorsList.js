@@ -21,10 +21,10 @@ function renderActor(itemData) {
         source={{ uri: baseImageURL + actor.profile_path }}
         resizeMode="stretch"
       />
-      <View style={styles.namesCont}>
+      <ScrollView contentContainerStyle={styles.namesCont}>
         <Text style={styles.realName}>{actor.original_name}</Text>
         <Text style={styles.movieName}>{actor.character}</Text>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // gap: 20,
     width: Dimensions.get("window").width * 0.6,
+    height: Dimensions.get("window").height * 0.15,
     borderRadius: 20,
     backgroundColor: Colors.gray700,
     overflow: "hidden",
@@ -76,11 +77,12 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   namesCont: {
-    paddingVertical: 25,
+    paddingVertical: 10,
     paddingHorizontal: 10,
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
+    // justifyContent: "center",
+    // alignItems: "flex-start",
+    // backgroundColor:'red'
   },
   realName: {
     color: "white",

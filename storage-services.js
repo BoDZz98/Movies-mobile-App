@@ -1,6 +1,11 @@
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import { ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadString,
+} from "firebase/storage";
 import { setUserId } from "./util/firebase-services";
 import { STORAGE } from "./firebaseConfig";
 

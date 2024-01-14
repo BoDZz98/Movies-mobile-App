@@ -1,19 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalCard from "../UI/ModalCard";
 import { Dimensions, Image, ScrollView, StyleSheet, Text } from "react-native";
 import Stars from "react-native-stars";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB, STORAGE } from "../../firebaseConfig";
+import { getDownloadURL, ref } from "firebase/storage";
+import DefaultProfileImage from "../DefaultProfileImage";
 
 const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({ userName: "", userPicture: "" });
+  useEffect(() => {
+    async function getData() {
+      setIsLoading(true);
+      try {
+        // Getting username -----------------------------
+        const userRefDoc = doc(FIREBASE_DB, "users", commentDetails?.userId);
+        const userSnapDoc = await getDoc(userRefDoc);
+        // Getting profile Picture ----------------------
+        const userImgRef = ref(
+          STORAGE,
+          `profileImages/${commentDetails.userId}`
+        );
+        getDownloadURL(userImgRef).then((userPicture) => {
+          setUserData({
+            userName: userSnapDoc.data().userName,
+            userPicture,
+          });
+          setIsLoading(false);
+        });
+      } catch (error) {
+        console.log("error in CommentDetailsModal : ", error);
+      }
+    }
+    // this condition is to prevent a warning
+    commentDetails.userId && getData();
+  }, [commentDetails]);
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>Comment Details</Text>
-      <Image
-        source={{ uri: commentDetails.profilePicture }}
-        style={styles.profileImg}
-      />
-      <Text style={styles.userName}>{commentDetails.userName}</Text>
+      {isLoading ? (
+        <DefaultProfileImage />
+      ) : (
+        <Image
+          source={{ uri: userData.userPicture }}
+          style={styles.profileImg}
+        />
+      )}
+      <Text style={styles.userName}>{userData.userName}</Text>
       <Stars
         display={commentDetails.rating}
         spacing={6}

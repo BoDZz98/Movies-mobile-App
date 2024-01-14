@@ -8,14 +8,15 @@ import ProfileScreen from "../../screens/ProfileScreen";
 import StartScreen from "../../screens/StartScreen";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import ProfilePageHeader from "./ProfilePageHeader";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { authActions } from "../../store/auth-slice";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { userActions } from "../../store/user-data-slice";
 import SearchScreen from "../../screens/SearchScreen";
 import { getUserData, getUserListsLength } from "../../util/firebase-services";
+import { setUserProfilePicture, uploadImage } from "../../storage-services";
+import { ref } from "firebase/storage";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -64,6 +65,7 @@ const BottomTabPages = () => {
 
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+      // setUserProfilePicture();
       console.log("in bottomTabPages");
       if (!!user) {
         dispatch(authActions.login());

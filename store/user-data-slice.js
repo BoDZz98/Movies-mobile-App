@@ -5,6 +5,8 @@ const initUserState = {
   userData: {
     userId: "",
     userName: "",
+    defaultProfilePicture:
+      "https://firebasestorage.googleapis.com/v0/b/movies-imdp.appspot.com/o/defaultPP.png?alt=media&token=b2846ee3-12ba-47c6-864b-1e015dfbe41a",
     profilePicture: "",
     favMovies: [],
     wishlistMovies: [],

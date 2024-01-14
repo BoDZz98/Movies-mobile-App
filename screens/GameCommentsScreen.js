@@ -16,18 +16,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 import { baseImageURL } from "../util/firebase-services";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
-import { FIREBASE_DB, STORAGE } from "../firebaseConfig";
-import { getDownloadURL, ref } from "firebase/storage";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { FIREBASE_DB } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import AddCommentModal from "../components/movieDetails/AddCommentModal";
+import CommentUserData from "../components/movieDetails/CommentUserData";
 
 const GameCommentsScreen = ({ navigation, route }) => {
   const poster = route.params.moviePoster;
@@ -79,22 +72,13 @@ const GameCommentsScreen = ({ navigation, route }) => {
       (snapshot) => {
         const tempArray = [];
         snapshot.docs.map(async (document) => {
-          const userId = document.data().userId;
-          // Getting username -----------------------------
-          const userRefDoc = doc(FIREBASE_DB, "users", userId);
-          const userSnapDoc = await getDoc(userRefDoc);
-          // Getting profile Picture ----------------------
-          const userImgRef = ref(STORAGE, `profileImages/${userId}`);
-          getDownloadURL(userImgRef).then((response) => {
-            tempArray.push({
-              commentId: document.id,
-              userName: userSnapDoc.data().userName,
-              desc: document.data().desc,
-              rating: document.data().rating,
-              profilePicture: response,
-            });
-            setMovieComments(tempArray);
+          tempArray.push({
+            commentId: document.id,
+            userId: document.data().userId,
+            desc: document.data().desc,
+            rating: document.data().rating,
           });
+          setMovieComments(tempArray);
         });
         setIsLoading(false);
       }
@@ -119,10 +103,10 @@ const GameCommentsScreen = ({ navigation, route }) => {
           onClose={closeModalHandler}
           commentDetails={isModalVisible ? commentData : ""}
         />
+        {isLoading && <Text style={styles.msg}>Loading... </Text>}
         {!isLoading && movieComments.length === 0 && (
           <Text style={styles.msg}>No Comments </Text>
         )}
-        {isLoading && <Text style={styles.msg}>Loading... </Text>}
         <FlatList
           data={movieComments}
           keyExtractor={(item) => item.commentId}
@@ -138,11 +122,7 @@ const GameCommentsScreen = ({ navigation, route }) => {
                 }}
               >
                 <View style={styles.commentCont}>
-                  <Image
-                    source={{ uri: item.profilePicture }}
-                    style={styles.profileImg}
-                  />
-                  <Text style={styles.userName}>{item.userName}</Text>
+                  <CommentUserData userId={item.userId} />
                   <Stars
                     display={item.rating}
                     spacing={6}

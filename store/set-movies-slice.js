@@ -16,7 +16,7 @@ const moviesSlice = createSlice({
       const movies = action.payload;
       for (const index in movies) {
         const movieObject = {
-          id: movies[index].id,
+          movieId: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
           poster: baseImageURL + movies[index].poster_path,
@@ -29,7 +29,7 @@ const moviesSlice = createSlice({
       const movies = action.payload;
       for (const index in movies) {
         const movieObject = {
-          id: movies[index].id,
+          movieId: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
           poster: baseImageURL + movies[index].poster_path,
@@ -41,7 +41,7 @@ const moviesSlice = createSlice({
       const movies = action.payload;
       for (const index in movies) {
         const movieObject = {
-          id: movies[index].id,
+          movieId: movies[index].id,
           title: movies[index].title,
           rating: movies[index].vote_average.toFixed(1),
           poster: baseImageURL + movies[index].poster_path,

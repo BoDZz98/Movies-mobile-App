@@ -13,7 +13,6 @@ const CategoryCont = ({ categoryName }) => {
 export default CategoryCont;
 const styles = StyleSheet.create({
   categoryCont: {
-    
     backgroundColor: Colors.blue,
     padding: 4,
     marginHorizontal: 4,

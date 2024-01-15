@@ -9,7 +9,7 @@ import { deleteList, editList } from "../../util/firebase-services";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
 
-const ListGamesHeader = ({ listName }) => {
+const ListMoviesHeader = ({ listName }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
@@ -73,7 +73,7 @@ const ListGamesHeader = ({ listName }) => {
           style={styles.inputStyle}
           onChangeText={changeInputHandler}
           value={input}
-          maxLength={15}
+          maxLength={10}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
@@ -126,7 +126,7 @@ const ListGamesHeader = ({ listName }) => {
   );
 };
 
-export default ListGamesHeader;
+export default ListMoviesHeader;
 const styles = StyleSheet.create({
   root: {
     flexDirection: "row",

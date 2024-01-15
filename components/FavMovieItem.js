@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Dimensions,
   Image,
   Pressable,
   StyleSheet,
@@ -34,7 +35,9 @@ const FavMovieItem = ({ movieData }) => {
 
       <View style={styles.textCont}>
         <View style={styles.titleAndRatingCont}>
-          <Text style={styles.title}>{movieData.title}</Text>
+          <ScrollView style={styles.titleScrollView}>
+            <Text style={styles.title}>{movieData.title}</Text>
+          </ScrollView>
           <Text style={styles.rating}>
             {movieData.rating}
             <Ionicons name="star" color={Colors.accent500} size={15} />
@@ -65,7 +68,8 @@ export default FavMovieItem;
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
+    // flex: 1,
+    height: Dimensions.get("window").height * 0.23,
     width: "100%",
     backgroundColor: Colors.gray500,
     marginVertical: 20,
@@ -96,7 +100,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-
+  titleScrollView: {
+    height: Dimensions.get("window").height * 0.07,
+  },
   rating: {
     color: "#cccc",
     fontSize: 15,

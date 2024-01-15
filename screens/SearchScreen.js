@@ -72,7 +72,7 @@ const SearchScreen = () => {
             <FlatList
               data={topRatedMovies}
               numColumns={2}
-              keyExtractor={(movie) => movie.id}
+              keyExtractor={(movie) => movie.movieId}
               renderItem={({ item }) => (
                 <MovieListItem
                   movie={item}

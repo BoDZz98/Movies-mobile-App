@@ -11,7 +11,7 @@ import BottomTabPages from "./components/navigation/BottomTabPages";
 import GameCommentsScreen from "./screens/GameCommentsScreen";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import ListGames from "./screens/ListGames";
+import ListMovies from "./screens/ListMovies";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -68,10 +68,11 @@ export default function App() {
                   }}
                 />
                 <Stack.Screen
-                  name="listGames"
-                  component={ListGames}
+                  name="ListMovies"
+                  component={ListMovies}
                   options={{
                     headerTitle: "wow",
+                    // headerShown: false,
                   }}
                 />
               </Stack.Navigator>

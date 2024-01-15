@@ -74,7 +74,7 @@ const UserListsModal = ({ isVisible, onClose }) => {
               style={styles.listCont}
               key={list.listName}
               onPress={() =>
-                navigation.navigate("listGames", {
+                navigation.navigate("ListMovies", {
                   listMovies: list.movies,
                   listName: list.listName,
                 })

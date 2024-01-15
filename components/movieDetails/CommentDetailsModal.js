@@ -15,23 +15,26 @@ const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
+      // Getting username -----------------------------
+      const userRefDoc = doc(FIREBASE_DB, "users", commentDetails?.userId);
+      const userSnapDoc = await getDoc(userRefDoc);
       try {
-        // Getting username -----------------------------
-        const userRefDoc = doc(FIREBASE_DB, "users", commentDetails?.userId);
-        const userSnapDoc = await getDoc(userRefDoc);
         // Getting profile Picture ----------------------
         const userImgRef = ref(
           STORAGE,
           `profileImages/${commentDetails.userId}`
         );
-        getDownloadURL(userImgRef).then((userPicture) => {
-          setUserData({
-            userName: userSnapDoc.data().userName,
-            userPicture,
-          });
-          setIsLoading(false);
+        const userPicture = await getDownloadURL(userImgRef);
+        setUserData({
+          userName: userSnapDoc.data().userName,
+          userPicture,
         });
+
+        setIsLoading(false);
       } catch (error) {
+        setUserData({
+          userName: userSnapDoc.data().userName,
+        });
         console.log("error in CommentDetailsModal : ", error);
       }
     }

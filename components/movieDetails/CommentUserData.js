@@ -12,20 +12,23 @@ const CommentUserData = ({ userId }) => {
   useEffect(() => {
     async function getData() {
       setIsLoading(true);
-      // Getting username -----------------------------
       const userRefDoc = doc(FIREBASE_DB, "users", userId);
       const userSnapDoc = await getDoc(userRefDoc);
-      // Getting profile Picture ----------------------
       try {
+        // Getting username -----------------------------
+
+        // Getting profile Picture ----------------------
         const userImgRef = ref(STORAGE, `profileImages/${userId}`);
-        getDownloadURL(userImgRef).then((userPicture) => {
-          setUserData({
-            userName: userSnapDoc.data().userName,
-            userPicture,
-          });
-          setIsLoading(false);
+        const userPicture = await getDownloadURL(userImgRef);
+        setUserData({
+          userName: userSnapDoc.data().userName,
+          userPicture,
         });
+        setIsLoading(false);
       } catch (error) {
+        setUserData({
+          userName: userSnapDoc.data().userName,
+        });
         console.log("error in CommentUserData : ", error);
       }
     }

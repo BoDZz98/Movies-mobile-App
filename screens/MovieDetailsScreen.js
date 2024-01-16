@@ -12,6 +12,7 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { baseImageURL } from "../util/firebase-services";
 import SimilarMovies from "../components/movieDetails/SimilarMovies";
 import FavButton from "../components/FavButton";
+import LoadingScreen from "./LoadingScreen";
 
 const MovieDetailsScreen = ({ navigation, route }) => {
   //
@@ -27,21 +28,26 @@ const MovieDetailsScreen = ({ navigation, route }) => {
       },
     });
     async function getData() {
-      // Fetching movie data ---------------------------------
-      const fetchedMovieData = await fetchMovieDetails(movieId);
-      setMovieData(fetchedMovieData);
-      setIsLoading(false);
+      try {
+        // console.log(movieId);
+        // Fetching movie data ---------------------------------
+        const fetchedMovieData = await fetchMovieDetails(movieId);
+        setMovieData(fetchedMovieData);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("error in movie details : ", error);
+      }
     }
     getData();
-    // console.log(movieData);
   }, [movieId, setMovieData]);
+
   // Video player ----------------------------------------------------------------------------------------------------------
   const [videoOpened, setVideoOpened] = useState(false);
   function openCloseVideo() {
     setVideoOpened((currentValue) => !currentValue);
   }
   if (isLoading) {
-    return <Text>Loading</Text>;
+    return <LoadingScreen />;
   }
 
   return (

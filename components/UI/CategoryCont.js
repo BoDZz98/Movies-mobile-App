@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     padding: 4,
     marginHorizontal: 4,
     borderRadius: 10,
+    justifyContent: "center",
   },
-  text:{color:'white'}
+  text: { color: "white" },
 });

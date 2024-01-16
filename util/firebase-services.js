@@ -55,7 +55,12 @@ export async function getUserData(user) {
     const profilePicture = await getDownloadURL(imgsRef);
     return { userData: userSnapDoc.data(), comments, profilePicture };
   } catch (error) {
-    return { userData: userSnapDoc.data(), comments, profilePicture: "" };
+    return {
+      userData: userSnapDoc.data(),
+      comments,
+      profilePicture:
+        "https://firebasestorage.googleapis.com/v0/b/movies-imdp.appspot.com/o/defaultPP.png?alt=media&token=b2846ee3-12ba-47c6-864b-1e015dfbe41a",
+    };
   }
 }
 

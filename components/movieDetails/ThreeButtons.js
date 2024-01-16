@@ -7,6 +7,7 @@ import AddMovieModal from "./AddMovieModal";
 import { useNavigation } from "@react-navigation/native";
 import { Video } from "expo-av";
 import { useSelector } from "react-redux";
+import ErrorModal from "./ErrorModal";
 
 const ThreeButtons = ({ movieData, onClickTrailer }) => {
   const navigation = useNavigation();
@@ -14,9 +15,8 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
 
   // Modal logic here ----------------------------------------------------------------------------------------------------------
   const [modalVisible, setModalVisible] = useState(false);
-  function CloseModalHandler() {
-    setModalVisible(false);
-  }
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+
   // Trailer button ----------------------------------------------------------------------------------------------------------
   const [isClicked, setIsClicked] = useState(false);
   function trailerButtonHandnler() {
@@ -41,19 +41,13 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
       <MyButton
         style={styles.buttonCont}
         onPress={() => {
-          !isAuth && Alert.alert("Opps", "Tou must sign in first");
+          !isAuth && setErrorModalVisible(true);
           setModalVisible(true);
         }}
       >
         <Ionicons name="push-outline" color="white" size={25} />
       </MyButton>
-      {isAuth && (
-        <AddMovieModal
-          isVisible={modalVisible}
-          onClose={CloseModalHandler}
-          data={movieData}
-        />
-      )}
+
       <MyButton
         style={styles.buttonCont}
         onPress={() => {
@@ -65,6 +59,17 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
       >
         <Ionicons name="chatbox-ellipses-outline" color="white" size={25} />
       </MyButton>
+      {isAuth && (
+        <AddMovieModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          data={movieData}
+        />
+      )}
+      <ErrorModal
+        isVisible={errorModalVisible}
+        onClose={() => setErrorModalVisible(false)}
+      />
     </View>
   );
 };
@@ -90,12 +95,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: Dimensions.get("window").width * 0.8, // Adjust the width as needed
-    height: Dimensions.get("window").height * 0.4, // Adjust the height as needed
-    backgroundColor: "white",
-    borderRadius: 50,
-    padding: 16,
   },
 });

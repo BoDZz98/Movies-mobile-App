@@ -46,7 +46,13 @@ const FavMovieItem = ({ movieData }) => {
 
         <ScrollView style={{ marginVertical: 8 }} horizontal>
           {movieData.genres.map((genre) => {
-            return <CategoryCont key={genre.name} categoryName={genre.name} />;
+            return (
+              <CategoryCont
+                // Bec we call this comp with diffrent data names
+                key={genre.name ? genre.name : genre}
+                categoryName={genre.name ? genre.name : genre}
+              />
+            );
           })}
         </ScrollView>
 

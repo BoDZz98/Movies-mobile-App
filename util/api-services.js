@@ -49,13 +49,14 @@ export async function fetchMovieDetails(movieId) {
       headers: configHeaders,
     }
   );
-  // console.log(response.data.similar.results);
+
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
   const actors = response.data.credits.cast.slice(0, 20);
-  const similarMovies = response.data.similar.results; /* .slice(0, 10) */
-  const youtubeTrailerKey = response.data.videos.results.find(
+  const similarMovies = response.data.similar.results;
+  const youtubeTrailer = response.data.videos.results.find(
     (video) => video.type === "Trailer"
-  ).key;
+  );
+  const youtubeTrailerKey = youtubeTrailer ? youtubeTrailer.key : "";
   // console.log("trailer is", trailerKey);
   const newMovieObject = {
     id: response.data.id,
@@ -71,7 +72,6 @@ export async function fetchMovieDetails(movieId) {
     youtubeTrailerKey,
     similarMovies,
   };
-  // console.log(newMovieObject.cast.length);
 
   return newMovieObject;
 }

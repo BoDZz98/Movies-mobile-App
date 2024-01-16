@@ -31,8 +31,6 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
   const profilePicture = useSelector(
     (state) => state.user.userData.profilePicture
   );
-  const noProfilePicture = profilePicture?.length === 0;
-
   const [image, setImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [userInput, setUserInput] = useState({});
@@ -72,10 +70,12 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
       setIsLoading(true);
       dispatch(userActions.updateUserName(userInput.value));
       updateUserName(userInput.value);
-      await uploadImage(image);
-      dispatch(userActions.updateprofilePicture(image));
+      // to check whether we changed the image or not
+      if (image) {
+        await uploadImage(image);
+        dispatch(userActions.updateprofilePicture(image));
+      }
       setIsLoading(false);
-      navigation.navigate("profile");
       closeBottomSheetHandler();
     } catch (error) {
       closeBottomSheetHandler();
@@ -91,25 +91,16 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
     >
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <LinearGradient colors={["white", Colors.gray500]} style={styles.root}>
-          {noProfilePicture && !image ? (
-            <Image
-              style={styles.iconImage}
-              resizeMode="cover"
-              source={require("../../assets/imgs/logo2.png")}
-            />
-          ) : (
-            <Image
-              style={styles.iconImage}
-              resizeMode="cover"
-              source={{ uri: image ? image : profilePicture }}
-            />
-          )}
-
-          <View style={{ flexDirection: "row", columnGap: 10 }}>
+          <Image
+            style={styles.iconImage}
+            resizeMode="cover"
+            source={{ uri: image ? image : profilePicture }}
+          />
+          <View style={styles.buttonsCont}>
             <MyButton
               text="Camera"
               style={styles.cameraButton}
-              textStyle={{ fontWeight: "normal", fontSize: 16 }}
+              textStyle={styles.buttonTextStyle}
               onPress={async () => {
                 const url = await pickImage(false);
                 setImage(url);
@@ -118,7 +109,7 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
             <MyButton
               text="Gallery"
               style={styles.gallaryButton}
-              textStyle={{ fontWeight: "normal", fontSize: 16 }}
+              textStyle={styles.buttonTextStyle}
               onPress={async () => {
                 const url = await pickImage(true);
                 setImage(url);
@@ -173,7 +164,8 @@ const styles = StyleSheet.create({
     borderRadius: 3000,
     marginBottom: "3%",
   },
-
+  buttonsCont: { flexDirection: "row", columnGap: 10 },
+  buttonTextStyle: { fontWeight: "normal", fontSize: 16 },
   cameraButton: {
     backgroundColor: Colors.blue,
     paddingHorizontal: 7,

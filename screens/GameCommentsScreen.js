@@ -21,23 +21,21 @@ import { FIREBASE_DB } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import AddCommentModal from "../components/movieDetails/AddCommentModal";
 import CommentUserData from "../components/movieDetails/CommentUserData";
+import ErrorModal from "../components/movieDetails/ErrorModal";
 
 const GameCommentsScreen = ({ navigation, route }) => {
   const poster = route.params.moviePoster;
   const isAuth = useSelector((state) => state.auth.isAuth);
 
-  //comment details Modal Logic ------------------------------------------------------------------------------------------------------------------
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [commentData, setCommentData] = useState();
-  function closeModalHandler() {
-    setIsModalVisible(false);
-  }
   //Add comment Modal Logic ------------------------------------------------------------------------------------------------------------------
   const [addCommentModalVisible, setAddCommentModalVisible] = useState(false);
   const [movieData, setMovieData] = useState();
-  function closeAddCommentModalHandler() {
-    setAddCommentModalVisible(false);
-  }
+  //comment details Modal Logic ------------------------------------------------------------------------------------------------------------------
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [commentData, setCommentData] = useState();
+  // Error Modal logic -------------------------------------------------------
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+
   const [movieComments, setMovieComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   useLayoutEffect(() => {
@@ -58,7 +56,7 @@ const GameCommentsScreen = ({ navigation, route }) => {
                   title: route.params.movieName,
                 });
               } else {
-                Alert.alert("Opps", "Tou must sign in first");
+                setErrorModalVisible(true);
               }
             }}
           />
@@ -98,11 +96,6 @@ const GameCommentsScreen = ({ navigation, route }) => {
         style={styles.root}
         colors={[Colors.primary800, Colors.gray500]}
       >
-        <CommentDetailsModal
-          isVisible={isModalVisible}
-          onClose={closeModalHandler}
-          commentDetails={isModalVisible ? commentData : ""}
-        />
         {isLoading && <Text style={styles.msg}>Loading... </Text>}
         {!isLoading && movieComments.length === 0 && (
           <Text style={styles.msg}>No Comments </Text>
@@ -144,8 +137,17 @@ const GameCommentsScreen = ({ navigation, route }) => {
         />
         <AddCommentModal
           isVisible={addCommentModalVisible}
-          onClose={closeAddCommentModalHandler}
+          onClose={() => setAddCommentModalVisible(false)}
           movieData={addCommentModalVisible ? movieData : ""}
+        />
+        <CommentDetailsModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          commentDetails={isModalVisible ? commentData : ""}
+        />
+        <ErrorModal
+          isVisible={errorModalVisible}
+          onClose={() => setErrorModalVisible(false)}
         />
       </LinearGradient>
     </View>

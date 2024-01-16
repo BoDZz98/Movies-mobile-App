@@ -26,7 +26,8 @@ const AuthForm = ({ signingUp, onPress }) => {
     const emailIsValid = inputs.email.value.includes("@");
     const passwordIsValid = inputs.password.value.trim().length > 6;
     const confirmPasswordIsValid =
-      inputs.confirmPassword.value === inputs.password.value;
+      inputs.confirmPassword.value === inputs.password.value &&
+      inputs.confirmPassword.value.trim().length !== 0;
 
     if (
       !emailIsValid ||
@@ -72,21 +73,29 @@ const AuthForm = ({ signingUp, onPress }) => {
   return (
     <View style={styles.container}>
       {signingUp && (
-        <Input
-          label="Name"
-          textInputConfig={{
-            onChangeText: changeInputHandler.bind(null, "name"),
-          }}
-        />
+        <View style={{ width: "100%" }}>
+          <Input
+            label="Name"
+            descErrorStyle={!inputs.name.isValid && styles.descErrorStyle}
+            errorMessage={!inputs.name.isValid && "Name is required"}
+            textInputConfig={{
+              onChangeText: changeInputHandler.bind(null, "name"),
+            }}
+          />
+        </View>
       )}
       <Input
         label="Email"
+        descErrorStyle={!inputs.email.isValid && styles.descErrorStyle}
+        errorMessage={!inputs.email.isValid && "Email must contain @ symbol"}
         textInputConfig={{
           onChangeText: changeInputHandler.bind(null, "email"),
         }}
       />
       <Input
         label="Password"
+        descErrorStyle={!inputs.password.isValid && styles.descErrorStyle}
+        errorMessage={!inputs.password.isValid && "Password is too short"}
         textInputConfig={{
           secureTextEntry: true,
           onChangeText: changeInputHandler.bind(null, "password"),
@@ -95,6 +104,12 @@ const AuthForm = ({ signingUp, onPress }) => {
       {signingUp && (
         <Input
           label="Confirm Password"
+          descErrorStyle={
+            !inputs.confirmPassword.isValid && styles.descErrorStyle
+          }
+          errorMessage={
+            !inputs.confirmPassword.isValid && "Passwords should match"
+          }
           textInputConfig={{
             secureTextEntry: true,
             onChangeText: changeInputHandler.bind(null, "confirmPassword"),
@@ -144,5 +159,14 @@ const styles = StyleSheet.create({
     color: "white",
     marginHorizontal: 4,
     fontSize: 13,
+  },
+  descErrorStyle: {
+    backgroundColor: "pink",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 10,
   },
 });

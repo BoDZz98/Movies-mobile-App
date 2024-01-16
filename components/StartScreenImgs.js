@@ -9,7 +9,7 @@ const StartScreenImgs = () => {
       <View style={styles.leftContainer}>
         <FlatList
           data={movies}
-          keyExtractor={(movieItem) => movieItem.id}
+          keyExtractor={(movieItem) => movieItem.movieId}
           renderItem={({ item, index }) => {
             if (index < 4 && index % 2 === 0) {
               return (
@@ -22,11 +22,14 @@ const StartScreenImgs = () => {
       <View style={styles.rightContainer}>
         <FlatList
           data={movies}
-          keyExtractor={(movieItem) => movieItem.id}
+          keyExtractor={(movieItem) => movieItem.movieId}
           renderItem={({ item, index }) => {
             if (index < 4 && index % 2 !== 0) {
               return (
-                <Image style={styles.rightImage} source={{ uri: item.poster }} />
+                <Image
+                  style={styles.rightImage}
+                  source={{ uri: item.poster }}
+                />
               );
             }
           }}

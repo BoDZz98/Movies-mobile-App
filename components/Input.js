@@ -8,14 +8,16 @@ const Input = ({
   textInputConfig,
   customInputStyle,
   descErrorStyle,
+  errorMessage,
 }) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        {...textInputConfig} 
+        {...textInputConfig}
         style={[styles.input, customInputStyle, descErrorStyle]}
       />
+      <Text style={styles.errorText}>{errorMessage}</Text>
     </View>
   );
 };
@@ -25,7 +27,7 @@ export default Input;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   label: {
     color: "white",
@@ -38,5 +40,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     fontSize: 18,
     color: "white",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 10,
+    position: "absolute",
+    bottom: -2,
   },
 });

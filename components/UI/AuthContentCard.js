@@ -1,17 +1,15 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Dimensions, Image, StyleSheet, View } from "react-native";
 import { Colors } from "../../constants/styles";
 
-const AuthContentCard = ({ children ,style}) => {
+const AuthContentCard = ({ children, style }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.imageCont}>
-        <Image
-          style={styles.image}
-          source={require("../../assets/imgs/logo2.png")}
-        />
-      </View>
-      <View style={[styles.formCont,style]}>{children}</View>
+      <Image
+        style={styles.image}
+        source={require("../../assets/imgs/logo2.png")}
+      />
+      <View style={[styles.formCont, style]}>{children}</View>
     </View>
   );
 };
@@ -25,14 +23,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  imageCont: {
-    width: 200,
-    height: 200,
-  },
   image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 100,
+    width: Dimensions.get("window").width * 0.5,
+    height: Dimensions.get("window").width * 0.5,
+    borderRadius: 1000,
   },
   formCont: {
     width: "80%",

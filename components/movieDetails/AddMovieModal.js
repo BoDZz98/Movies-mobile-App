@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     width: "22%",
     paddingVertical: 2,
   },
-  pressedButton: { backgroundColor: "#111111" },
+  pressedButton: { backgroundColor: "#888d8f" },
   subTitle: { textAlign: "left", width: "100%" },
   scrollViewCont: { marginTop: 3, width: "100%" },
   listCont: {

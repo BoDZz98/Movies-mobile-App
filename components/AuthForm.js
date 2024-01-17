@@ -163,10 +163,4 @@ const styles = StyleSheet.create({
   descErrorStyle: {
     backgroundColor: "pink",
   },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginTop: -10,
-    marginBottom: 10,
-  },
 });

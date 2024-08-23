@@ -24,10 +24,10 @@ const AuthForm = ({ signingUp, onPress }) => {
   function submitHanlder() {
     const nameIsValid = inputs.name.value.trim().length !== 0;
     const emailIsValid = inputs.email.value.includes("@");
-    const passwordIsValid = inputs.password.value.trim().length > 6;
+    const passwordIsValid = inputs.password.value.trim().length >= 5;
     const confirmPasswordIsValid =
       inputs.confirmPassword.value === inputs.password.value &&
-      inputs.confirmPassword.value.trim().length !== 0;
+      inputs.confirmPassword.value.trim().length >= 5;
 
     if (
       !emailIsValid ||

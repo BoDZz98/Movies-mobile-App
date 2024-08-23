@@ -1,62 +1,53 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 import { authActions } from "../store/auth-slice";
 import { useDispatch } from "react-redux";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
+// import {
+//   createUserWithEmailAndPassword,
+//   onAuthStateChanged,
+// } from "firebase/auth";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { userActions } from "../store/user-data-slice";
 import { getUserData, getUserListsLength } from "../util/firebase-services";
+import { getUserReviews, signUp } from "../util/my-backend-services";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const auth = FIREBASE_AUTH;
+  // const auth = FIREBASE_AUTH;
 
   async function signupHandler(email, password, name) {
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log("auth", auth.currentUser?.uid);
-      // set doc in the firbase
-      const docRef = await setDoc(
-        doc(FIREBASE_DB, "users", auth.currentUser?.uid),
-        {
-          email: email,
-          userName: name,
-          favMovies: [],
-          wishlistMovies: [],
-        }
-      );
-      dispatch(authActions.login());
+      const response = await signUp(email, password, name);
+      // If the user signed in successfully
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.user);
 
-      onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-        // save the user data in our user data slice using react redux----
-        const { userData, comments, profilePicture } = await getUserData(user);
-        const userListsLength = await getUserListsLength();
+        // dispatch(authActions.login());
+        // const { profilePicture } = await getUserData(user);
+
+        // const userListsLength = await getUserListsLength();
         dispatch(
           userActions.setUser({
-            userDoc: userData,
+            userDoc: data.user,
             userComments: comments,
-            userListsLength,
+            // userListsLength,
             profilePicture,
           })
         );
-      });
-      navigation.navigate("home");
+
+        // navigation.navigate("home");
+      }
     } catch (error) {
       console.log("error in signup page : ", error);
     }
   }
   return (
     <AuthContentCard>
+      {/* {error && <Text style={styles.error}>Invalid Credentials</Text>} */}
       <AuthForm
         signingUp={true}
         onPress={signupHandler}
@@ -71,5 +62,15 @@ export default SignupScreen;
 const styles = StyleSheet.create({
   formCont: {
     height: "60%",
+  },
+  error: {
+    color: "red",
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    // marginTop: 40,
+    position: "absolute",
+    // top: 10,
+    zIndex: 1,
   },
 });

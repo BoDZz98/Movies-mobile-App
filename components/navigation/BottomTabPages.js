@@ -17,6 +17,8 @@ import SearchScreen from "../../screens/SearchScreen";
 import { getUserData, getUserListsLength } from "../../util/firebase-services";
 import { setUserProfilePicture, uploadImage } from "../../storage-services";
 import { ref } from "firebase/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUser, getUserReviews } from "../../util/my-backend-services";
 
 const Tab = createBottomTabNavigator();
 //we created our own animated button instead of tabBarIcon-------------------------------
@@ -64,30 +66,50 @@ const BottomTabPages = () => {
   // setting the data of this user , same as in login page -----------------------------------------------------
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-      // setUserProfilePicture();
-      console.log("in bottomTabPages");
-      if (!!user) {
+    async function getUserData() {
+      const userId = await AsyncStorage.getItem("userId"); //should remove it when logout
+      if (userId) {
+        // get user by ID
+        const user = await getUser(userId);
+        const userReviews = await getUserReviews(user.email);
+
         dispatch(authActions.login());
-        try {
-          const { userData, comments, profilePicture } = await getUserData(
-            user
-          );
-          const userListsLength = await getUserListsLength();
-          // set data of the user in react redux-------------------------------------------------------------------
-          dispatch(
-            userActions.setUser({
-              userDoc: userData,
-              userComments: comments,
-              userListsLength,
-              profilePicture,
-            })
-          );
-        } catch (error) {
-          console.log("error in bottom tab pages : ", error);
-        }
+        dispatch(
+          userActions.setUser({
+            userDoc: user,
+            profilePicture: "profilePicture",
+            userComments: userReviews,
+            userListsLength: 0,
+          })
+        );
+        console.log("user ID is:", userId);
       }
-    });
+    }
+    getUserData();
+    //   onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+    //     // setUserProfilePicture();
+    //     console.log("in bottomTabPages");
+    //     if (!!user) {
+    //       dispatch(authActions.login());
+    //       try {
+    //         const { userData, comments, profilePicture } = await getUserData(
+    //           user
+    //         );
+    //         const userListsLength = await getUserListsLength();
+    //         // set data of the user in react redux-------------------------------------------------------------------
+    //         dispatch(
+    //           userActions.setUser({
+    //             userDoc: userData,
+    //             userComments: comments,
+    //             userListsLength,
+    //             profilePicture,
+    //           })
+    //         );
+    //       } catch (error) {
+    //         console.log("error in bottom tab pages : ", error);
+    //       }
+    //     }
+    //   });
   }, []);
 
   return (

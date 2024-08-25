@@ -24,11 +24,15 @@ const userSlice = createSlice({
       // userData is an object itself , so we used the spread operator ... to spread/move the userData
       // object properties into state.userData object , then we added the userComments
       state.userData = {
-        ...userDoc,
+        userId: userDoc._id,
+        userName: userDoc.name,
+        favMovies: userDoc.favMovies,
+        wishlistMovies: userDoc.wishlistMovies,
         userComments,
         userListsLength,
         profilePicture,
       };
+      // console.log("all data is", state.userData);
     },
     updateprofilePicture(state, action) {
       state.userData.profilePicture = action.payload;

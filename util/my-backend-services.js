@@ -15,7 +15,7 @@ export const signUp = async (email, password, name) => {
     return res;
   }
   // if email is already used
-  if (response.status === 400||response.status === 500) {
+  if (response.status === 400 || response.status === 500) {
     console.log("error is", await response.json());
   }
 };
@@ -27,6 +27,20 @@ export const login = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
   return response;
+};
+
+export const getUser = async (userId) => {
+  const res = await fetch("http://192.168.1.9:8000/auth/users/" + userId, {
+    headers,
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    return data.user;
+  } else {
+    console.log("error is", data.message);
+  }
 };
 //-------------------------------------------------------------------------------------
 // Reviews-----------------------------------------------------------------------------

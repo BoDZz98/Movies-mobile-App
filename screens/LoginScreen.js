@@ -3,11 +3,10 @@ import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth-slice";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { userActions } from "../store/user-data-slice";
-import { getUserData, getUserListsLength } from "../util/firebase-services";
 import { StyleSheet, Text } from "react-native";
+import { getUserReviews, login } from "../util/my-backend-services";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -15,25 +14,32 @@ const LoginScreen = ({ navigation }) => {
 
   async function loginHandler(email, password) {
     try {
-      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-      dispatch(authActions.login());
+      const res = await login(email, password);
+      const data = await res.json();
 
-      onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-        const { userData, comments, profilePicture } = await getUserData(user);
-        const userListsLength = await getUserListsLength();
-        // set data of the user in react redux-------------------------------------------------------------------
+      // If credintials are valid
+      if (res.ok) {
+        await AsyncStorage.setItem("userId", data.user._id); //should remove it when logout
+        // const { profilePicture } = await getUserData(data.user);
+        const userReviews = await getUserReviews(email);
+        dispatch(authActions.login());
         dispatch(
           userActions.setUser({
-            userDoc: userData,
-            userComments: comments,
-            userListsLength,
-            profilePicture,
+            userDoc: data.user,
+            profilePicture: "profilePicture",
+            userComments: userReviews,
+            userListsLength: 0,
           })
         );
-      });
-      navigation.navigate("home");
+
+        navigation.navigate("home");
+      } // If credintials are not valid
+      else {
+        console.log(data.message);
+        setError(true);
+      }
     } catch (error) {
-      setError(true);
+      // setError(true);
       console.log("error in login page : ", error);
     }
   }

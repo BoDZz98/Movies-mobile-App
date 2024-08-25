@@ -21,6 +21,7 @@ const AllCommentsScreen = () => {
   const USER_COMMENTS = useSelector(
     (state) => state.user.userData.userComments
   );
+  // console.log(USER_COMMENTS[0]);
 
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -30,20 +31,6 @@ const AllCommentsScreen = () => {
   }
   //-------------------------------------------------
 
-  // if (USER_COMMENTS.length === 0) {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         backgroundColor: Colors.primary800,
-  //       }}
-  //     >
-  //     <Text style={{ color: "white" }}>wow</Text>
-  //      </View>
-  //   );
-  // }
   return (
     <View style={styles.root}>
       <EditCommentModal
@@ -56,27 +43,27 @@ const AllCommentsScreen = () => {
       )}
       <FlatList
         data={USER_COMMENTS}
-        keyExtractor={(comment) => comment.commentId}
+        keyExtractor={(comment) => comment._id}
         numColumns={2}
         style={styles.flatListCont}
         renderItem={({ item }) => {
-          const movie = item;
+          const comment = item;
           return (
             <Pressable
               onPress={() => {
                 setIsModalVisible(true);
-                setCommentData(movie);
+                setCommentData(comment);
               }}
             >
               <View style={styles.commentCont}>
                 <Image
-                  source={{ uri: baseImageURL + movie.poster }}
+                  source={{ uri: baseImageURL + comment.poster }}
                   style={styles.profileImg}
                 />
-                <Text style={styles.movieName}>{movie.title}</Text>
+                <Text style={styles.movieName}>{comment.movieName}</Text>
                 <Stars
-                  default={movie.rating}
-                  display={movie.rating}
+                  default={comment.rating}
+                  display={comment.rating}
                   spacing={6}
                   count={5}
                   fullStar={<Ionicons name="star" color="yellow" size={20} />}

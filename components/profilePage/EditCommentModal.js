@@ -35,7 +35,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   useEffect(() => {
     setStars(commentData.rating);
     setInput({
-      value: commentData.desc,
+      value: commentData.description,
       isValid: true,
     });
   }, [commentData]);
@@ -75,7 +75,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
           resizeMode="contain"
         />
         <View style={styles.innerCont}>
-          <Text style={styles.movieName}>{commentData.title}</Text>
+          <Text style={styles.movieName}>{commentData.movieName}</Text>
           <Stars
             default={commentData.rating}
             update={(val) => {

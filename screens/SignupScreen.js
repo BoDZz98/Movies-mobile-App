@@ -4,15 +4,8 @@ import AuthForm from "../components/AuthForm";
 import AuthContentCard from "../components/UI/AuthContentCard";
 import { authActions } from "../store/auth-slice";
 import { useDispatch } from "react-redux";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../firebaseConfig";
-// import {
-//   createUserWithEmailAndPassword,
-//   onAuthStateChanged,
-// } from "firebase/auth";
-import { setDoc, doc, getDoc } from "firebase/firestore";
 import { userActions } from "../store/user-data-slice";
-import { getUserData, getUserListsLength } from "../util/firebase-services";
-import { getUserReviews, signUp } from "../util/my-backend-services";
+import { signUp } from "../util/my-backend-services";
 
 const SignupScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -24,22 +17,17 @@ const SignupScreen = ({ navigation }) => {
       // If the user signed in successfully
       if (response.ok) {
         const data = await response.json();
-        console.log(data.user);
-
-        // dispatch(authActions.login());
-        // const { profilePicture } = await getUserData(user);
-
-        // const userListsLength = await getUserListsLength();
+        dispatch(authActions.login());
         dispatch(
           userActions.setUser({
             userDoc: data.user,
-            userComments: comments,
-            // userListsLength,
-            profilePicture,
+            profilePicture: defProfilePicture,
+            userComments: [],
+            userListsLength: 0,
           })
         );
 
-        // navigation.navigate("home");
+        navigation.navigate("home");
       }
     } catch (error) {
       console.log("error in signup page : ", error);
@@ -74,3 +62,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
+
+const defProfilePicture =
+  "https://firebasestorage.googleapis.com/v0/b/movies-imdp.appspot.com/o/defaultPP.png?alt=media&token=b2846ee3-12ba-47c6-864b-1e015dfbe41a";

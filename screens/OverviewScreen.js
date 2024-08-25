@@ -72,7 +72,7 @@ const OverviewScreen = ({ navigation }) => {
           </Pressable>
         );
       })}
-      <UserListsModal isVisible={isModalVisible} onClose={closeHandler} />
+      {/* <UserListsModal isVisible={isModalVisible} onClose={closeHandler} /> */}
     </View>
   );
 };

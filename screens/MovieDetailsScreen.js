@@ -22,16 +22,16 @@ const MovieDetailsScreen = ({ navigation, route }) => {
   const movieId = route.params.movieId;
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: ({ tintColor }) => {
-        return <FavButton movieId={movieId} />;
-      },
-    });
     async function getData() {
       try {
         // console.log(movieId);
         // Fetching movie data ---------------------------------
         const fetchedMovieData = await fetchMovieDetails(movieId);
+        navigation.setOptions({
+          headerRight: ({ tintColor }) => {
+            return <FavButton movieId={movieId} movieData={fetchedMovieData} />;
+          },
+        });
         setMovieData(fetchedMovieData);
         setIsLoading(false);
       } catch (error) {

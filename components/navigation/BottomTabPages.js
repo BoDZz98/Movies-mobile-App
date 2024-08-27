@@ -85,6 +85,7 @@ const BottomTabPages = () => {
         console.log("user ID is:", userId);
       }
     }
+    
     getUserData();
     //   onAuthStateChanged(FIREBASE_AUTH, async (user) => {
     //     // setUserProfilePicture();

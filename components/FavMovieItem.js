@@ -29,7 +29,7 @@ const FavMovieItem = ({ movieData }) => {
         <Image
           style={styles.image}
           resizeMode="stretch"
-          source={{ uri: baseImageURL + movieData.backdrop_path }}
+          source={{ uri: baseImageURL + movieData.poster }}
         />
       </View>
 
@@ -39,7 +39,7 @@ const FavMovieItem = ({ movieData }) => {
             <Text style={styles.title}>{movieData.title}</Text>
           </ScrollView>
           <Text style={styles.rating}>
-            {movieData.vote_count}
+            {movieData.rating}
             <Ionicons name="star" color={Colors.accent500} size={15} />
           </Text>
         </View>

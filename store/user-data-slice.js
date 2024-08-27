@@ -28,11 +28,24 @@ const userSlice = createSlice({
         userName: userDoc.name,
         favMovies: userDoc.favMovies,
         wishlistMovies: userDoc.wishlistMovies,
+        userListsLength: userDoc.userCollections,
         userComments,
-        userListsLength,
         profilePicture,
       };
       // console.log("all data is", state.userData);
+    },
+    updateUser(state, action) {
+      const user = action.payload;
+
+      state.userData = {
+        ...state.userData,
+        userId: user._id,
+        userName: user.name,
+        favMovies: user.favMovies,
+        wishlistMovies: user.wishlistMovies,
+        userListsLength: user.userCollections,
+      };
+      console.log(state.userData.favMovies[0]);
     },
     updateprofilePicture(state, action) {
       state.userData.profilePicture = action.payload;

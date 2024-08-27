@@ -52,7 +52,7 @@ export async function fetchMovieDetails(movieId) {
 
   const { hours, minutes } = convertMinutesToTime(response.data.runtime);
   const actors = response.data.credits.cast.slice(0, 20);
-  const similarMovies = response.data.similar.results;
+  const similarMovies = response.data.similar.results.slice(0, 10);
   const youtubeTrailer = response.data.videos.results.find(
     (video) => video.type === "Trailer"
   );
@@ -67,7 +67,7 @@ export async function fetchMovieDetails(movieId) {
     runtime: `${hours}h ${minutes} min`,
     overview: response.data.overview,
     genres: response.data.genres,
-    images: response.data.images.backdrops,
+    images: response.data.images.backdrops.slice(0, 20),
     cast: actors,
     youtubeTrailerKey,
     similarMovies,

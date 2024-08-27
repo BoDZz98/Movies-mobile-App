@@ -57,3 +57,48 @@ export const getUserReviews = async (email) => {
     return data.userReviews;
   }
 };
+
+//-------------------------------------------------------------------------------------
+// Lists-----------------------------------------------------------------------------
+
+export const addMovie = async (movieData, userId, list) => {
+  try {
+    const response = await fetch("http://192.168.1.9:8000/lists/movie", {
+      headers,
+      method: "POST",
+      body: JSON.stringify({ userId, list, movie: movieData }),
+    });
+
+    return response;
+  } catch (error) {
+    console.log("Error in my-backend-services/addMovie", error);
+  }
+};
+
+export const addRemoveMovie = async (movieData, isSet, userId, list) => {
+  const addedMovie = {
+    id: movieData.id,
+    title: movieData.title,
+    rating: movieData.vote_average,
+    poster: movieData.poster,
+    backdrop_path: movieData.backdrop_path,
+    genres: movieData.genres.map((g) => g.name),
+    runtime: movieData.runtime,
+    release_date: movieData.release_date,
+    vote_count: movieData.vote_count,
+  };
+  // console.log(addedMovie.genres);
+
+  // If it's already in the fav/wishlist, Remove it
+  if (isSet) {
+  }
+  // else, Add it
+  else {
+    const res = await addMovie(addedMovie, userId, list);
+    if (res.ok) {
+      const data = await res.json();
+      // console.log(data);
+      return data;
+    }
+  }
+};

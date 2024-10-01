@@ -11,7 +11,7 @@ const initUserState = {
     favMovies: [],
     wishlistMovies: [],
     userComments: [],
-    userListsLength: 0,
+    userCollections: [],
   },
 };
 const userSlice = createSlice({
@@ -19,16 +19,13 @@ const userSlice = createSlice({
   initialState: initUserState,
   reducers: {
     setUser(state, action) {
-      const { userDoc, userComments, userListsLength, profilePicture } =
-        action.payload;
-      // userData is an object itself , so we used the spread operator ... to spread/move the userData
-      // object properties into state.userData object , then we added the userComments
+      const { userDoc, userComments, profilePicture } = action.payload;
       state.userData = {
         userId: userDoc._id,
         userName: userDoc.name,
         favMovies: userDoc.favMovies,
         wishlistMovies: userDoc.wishlistMovies,
-        userListsLength: userDoc.userCollections,
+        userCollections: userDoc.userCollections,
         userComments,
         profilePicture,
       };
@@ -43,9 +40,8 @@ const userSlice = createSlice({
         userName: user.name,
         favMovies: user.favMovies,
         wishlistMovies: user.wishlistMovies,
-        userListsLength: user.userCollections,
+        userCollections: user.userCollections,
       };
-      console.log(state.userData.favMovies[0]);
     },
     updateprofilePicture(state, action) {
       state.userData.profilePicture = action.payload;
@@ -54,9 +50,9 @@ const userSlice = createSlice({
       state.userData.userName = action.payload;
     },
     updateUserListsLength(state, action) {
-      action.payload === "inc"
-        ? (state.userData.userListsLength += 1)
-        : (state.userData.userListsLength -= 1);
+      // action.payload === "inc"
+      //   ? (state.userData.userListsLength += 1)
+      //   : (state.userData.userListsLength -= 1);
     },
     /* updateprofileinfo(state, action) {
       const { identifier, value } = action.payload;

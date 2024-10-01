@@ -28,7 +28,6 @@ const LoginScreen = ({ navigation }) => {
             userDoc: data.user,
             profilePicture: "profilePicture",
             userComments: userReviews,
-            userListsLength: 0,
           })
         );
 

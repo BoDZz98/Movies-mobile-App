@@ -10,19 +10,18 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { addList, setUserId } from "../../util/firebase-services";
-import { collection, doc, onSnapshot, query } from "firebase/firestore";
-import { FIREBASE_DB } from "../../firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
+import { createUserList } from "../../util/my-backend-services";
 
 const UserListsModal = ({ isVisible, onClose }) => {
+  const userData = useSelector((state) => state.user.userData);
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [input, setInput] = useState({ value: "", isValid: true });
   const [listExist, setListExist] = useState(false);
-  const [userLists, setUserLists] = useState([]);
 
   // Validation for input -----------------------------------------------------------------------
   function changeInputHandler(enteredValue) {
@@ -37,27 +36,19 @@ const UserListsModal = ({ isVisible, onClose }) => {
       };
     });
     if (listNameValid) {
-      const bool = await addList(input.value);
-      bool !== true && dispatch(userActions.updateUserListsLength("inc"));
-      setListExist(bool);
+      const res = await createUserList(userData.userId, input.value);
+      console.log(res);
+
+      res.ok
+        ? dispatch(userActions.updateUser(res.data.user))
+        : setListExist(true);
+
+      // const bool = await addList(input.value);
+      // bool !== true && dispatch(userActions.updateUserListsLength("inc"));
+      // setListExist(bool);
       setInput({ value: "", isValid: true });
     }
   }
-
-  // getting the user lists from firebase ---------------------------------------------------------------
-  useEffect(() => {
-    onSnapshot(
-      query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
-      (snapshot) => {
-        setUserLists(
-          snapshot.docs.map((doc) => ({
-            listName: doc.id,
-            ...doc.data(),
-          }))
-        );
-      }
-    );
-  }, [isVisible]);
 
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
@@ -68,20 +59,20 @@ const UserListsModal = ({ isVisible, onClose }) => {
         indicatorStyle="black"
         showsVerticalScrollIndicator={false}
       >
-        {userLists.map((list) => {
+        {userData.userCollections.map((list) => {
           return (
             <Pressable
               style={styles.listCont}
-              key={list.listName}
+              key={list._id}
               onPress={() =>
                 navigation.navigate("ListMovies", {
                   listMovies: list.movies,
-                  listName: list.listName,
+                  listName: list.name,
                 })
               }
             >
               <View style={styles.textCont}>
-                <Text style={styles.listName}>{list.listName}</Text>
+                <Text style={styles.listName}>{list.name}</Text>
                 <Text style={styles.number}>Movies :{list.movies.length}</Text>
               </View>
               <Ionicons name="arrow-forward" color="black" size={30} />

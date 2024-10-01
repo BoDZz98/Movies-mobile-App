@@ -14,7 +14,7 @@ const OverviewScreen = ({ navigation }) => {
       subName: "lists",
       icon: "list",
       pageName: "myLists",
-      length: userData.userListsLength,
+      length: userData.userCollections.length,
     },
     {
       name: "Comments",
@@ -72,7 +72,7 @@ const OverviewScreen = ({ navigation }) => {
           </Pressable>
         );
       })}
-      {/* <UserListsModal isVisible={isModalVisible} onClose={closeHandler} /> */}
+      <UserListsModal isVisible={isModalVisible} onClose={closeHandler} />
     </View>
   );
 };

@@ -62,6 +62,8 @@ export async function fetchMovieDetails(movieId) {
     id: response.data.id,
     title: response.data.title,
     poster: response.data.poster_path,
+    backdrop_path: response.data.backdrop_path,
+    vote_count: response.data.vote_count,
     vote_average: response.data.vote_average.toFixed(1),
     release_date: response.data.release_date,
     runtime: `${hours}h ${minutes} min`,

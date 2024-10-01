@@ -59,13 +59,27 @@ export const getUserReviews = async (email) => {
 };
 
 //-------------------------------------------------------------------------------------
-// Lists-----------------------------------------------------------------------------
+// Adding movies to fav and wishlist-----------------------------------------------------------------------------
 
 export const addMovie = async (movieData, userId, list) => {
   try {
     const response = await fetch("http://192.168.1.9:8000/lists/movie", {
       headers,
       method: "POST",
+      body: JSON.stringify({ userId, list, movie: movieData }),
+    });
+
+    return response;
+  } catch (error) {
+    console.log("Error in my-backend-services/addMovie", error);
+  }
+};
+
+export const removeMovie = async (movieData, userId, list) => {
+  try {
+    const response = await fetch("http://192.168.1.9:8000/lists/movie", {
+      headers,
+      method: "DELETE",
       body: JSON.stringify({ userId, list, movie: movieData }),
     });
 
@@ -87,10 +101,16 @@ export const addRemoveMovie = async (movieData, isSet, userId, list) => {
     release_date: movieData.release_date,
     vote_count: movieData.vote_count,
   };
-  // console.log(addedMovie.genres);
+  // console.log(addedMovie.backdrop_path);
 
   // If it's already in the fav/wishlist, Remove it
   if (isSet) {
+    const res = await removeMovie(addedMovie, userId, list);
+    if (res.ok) {
+      const data = await res.json();
+      // console.log(data);
+      return data;
+    }
   }
   // else, Add it
   else {
@@ -100,5 +120,48 @@ export const addRemoveMovie = async (movieData, isSet, userId, list) => {
       // console.log(data);
       return data;
     }
+  }
+};
+
+//-------------------------------------------------------------------------------------
+// User Lists----------------------------------------------------------------------------
+
+export const createUserList = async (userId, listName) => {
+  // console.log(userId, listName);
+
+  try {
+    const response = await fetch("http://192.168.1.9:8000/lists/userLists", {
+      headers,
+      method: "POST",
+      body: JSON.stringify({ userId, list: listName }),
+    });
+    // If the name is unique
+    // console.log(await response.json());
+    if (response.ok) {
+      const data = await response.json();
+
+      return { ok: true, data };
+    }
+    // If the name is not unique
+    return { ok: false };
+  } catch (error) {
+    console.log("Error in my-backend-services/createUserList", error);
+  }
+};
+
+export const deleteUserList = async (userId, listName) => {
+  try {
+    const response = await fetch("http://192.168.1.9:8000/lists/userLists", {
+      headers,
+      method: "DELETE",
+      body: JSON.stringify({ userId, listName }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.log("Error in my-backend-services/deleteUserList", error);
   }
 };

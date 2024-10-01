@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -8,18 +7,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MyButton from "../UI/MyButton";
-import { Colors } from "../../constants/styles";
 import ModalCard from "../UI/ModalCard";
 import {
   addDeleteMovieInList,
-  addMovie,
   baseImageURL,
-  setUserId,
 } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
-import { collection, doc, onSnapshot, query } from "firebase/firestore";
-import { FIREBASE_DB } from "../../firebaseConfig";
+import { addRemoveMovie } from "../../util/my-backend-services";
 
 const AddMovieModal = ({ isVisible, onClose, data }) => {
   const dispatch = useDispatch();
@@ -27,37 +22,16 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
   // Reading user data from user-data-slice ----------------------------------------------------------------------
   const userData = useSelector((state) => state.user.userData);
   // !! is used to convert a value into a boolean
-  const isFav = !!userData.favMovies.find((movie) => movie.id === data.id);
+  const isFav = !!userData.favMovies.find((movie) => movie.id == data.id);
   const isWishlist = !!userData.wishlistMovies.find(
-    (movie) => movie.id === data.id
+    (movie) => movie.id == data.id
   );
+  const userLists = userData.userCollections;
 
-  // reading user lists from the firebase -----------------------------------------------------------------------------------
-  const [userLists, setUserLists] = useState([]);
-
-  useEffect(() => {
-    onSnapshot(
-      query(collection(doc(FIREBASE_DB, "users", setUserId()), "lists")),
-      (snapshot) => {
-        setUserLists(
-          snapshot.docs.map((doc) => ({
-            listName: doc.id,
-            ...doc.data(),
-          }))
-        );
-      }
-    );
-  }, []);
-
-  // Adding the movie to user-data-slice (redux) and to our firebase ----------------------------------------------------------------
-  function addMovieTo(list) {
-    if (list === "fav") {
-      addMovie(data, isFav, "favMovies");
-      dispatch(userActions.addOrRemoveFavMovie(data));
-    } else {
-      addMovie(data, isWishlist, "wishlistMovies");
-      dispatch(userActions.addOrRemoveWishlistMovie(data));
-    }
+  // Adding the movie to user-data-slice (redux) and to our mongoDB ----------------------------------------------------------------
+  async function addMovieTo(list, isSet) {
+    const res = await addRemoveMovie(data, isSet, userData.userId, list);
+    dispatch(userActions.updateUser(res.user));
   }
 
   return (
@@ -66,7 +40,7 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
       <View style={styles.buttonsCont}>
         <MyButton
           style={[styles.buttonCont, isFav && styles.pressedButton]}
-          onPress={addMovieTo.bind(null, "fav")}
+          onPress={addMovieTo.bind(null, "favMovies", isFav)}
         >
           <Ionicons
             name={isFav ? "heart" : "heart-outline"}
@@ -76,7 +50,7 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
         </MyButton>
         <MyButton
           style={[styles.buttonCont, isWishlist && styles.pressedButton]}
-          onPress={addMovieTo.bind(null, "wishlist")}
+          onPress={addMovieTo.bind(null, "wishlistMovies", isWishlist)}
         >
           <Ionicons
             name={isWishlist ? "book" : "book-outline"}

@@ -6,10 +6,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { deleteList, editList } from "../../util/firebase-services";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
+import { deleteUserList } from "../../util/my-backend-services";
 
 const ListMoviesHeader = ({ listName }) => {
+  const userData = useSelector((state) => state.user.userData);
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
@@ -115,9 +118,10 @@ const ListMoviesHeader = ({ listName }) => {
           name="trash"
           color="red"
           size={30}
-          onPress={() => {
-            deleteList(listName);
-            dispatch(userActions.updateUserListsLength("dec"));
+          onPress={async () => {
+            // deleteList(listName);
+            const res = await deleteUserList(userData.userId, listName);
+            dispatch(userActions.updateUser(res.user));
             navigation.goBack();
           }}
         />

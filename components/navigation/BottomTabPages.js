@@ -8,15 +8,9 @@ import ProfileScreen from "../../screens/ProfileScreen";
 import StartScreen from "../../screens/StartScreen";
 import { Ionicons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { authActions } from "../../store/auth-slice";
-import { onAuthStateChanged } from "firebase/auth";
-
 import { userActions } from "../../store/user-data-slice";
 import SearchScreen from "../../screens/SearchScreen";
-import { getUserData, getUserListsLength } from "../../util/firebase-services";
-import { setUserProfilePicture, uploadImage } from "../../storage-services";
-import { ref } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUser, getUserReviews } from "../../util/my-backend-services";
 
@@ -79,38 +73,13 @@ const BottomTabPages = () => {
             userDoc: user,
             profilePicture: "profilePicture",
             userComments: userReviews,
-            userListsLength: 0,
           })
         );
         console.log("user ID is:", userId);
       }
     }
-    
+
     getUserData();
-    //   onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-    //     // setUserProfilePicture();
-    //     console.log("in bottomTabPages");
-    //     if (!!user) {
-    //       dispatch(authActions.login());
-    //       try {
-    //         const { userData, comments, profilePicture } = await getUserData(
-    //           user
-    //         );
-    //         const userListsLength = await getUserListsLength();
-    //         // set data of the user in react redux-------------------------------------------------------------------
-    //         dispatch(
-    //           userActions.setUser({
-    //             userDoc: userData,
-    //             userComments: comments,
-    //             userListsLength,
-    //             profilePicture,
-    //           })
-    //         );
-    //       } catch (error) {
-    //         console.log("error in bottom tab pages : ", error);
-    //       }
-    //     }
-    //   });
   }, []);
 
   return (

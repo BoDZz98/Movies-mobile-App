@@ -23,7 +23,6 @@ const SignupScreen = ({ navigation }) => {
             userDoc: data.user,
             profilePicture: defProfilePicture,
             userComments: [],
-            userListsLength: 0,
           })
         );
 

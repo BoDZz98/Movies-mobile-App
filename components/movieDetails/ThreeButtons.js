@@ -59,13 +59,13 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
       >
         <Ionicons name="chatbox-ellipses-outline" color="white" size={25} />
       </MyButton>
-      {/* {isAuth && (
+      {isAuth && (
         <AddMovieModal
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           data={movieData}
         />
-      )} */}
+      )}
       <ErrorModal
         isVisible={errorModalVisible}
         onClose={() => setErrorModalVisible(false)}

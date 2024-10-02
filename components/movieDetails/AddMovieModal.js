@@ -14,7 +14,10 @@ import {
 } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
-import { addRemoveMovie } from "../../util/my-backend-services";
+import {
+  addRemoveMovie,
+  manageMovieInUserList,
+} from "../../util/my-backend-services";
 
 const AddMovieModal = ({ isVisible, onClose, data }) => {
   const dispatch = useDispatch();
@@ -28,9 +31,17 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
   );
   const userLists = userData.userCollections;
 
-  // Adding the movie to user-data-slice (redux) and to our mongoDB ----------------------------------------------------------------
+  // Adding the movie to fav/wishlist , (user-data-slice (redux) and to our mongoDB) ----------------------------------------------------------------
   async function addMovieTo(list, isSet) {
     const res = await addRemoveMovie(data, isSet, userData.userId, list);
+    dispatch(userActions.updateUser(res.user));
+  }
+
+  // Adding movie to user lists , (user-data-slice (redux) and to our mongoDB)
+  async function addMovieToUserList(userId, collectionId) {
+    // data.genres = data.genres.map((g) => g.name);
+    // console.log(data.genres);
+    const res = await manageMovieInUserList(data, userId, collectionId);
     dispatch(userActions.updateUser(res.user));
   }
 
@@ -66,24 +77,20 @@ const AddMovieModal = ({ isVisible, onClose, data }) => {
         showsVerticalScrollIndicator={false}
       >
         {userLists.map((list) => {
-          const movieFound = !!list.movies.find(
-            (movie) => movie.movieId === data.id
-          );
+          const movieFound = !!list.movies.find((movie) => movie.id == data.id);
+          // console.log( userData.userId);
+
           return (
             <TouchableOpacity
               style={[
                 styles.listCont,
                 movieFound && { backgroundColor: "#888d8f" },
               ]}
-              key={list.listName}
-              onPress={addDeleteMovieInList.bind(null, {
-                movieId: data.id,
-                poster: baseImageURL + data.poster,
-                listName: list.listName,
-              })}
+              key={list.name}
+              onPress={() => addMovieToUserList(userData.userId, list._id)}
             >
               <View style={styles.textCont}>
-                <Text style={styles.listName}>{list.listName}</Text>
+                <Text style={styles.listName}>{list.name}</Text>
                 <Text style={styles.number}>Movies :{list.movies.length}</Text>
               </View>
               <Ionicons

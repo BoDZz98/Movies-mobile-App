@@ -37,15 +37,11 @@ const UserListsModal = ({ isVisible, onClose }) => {
     });
     if (listNameValid) {
       const res = await createUserList(userData.userId, input.value);
-      console.log(res);
 
       res.ok
         ? dispatch(userActions.updateUser(res.data.user))
         : setListExist(true);
 
-      // const bool = await addList(input.value);
-      // bool !== true && dispatch(userActions.updateUserListsLength("inc"));
-      // setListExist(bool);
       setInput({ value: "", isValid: true });
     }
   }

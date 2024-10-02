@@ -5,10 +5,9 @@ import { Colors } from "../../constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { deleteList, editList } from "../../util/firebase-services";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
-import { deleteUserList } from "../../util/my-backend-services";
+import { deleteUserList, updateUserList } from "../../util/my-backend-services";
 
 const ListMoviesHeader = ({ listName }) => {
   const userData = useSelector((state) => state.user.userData);
@@ -20,6 +19,7 @@ const ListMoviesHeader = ({ listName }) => {
   const [input, setInput] = useState(listName);
   const [isFocused, setIsFocused] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+
   function changeInputHandler(enteredValue) {
     setInput(enteredValue);
   }
@@ -33,10 +33,11 @@ const ListMoviesHeader = ({ listName }) => {
     }
     setIsFocused(!isFocused); // Toggle the focus state
   }
-
+  //-------------------------------------------------------------------
   async function editListHandler() {
     // checking whether the list name is changed or not --------
-    if (input.value === listName) {
+    if (input === listName) {
+      console.log("in here");
       setErrorMessage("Same Name");
       return;
     }
@@ -46,19 +47,22 @@ const ListMoviesHeader = ({ listName }) => {
       setErrorMessage("list must have a name");
       return;
     } else {
-      // sth not right here (listName)
-      const bool = await editList(listName, input);
-      if (bool === true) {
+      const res = await updateUserList(userData.userId, listName, input);
+      if (!res.ok) {
         setErrorMessage("List already exist");
       } else {
-        /* setInput((currentVal) => {
-          return { value: currentVal };
-        }); */
         setErrorMessage("Edit successfully");
         inputRef.current.blur();
         setIsFocused(false);
+        dispatch(userActions.updateUser(res.data.user));
       }
     }
+  }
+  //-------------------------------------------------------------
+  async function deleteListHandler() {
+    const res = await deleteUserList(userData.userId, listName);
+    dispatch(userActions.updateUser(res.user));
+    navigation.goBack();
   }
   return (
     <View style={styles.root}>
@@ -118,12 +122,7 @@ const ListMoviesHeader = ({ listName }) => {
           name="trash"
           color="red"
           size={30}
-          onPress={async () => {
-            // deleteList(listName);
-            const res = await deleteUserList(userData.userId, listName);
-            dispatch(userActions.updateUser(res.user));
-            navigation.goBack();
-          }}
+          onPress={deleteListHandler}
         />
       </View>
     </View>

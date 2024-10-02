@@ -6,12 +6,13 @@ import { Colors } from "../constants/styles";
 import ListMoviesHeader from "../components/profilePage/ListMoviesHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
 const ListMovies = ({ navigation, route }) => {
   const listMovies = route.params.listMovies;
   const listName = route.params.listName;
-  // const inHome = route.params.inHome;
   const title = route.params.title;
+
   useLayoutEffect(() => {
     navigation.setOptions({
       header: () => {
@@ -43,7 +44,7 @@ const ListMovies = ({ navigation, route }) => {
       <FlatList
         data={listMovies}
         numColumns={2}
-        keyExtractor={(movie) => movie.movieId} //id
+        keyExtractor={(movie) => movie.id}
         renderItem={({ item }) => {
           // console.log(item);
           return (
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     // paddingHorizontal:20,
-    width:'90%'
+    width: "90%",
   },
   title: {
     color: "white",

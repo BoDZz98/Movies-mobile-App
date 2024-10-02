@@ -1,6 +1,7 @@
 const headers = {
   "Content-Type": "application/json",
 };
+const IPAdress = "http://192.168.1.44:8000";
 // Auth-----------------------------------------------------------------------------
 export const signUp = async (email, password, name) => {
   const response = await fetch("http://192.168.1.9:8000/auth/signup", {
@@ -21,7 +22,7 @@ export const signUp = async (email, password, name) => {
 };
 
 export const login = async (email, password) => {
-  const response = await fetch("http://192.168.1.9:8000/auth/login", {
+  const response = await fetch(IPAdress + "/auth/login", {
     headers,
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -30,7 +31,7 @@ export const login = async (email, password) => {
 };
 
 export const getUser = async (userId) => {
-  const res = await fetch("http://192.168.1.9:8000/auth/users/" + userId, {
+  const res = await fetch(IPAdress + "/auth/users/" + userId, {
     headers,
   });
 
@@ -46,12 +47,9 @@ export const getUser = async (userId) => {
 // Reviews-----------------------------------------------------------------------------
 
 export const getUserReviews = async (email) => {
-  const res = await fetch(
-    "http://192.168.1.9:8000/reviews/getUserReviews/" + email,
-    {
-      headers,
-    }
-  );
+  const res = await fetch(IPAdress + "/reviews/getUserReviews/" + email, {
+    headers,
+  });
   if (res.ok) {
     const data = await res.json();
     return data.userReviews;
@@ -63,7 +61,7 @@ export const getUserReviews = async (email) => {
 
 export const addMovie = async (movieData, userId, list) => {
   try {
-    const response = await fetch("http://192.168.1.9:8000/lists/movie", {
+    const response = await fetch(IPAdress + "/lists/movie", {
       headers,
       method: "POST",
       body: JSON.stringify({ userId, list, movie: movieData }),
@@ -77,7 +75,7 @@ export const addMovie = async (movieData, userId, list) => {
 
 export const removeMovie = async (movieData, userId, list) => {
   try {
-    const response = await fetch("http://192.168.1.9:8000/lists/movie", {
+    const response = await fetch(IPAdress + "/lists/movie", {
       headers,
       method: "DELETE",
       body: JSON.stringify({ userId, list, movie: movieData }),
@@ -130,7 +128,7 @@ export const createUserList = async (userId, listName) => {
   // console.log(userId, listName);
 
   try {
-    const response = await fetch("http://192.168.1.9:8000/lists/userLists", {
+    const response = await fetch(IPAdress + "/lists/userLists", {
       headers,
       method: "POST",
       body: JSON.stringify({ userId, list: listName }),
@@ -151,7 +149,7 @@ export const createUserList = async (userId, listName) => {
 
 export const deleteUserList = async (userId, listName) => {
   try {
-    const response = await fetch("http://192.168.1.9:8000/lists/userLists", {
+    const response = await fetch(IPAdress + "/lists/userLists", {
       headers,
       method: "DELETE",
       body: JSON.stringify({ userId, listName }),
@@ -163,5 +161,45 @@ export const deleteUserList = async (userId, listName) => {
     }
   } catch (error) {
     console.log("Error in my-backend-services/deleteUserList", error);
+  }
+};
+
+export const updateUserList = async (userId, oldListName, newListName) => {
+  try {
+    const res = await fetch(IPAdress + "/lists/userLists", {
+      headers,
+      method: "PATCH",
+      body: JSON.stringify({ userId, oldListName, newListName }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return { ok: true, data };
+    } else {
+      return { ok: false };
+    }
+  } catch (error) {
+    console.log("Error in my-backend-services/updateUserList", error);
+  }
+};
+
+export const manageMovieInUserList = async (movie, userId, collectionId) => {
+  const updatedMovie = {
+    ...movie,
+    genres: movie.genres.map((g) => g.name),
+  };
+
+  try {
+    const res = await fetch(IPAdress + "/lists/userLists/manageMovie", {
+      headers,
+      method: "POST",
+      body: JSON.stringify({ movie: updatedMovie, userId, collectionId }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch (error) {
+    console.log("Error in my-backend-services/manageMovieInUserList", error);
   }
 };

@@ -32,7 +32,7 @@ const CommentUserData = ({ userId }) => {
         console.log("error in CommentUserData : ", error);
       }
     }
-    getData();
+    // getData();
   }, []);
 
   return (

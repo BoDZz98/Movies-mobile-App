@@ -19,21 +19,22 @@ import {
   updateComment,
 } from "../../util/firebase-services";
 import Input from "../Input";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
 import { useNavigation } from "@react-navigation/native";
+import { deleteReview } from "../../util/my-backend-services";
 
 const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const userEmail = useSelector((state) => state.user.userData.email);
+
   // Validation--------------------------------------------------------------------------------------------------
   const [stars, setStars] = useState(commentData.rating);
   const [input, setInput] = useState({});
-  // when i press on diff comments the commentData will change, i want to run this file everytime commentData change,
-  // so i used useEffect , without useEffect all the desc would be the same for all comments
+
   useEffect(() => {
-    setStars(commentData.rating);
     setInput({
       value: commentData.description,
       isValid: true,
@@ -43,6 +44,7 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   function changeInputHandler(enteredValue) {
     setInput({ value: enteredValue, isValid: true });
   }
+
   function submitHanlder() {
     const descIsValid = input.value.length !== 0;
     setInput((currentValues) => ({ ...currentValues, isValid: descIsValid }));
@@ -55,11 +57,14 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       // close the modal
       onClose();
     }
-  } // Delete comment----------------------------------------------------------------------------------------------------
-  function deleteHanlder() {
-    deleteComment(commentData.commentId);
-    dispatch(userActions.deleteComment(commentData.commentId));
-    navigation.navigate("Overview");
+  }
+
+  // Delete comment----------------------------------------------------------------------------------------------------
+  async function deleteHanlder() {
+    const userReviews = await deleteReview(userEmail, commentData._id);
+    dispatch(userActions.updateReviews(userReviews));
+    onClose();
+    // navigation.navigate("Overview");
   }
   return (
     <ModalCard
@@ -70,14 +75,14 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
       <Text style={styles.title}>Edit Comment </Text>
       <View style={styles.outerCont}>
         <Image
-          source={{ uri: baseImageURL + commentData.poster }}
+          source={{ uri: baseImageURL + commentData.moviePoster }}
           style={styles.movieImg}
           resizeMode="contain"
         />
         <View style={styles.innerCont}>
           <Text style={styles.movieName}>{commentData.movieName}</Text>
           <Stars
-            default={commentData.rating}
+            default={parseInt(commentData.rating)}
             update={(val) => {
               setStars(val);
             }}

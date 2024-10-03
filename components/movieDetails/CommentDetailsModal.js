@@ -11,36 +11,36 @@ import DefaultProfileImage from "../DefaultProfileImage";
 
 const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState({ userName: "", userPicture: "" });
-  useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      // Getting username -----------------------------
-      const userRefDoc = doc(FIREBASE_DB, "users", commentDetails?.userId);
-      const userSnapDoc = await getDoc(userRefDoc);
-      try {
-        // Getting profile Picture ----------------------
-        const userImgRef = ref(
-          STORAGE,
-          `profileImages/${commentDetails.userId}`
-        );
-        const userPicture = await getDownloadURL(userImgRef);
-        setUserData({
-          userName: userSnapDoc.data().userName,
-          userPicture,
-        });
+  // const [userData, setUserData] = useState({ userName: "", userPicture: "" });
+  //  useEffect(() => {
+  //   async function getData() {
+  //     setIsLoading(true);
+  //     // Getting username -----------------------------
+  //     const userRefDoc = doc(FIREBASE_DB, "users", commentDetails?.userId);
+  //     const userSnapDoc = await getDoc(userRefDoc);
+  //     try {
+  //       // Getting profile Picture ----------------------
+  //       const userImgRef = ref(
+  //         STORAGE,
+  //         `profileImages/${commentDetails.userId}`
+  //       );
+  //       const userPicture = await getDownloadURL(userImgRef);
+  //       setUserData({
+  //         userName: userSnapDoc.data().userName,
+  //         userPicture,
+  //       });
 
-        setIsLoading(false);
-      } catch (error) {
-        setUserData({
-          userName: userSnapDoc.data().userName,
-        });
-        console.log("error in CommentDetailsModal : ", error);
-      }
-    }
-    // this condition is to prevent a warning
-    commentDetails.userId && getData();
-  }, [commentDetails]);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       setUserData({
+  //         userName: userSnapDoc.data().userName,
+  //       });
+  //       console.log("error in CommentDetailsModal : ", error);
+  //     }
+  //   }
+  //   // this condition is to prevent a warning
+  //   commentDetails.userId && getData();
+  // }, [commentDetails]);
   return (
     <ModalCard isVisible={isVisible} onClose={onClose}>
       <Text style={styles.title}>Comment Details</Text>
@@ -52,16 +52,16 @@ const CommentDetailsModal = ({ isVisible, onClose, commentDetails }) => {
           style={styles.profileImg}
         />
       )}
-      <Text style={styles.userName}>{userData.userName}</Text>
+      <Text style={styles.userName}>{commentDetails.username}</Text>
       <Stars
-        display={commentDetails.rating}
+        display={parseInt(commentDetails.rating)}
         spacing={6}
         count={5}
         fullStar={<Ionicons name="star" color="yellow" size={20} />}
         emptyStar={<Ionicons name="star-outline" color="yellow" size={20} />}
       />
       <ScrollView style={styles.descCont}>
-        <Text style={styles.descText}>{commentDetails.desc}</Text>
+        <Text style={styles.descText}>{commentDetails.description}</Text>
       </ScrollView>
     </ModalCard>
   );

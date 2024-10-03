@@ -9,11 +9,15 @@ import MyButton from "../UI/MyButton";
 import { Colors } from "../../constants/styles";
 import { addComment } from "../../util/firebase-services";
 import { userActions } from "../../store/user-data-slice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { createReview } from "../../util/my-backend-services";
 
 const AddCommentModal = ({ isVisible, onClose, movieData }) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.userData);
+
   const [stars, setStars] = useState(1);
+
   // Validation----------------------------------------------------
   const [input, setInput] = useState({
     value: "",
@@ -22,20 +26,30 @@ const AddCommentModal = ({ isVisible, onClose, movieData }) => {
   function changeInputHandler(enteredValue) {
     setInput({ value: enteredValue, isValid: true });
   }
-  function submitHanlder() {
+
+  //-----------------------------------------------------------------------
+  async function submitHanlder() {
     const descIsValid = input.value.length !== 0;
     setInput((currentValues) => {
       return { ...currentValues, isValid: descIsValid };
     });
     if (descIsValid) {
-      const commentData = { desc: input.value, rating: stars };
-      const movieDetails = { title: movieData.title, poster: movieData.poster };
+      const userData = { email: user.email, username: user.userName };
+      const commentData = { description: input.value, rating: stars };
+      const movieDetails = {
+        movieId: movieData.movieId,
+        movieName: movieData.movieName,
+        moviePoster: movieData.poster,
+      };
 
-      const commentId = Math.floor(Math.random() * (1000000000 - 0 + 1)) + 0;
-      addComment(commentId, commentData, movieDetails);
-      dispatch(
-        userActions.addOrRemoveComment({ commentId, commentData, movieDetails })
+      const userReviews = await createReview(
+        userData,
+        commentData,
+        movieDetails
       );
+      // console.log(userReviews);
+      dispatch(userActions.updateReviews(userReviews));
+
       // close the modal and reset the value
       setInput({ value: "", isValid: true });
       setStars(1);

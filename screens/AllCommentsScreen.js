@@ -57,13 +57,13 @@ const AllCommentsScreen = () => {
             >
               <View style={styles.commentCont}>
                 <Image
-                  source={{ uri: baseImageURL + comment.poster }}
+                  source={{ uri: baseImageURL + comment.moviePoster }}
                   style={styles.profileImg}
                 />
                 <Text style={styles.movieName}>{comment.movieName}</Text>
                 <Stars
-                  default={comment.rating}
-                  display={comment.rating}
+                  default={parseInt(comment.rating)}
+                  display={parseInt(comment.rating)}
                   spacing={6}
                   count={5}
                   fullStar={<Ionicons name="star" color="yellow" size={20} />}

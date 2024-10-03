@@ -8,10 +8,11 @@ import MovieDetailsScreen from "./screens/MovieDetailsScreen";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import BottomTabPages from "./components/navigation/BottomTabPages";
-import GameCommentsScreen from "./screens/GameCommentsScreen";
+import GameCommentsScreen from "./screens/MovieCommentsScreen";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ListMovies from "./screens/ListMovies";
+import MovieCommentsScreen from "./screens/MovieCommentsScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -58,8 +59,8 @@ export default function App() {
                 />
 
                 <Stack.Screen
-                  name="gameComments"
-                  component={GameCommentsScreen}
+                  name="movieComments"
+                  component={MovieCommentsScreen}
                   options={({ route }) => {
                     return {
                       headerTitle: "",

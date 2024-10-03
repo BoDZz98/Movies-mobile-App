@@ -16,20 +16,22 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import CommentDetailsModal from "../components/movieDetails/CommentDetailsModal";
 import { baseImageURL } from "../util/firebase-services";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { FIREBASE_DB } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import AddCommentModal from "../components/movieDetails/AddCommentModal";
 import CommentUserData from "../components/movieDetails/CommentUserData";
 import ErrorModal from "../components/movieDetails/ErrorModal";
+import { getMovieReviews } from "../util/my-backend-services";
 
-const GameCommentsScreen = ({ navigation, route }) => {
+const MovieCommentsScreen = ({ navigation, route }) => {
   const poster = route.params.moviePoster;
+  const movieId = route.params.movieId;
+  const movieName = route.params.movieName;
+
   const isAuth = useSelector((state) => state.auth.isAuth);
 
   //Add comment Modal Logic ------------------------------------------------------------------------------------------------------------------
   const [addCommentModalVisible, setAddCommentModalVisible] = useState(false);
-  const [movieData, setMovieData] = useState();
+  const movieData = { poster, movieId, movieName };
   //comment details Modal Logic ------------------------------------------------------------------------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [commentData, setCommentData] = useState();
@@ -38,6 +40,14 @@ const GameCommentsScreen = ({ navigation, route }) => {
 
   const [movieComments, setMovieComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  async function getData() {
+    setMovieComments([]);
+    setIsLoading(true);
+    const movieReviews = await getMovieReviews(movieId);
+    setMovieComments(movieReviews);
+    setIsLoading(false);
+  }
   useLayoutEffect(() => {
     // Header right logic ----------------------------------------------
     navigation.setOptions({
@@ -51,10 +61,6 @@ const GameCommentsScreen = ({ navigation, route }) => {
             onPress={() => {
               if (isAuth) {
                 setAddCommentModalVisible(true);
-                setMovieData({
-                  poster: route.params.moviePoster,
-                  title: route.params.movieName,
-                });
               } else {
                 setErrorModalVisible(true);
               }
@@ -63,24 +69,9 @@ const GameCommentsScreen = ({ navigation, route }) => {
         );
       },
     });
+
     // fetching comments on this movie --------------------------------------------------------
-    setIsLoading(true);
-    onSnapshot(
-      query(collection(FIREBASE_DB, "comments"), where("poster", "==", poster)),
-      (snapshot) => {
-        const tempArray = [];
-        snapshot.docs.map(async (document) => {
-          tempArray.push({
-            commentId: document.id,
-            userId: document.data().userId,
-            desc: document.data().desc,
-            rating: document.data().rating,
-          });
-          setMovieComments(tempArray);
-        });
-        setIsLoading(false);
-      }
-    );
+    getData();
   }, []);
   return (
     <View style={{ flex: 1 }}>
@@ -102,7 +93,7 @@ const GameCommentsScreen = ({ navigation, route }) => {
         )}
         <FlatList
           data={movieComments}
-          keyExtractor={(item) => item.commentId}
+          keyExtractor={(item) => item._id}
           numColumns={2}
           style={styles.flatListCont}
           renderItem={({ item }) => {
@@ -117,7 +108,7 @@ const GameCommentsScreen = ({ navigation, route }) => {
                 <View style={styles.commentCont}>
                   <CommentUserData userId={item.userId} />
                   <Stars
-                    display={item.rating}
+                    display={parseInt(item.rating)}
                     spacing={6}
                     count={5}
                     fullStar={<Ionicons name="star" color="yellow" size={20} />}
@@ -137,7 +128,10 @@ const GameCommentsScreen = ({ navigation, route }) => {
         />
         <AddCommentModal
           isVisible={addCommentModalVisible}
-          onClose={() => setAddCommentModalVisible(false)}
+          onClose={() => {
+            getData();
+            setAddCommentModalVisible(false);
+          }}
           movieData={addCommentModalVisible ? movieData : ""}
         />
         <CommentDetailsModal
@@ -154,7 +148,7 @@ const GameCommentsScreen = ({ navigation, route }) => {
   );
 };
 
-export default GameCommentsScreen;
+export default MovieCommentsScreen;
 
 const styles = StyleSheet.create({
   root: { flex: 1 },

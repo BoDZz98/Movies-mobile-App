@@ -56,6 +56,48 @@ export const getUserReviews = async (email) => {
   }
 };
 
+export const getMovieReviews = async (movieId) => {
+  const res = await fetch(IPAdress + "/reviews/getMovieReviews/" + movieId, {
+    headers,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    return data.movieReviews;
+  }
+};
+
+export const createReview = async (userData, commentData, movieDetails) => {
+  const res = await fetch(IPAdress + "/reviews/createReview/", {
+    headers,
+    method: "POST",
+    body: JSON.stringify({
+      user: userData,
+      review: commentData,
+      movie: movieDetails,
+    }),
+  });
+  if (res.ok) {
+    const data = await res.json();
+    return data.userReviews;
+  }
+};
+
+export const deleteReview = async (email, reviewId) => {
+  const res = await fetch(IPAdress + "/reviews/deleteReview/", {
+    headers,
+    method: "delete",
+    body: JSON.stringify({
+      email,
+      reviewId,
+    }),
+  });
+  if (res.ok) {
+    const data = await res.json();
+    // console.log(data.userReviews.length);
+
+    return data.userReviews;
+  }
+};
 //-------------------------------------------------------------------------------------
 // Adding movies to fav and wishlist-----------------------------------------------------------------------------
 

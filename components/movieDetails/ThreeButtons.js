@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
-import { Alert, Dimensions, Modal, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import MyButton from "../UI/MyButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import AddMovieModal from "./AddMovieModal";
 import { useNavigation } from "@react-navigation/native";
-import { Video } from "expo-av";
 import { useSelector } from "react-redux";
 import ErrorModal from "./ErrorModal";
 
@@ -51,9 +50,10 @@ const ThreeButtons = ({ movieData, onClickTrailer }) => {
       <MyButton
         style={styles.buttonCont}
         onPress={() => {
-          navigation.navigate("gameComments", {
-            moviePoster: movieData.poster,
+          navigation.navigate("movieComments", {
+            movieId: movieData.id,
             movieName: movieData.title,
+            moviePoster: movieData.poster,
           });
         }}
       >

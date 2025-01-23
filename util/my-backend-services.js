@@ -1,6 +1,9 @@
 const headers = {
   "Content-Type": "application/json",
 };
+const headers2 = {
+  "Content-Type": "multipart/form-data",
+};
 const IPAdress = "http://192.168.1.44:8000";
 // Auth-----------------------------------------------------------------------------
 export const signUp = async (email, password, name) => {
@@ -43,6 +46,30 @@ export const getUser = async (userId) => {
     console.log("error is", data.message);
   }
 };
+
+export const uploadUserImage = async (userId, image) => {
+  const formData = new FormData();
+  formData.append("Profile Image", {
+    uri: image,
+    type: "image/png",
+    name: "profile-image2",
+  });
+
+  const res = await fetch(IPAdress + "/upload-img", {
+    method: "POST",
+    body: formData,
+  });
+
+  // const data = await res.json();
+  // console.log("data is :", data);
+
+  // if (res.ok) {
+  //   return data;
+  // } else {
+  //   console.log("error is", data.message);
+  // }
+};
+
 //-------------------------------------------------------------------------------------
 // Reviews-----------------------------------------------------------------------------
 
@@ -95,6 +122,22 @@ export const deleteReview = async (email, reviewId) => {
     const data = await res.json();
     // console.log(data.userReviews.length);
 
+    return data.userReviews;
+  }
+};
+export const updateReview = async (email, reviewId, newReview) => {
+  const res = await fetch(IPAdress + "/reviews/updateReview/", {
+    headers,
+    method: "PATCH",
+    body: JSON.stringify({
+      email,
+      reviewId,
+      newRating: newReview.rating,
+      newDesc: newReview.desc,
+    }),
+  });
+  if (res.ok) {
+    const data = await res.json();
     return data.userReviews;
   }
 };

@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
 import ModalCard from "../UI/ModalCard";
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import Stars from "react-native-stars";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/styles";
 import MyButton from "../UI/MyButton";
-import {
-  addComment,
-  baseImageURL,
-  deleteComment,
-  updateComment,
-} from "../../util/firebase-services";
+import { baseImageURL } from "../../util/firebase-services";
 import Input from "../Input";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
 import { useNavigation } from "@react-navigation/native";
-import { deleteReview } from "../../util/my-backend-services";
+import { deleteReview, updateReview } from "../../util/my-backend-services";
 
 const EditCommentModal = ({ isVisible, onClose, commentData }) => {
   const dispatch = useDispatch();
@@ -45,14 +33,17 @@ const EditCommentModal = ({ isVisible, onClose, commentData }) => {
     setInput({ value: enteredValue, isValid: true });
   }
 
-  function submitHanlder() {
+  async function submitHanlder() {
     const descIsValid = input.value.length !== 0;
     setInput((currentValues) => ({ ...currentValues, isValid: descIsValid }));
     if (descIsValid) {
-      const comment = { desc: input.value, rating: stars };
-      const commentId = commentData.commentId;
-      updateComment(commentId, comment);
-      dispatch(userActions.updateComment({ commentId, comment }));
+      const newReview = { desc: input.value, rating: stars };
+      const userReviews = await updateReview(
+        userEmail,
+        commentData._id,
+        newReview
+      );
+      dispatch(userActions.updateReviews(userReviews));
       // navigation.navigate("Overview");
       // close the modal
       onClose();

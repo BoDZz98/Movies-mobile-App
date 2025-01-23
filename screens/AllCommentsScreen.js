@@ -21,7 +21,7 @@ const AllCommentsScreen = () => {
   const USER_COMMENTS = useSelector(
     (state) => state.user.userData.userComments
   );
-  // console.log(USER_COMMENTS[0]);
+  // console.log(USER_COMMENTS[0].rating);
 
   // Modal logic-------------------------------------------------
   const [isModalVisible, setIsModalVisible] = useState(false);

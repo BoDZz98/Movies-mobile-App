@@ -49,14 +49,13 @@ const ProfileScreen = ({ navigation }) => {
   const bottomSheetOpened = ref.current?.snapPoints?.length > 0;
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: () =>
-        !bottomSheetOpened && (
-          <ProfilePageHeader
-            openBottomSheetHandler={() => {
-              ref.current?.present();
-            }}
-          />
-        ),
+      header: () => (
+        <ProfilePageHeader
+          openBottomSheetHandler={() => {
+            ref.current?.present();
+          }}
+        />
+      ),
     });
   }, []);
   return (

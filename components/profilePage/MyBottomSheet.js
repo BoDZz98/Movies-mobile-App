@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/user-data-slice";
 import { useNavigation } from "@react-navigation/native";
 import { updateUserName } from "../../util/firebase-services";
+import { uploadUserImage } from "../../util/my-backend-services";
 
 const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
   const dispatch = useDispatch();
@@ -58,6 +59,7 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
   function userInputHandler(enteredValue) {
     setUserInput({ value: enteredValue, isValid: true });
   }
+
   async function submitHandler() {
     try {
       const nameIsValid = userInput.value.length !== 0;
@@ -68,12 +70,14 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
 
       if (!nameIsValid) return;
       setIsLoading(true);
-      dispatch(userActions.updateUserName(userInput.value));
-      updateUserName(userInput.value);
+      // dispatch(userActions.updateUserName(userInput.value));
+      // updateUserName(userInput.value);
+
       // to check whether we changed the image or not
       if (image) {
-        await uploadImage(image);
-        dispatch(userActions.updateprofilePicture(image));
+        uploadUserImage("", image);
+        // await uploadImage(image);
+        // dispatch(userActions.updateprofilePicture(image));
       }
       setIsLoading(false);
       closeBottomSheetHandler();
@@ -81,6 +85,8 @@ const MyBottomSheet = ({ closeBottomSheetHandler, sheetRef }) => {
       closeBottomSheetHandler();
     }
   }
+  // console.log(image);
+
   return (
     <BottomSheetModal
       ref={sheetRef}
